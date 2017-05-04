@@ -26,9 +26,9 @@ From logged in RPI SSH session or console terminal perform the following.
     chmod +x setup.sh
     ./setup.sh
 
-### Opencv3 Install (if required)
-Menu system to install opencv3 on the latest RPI Jessie disto. I have written a menu driven
-install script called cv3-setup.sh.  Use this if you do not have opencv3 already installed.  
+### How to Run
+This is a whiptail Menu system to assist with installation of opencv3 on the latest RPI Jessie disto. I have written this menu driven
+install script called cv3-setup.sh to make compiling cv3 from source easier. Use this if you do not have opencv3 already installed.  
 cv3-setup.sh menu picks allow updating, installing dependencies, downloads, cmake, compile and make install of opencv 3.0.0.
 I tried opencv 3.2.0 but had errors so it is best to stick with 3.0.0 per this script.
 To Run the whiptail menu setup script.  From a logged in ssh or terminal session run
