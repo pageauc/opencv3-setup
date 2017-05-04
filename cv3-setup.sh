@@ -133,17 +133,17 @@ function do_cv3_install ()
 function do_about()
 {
   whiptail --title "About" --msgbox " \
-   sonic-track project Install Assist
+   opencv3-setup project Install Assist
       written by Claude Pageau
 
 This Menu will help install opencv3 if required
 
-To Run sonic-track
+To Run script
 depending on how you have things configured
 Run
 
-cd ~/sonic-track
-./sonic-track.sh                    
+cd ~/opencv3-setup
+./cv3-setup.sh                  
 
              Good Luck 
 \
@@ -158,8 +158,7 @@ function do_main_menu ()
   "a " "Raspbian Jessie Update, Upgrade and rpi-update" \
   "b " "OpenCV3 Install Build Dependencies and Download Source" \
   "c " "OpenCV3 Make, Compile and Install" \
-  "d " "sonic-track Edit config.py Settings" \
-  "e " "About" \
+  "d " "About" \
   "q " "Quit Menu Back to Console"  3>&1 1>&2 2>&3)
 
   RET=$?
@@ -170,12 +169,11 @@ function do_main_menu ()
       a\ *) do_rpi_update ;;
       b\ *) do_cv3_dep ;;
       c\ *) do_cv3_install ;; 
-      d\ *) nano ~/sonic-track/config.py ;;
-      e\ *) do_about ;;
-      q\ *) echo "To Run sonic-track run the following commands"
+      d\ *) do_about ;;
+      q\ *) echo "To Run cv3-setup.sh perform the following commands"
             echo ""
-            echo "cd ~/sonic-track"
-            echo "./sonic-track.sh"
+            echo "cd ~/opencv3-setup"
+            echo "./cv3-setup.sh"
             echo ""
             echo "Good Luck ..."
             exit 0 ;;
