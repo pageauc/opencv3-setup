@@ -1,4 +1,4 @@
-# Raspberry Pi A Menu Driven OpenCV3 3.0.0 Compile from Source
+## Raspberry Pi Menu Driven OpenCV3 3.0.0 Compile from Source Script
 #### Whiptail menu enabled script to help compile opencv3 from source  
 
 ### Introduction
