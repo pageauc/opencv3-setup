@@ -22,7 +22,7 @@ download the install menu script.
 #### Manual Install   
 From logged in RPI SSH session or console terminal perform the following.
 
-    wget https://raw.github.com/pageauc/sonic-track/master/setup.sh
+    wget https://raw.github.com/pageauc/opencv3-setup/master/setup.sh
     chmod +x setup.sh
     ./setup.sh
 
