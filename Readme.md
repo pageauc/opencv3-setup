@@ -1,5 +1,5 @@
-# Raspberry Pi OpenCV3 3.0.0 Semi Automatic Compile from Source
-#### Whiptail menu enabled script to compile opencv3 from source for Raspberry Pi  
+# Raspberry Pi A Menu Driven OpenCV3 3.0.0 Compile from Source
+#### Whiptail menu enabled script to help compile opencv3 from source  
 
 ### Introduction
 This Bash script uses a whiptail menu to assist users who want to compile opencv 3.0.0 from source.
