@@ -163,10 +163,10 @@ a multicore Raspberry Pi.  Modify this script under
 #------------------------------------------------------------------------------
 function do_main_menu ()
 {
-  SELECTION=$(whiptail --title "sonic-track opencv 3.2.0 Install" --menu "Arrow/Enter Selects or Tab Key" 20 70 10 --cancel-button Quit --ok-button Select \
+  SELECTION=$(whiptail --title "opencv 3.2.0 Install Assist" --menu "Arrow/Enter Selects or Tab Key" 20 70 10 --cancel-button Quit --ok-button Select \
   "a " "Raspbian Jessie Update and Upgrade" \
-  "b " "OpenCV3 3.2.0 Install Build Dependencies and Download Source" \
-  "c " "OpenCV3 3.2.0 Make, Compile and Install" \
+  "b " "OpenCV 3.2.0 Install Build Dependencies and Download Source" \
+  "c " "OpenCV 3.2.0 cmake, make (compile) and make install" \
   "d " "About" \
   "q " "Quit Menu Back to Console"  3>&1 1>&2 2>&3)
 
