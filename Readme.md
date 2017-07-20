@@ -1,8 +1,8 @@
-## Raspberry Pi Menu Driven OpenCV3 3.0.0 Compile from Source Script
+## Raspberry Pi Menu Driven OpenCV3 3.2.0 Compile from Source Script
 #### Whiptail menu enabled script to help compile opencv3 from source  
 
 ### Introduction
-This Bash script uses a whiptail menu to assist users who want to compile opencv 3.0.0 from source.
+This Bash script uses a whiptail menu to assist users who want to compile opencv 3.2.0 from source.
 It will update/upgrade Raspberry Pi, Install build dependencies, download source, perform a cmake and compile source.
 Users will be prompted to review output for errors and elect to continue.  They can also repeat a particular step from
 the menu as required
@@ -29,8 +29,8 @@ From logged in RPI SSH session or console terminal perform the following.
 ### How to Run
 This is a whiptail Menu system to assist with installation of opencv3 on the latest RPI Jessie disto. I have written this menu driven
 install script called cv3-setup.sh to make compiling cv3 from source easier. Use this if you do not have opencv3 already installed.  
-cv3-setup.sh menu picks allow updating, installing dependencies, downloads, cmake, compile and make install of opencv 3.0.0.
-I tried opencv 3.2.0 but had errors so it is best to stick with 3.0.0 per this script.
+cv3-setup.sh menu picks allow updating, installing dependencies, downloads, cmake, compile and make install of opencv 3.2.0.
+I tried opencv 3.2.0 but had errors so it is best to stick with 3.2.0 per this script.
 To Run the whiptail menu setup script.  From a logged in ssh or terminal session run
 
     cd ~/opencv3-setup
@@ -38,7 +38,7 @@ To Run the whiptail menu setup script.  From a logged in ssh or terminal session
  
 You will be asked to reboot at certain steps.  
 
-More information is available here http://www.pyimagesearch.com/2015/10/26/how-to-install-opencv-3-on-raspbian-jessie/ 
+This install is based on https://github.com/Tes3awy/OpenCV-3.2.0-Compiling-on-Raspberry-Pi 
     
 Have Fun   
 Claude Pageau    
