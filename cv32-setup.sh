@@ -18,13 +18,14 @@ function do_anykey ()
             exit 1
        ;;
         * ) echo "invalid Selection"
-            exit 1 ;;
+            exit 1
+       ;;
    esac
 }
 
 function do_rpi_update ()
 {
-   cd ~/   
+   cd ~   
    # Update Raspbian to Lastest Releases
    echo "Updating Raspbian Please Wait ..."
    echo "---------------------------------"    
@@ -58,7 +59,7 @@ function do_cv3_dep ()
    cd ~/
    # Install opencv3 build dependencies
    echo "Installing opencv 3.2.0 build and run dependencies"
-   echo "---------------------------------------------"  
+   echo "--------------------------------------------------"  
    sudo apt-get install -y build-essential cmake pkg-config
    sudo apt-get install -y libjpeg-dev libtiff5-dev libjasper-dev libpng12-dev
    sudo apt-get install -y libgtk2.0-dev libgstreamer0.10-0-dbg libgstreamer0.10-0 libgstreamer0.10-dev libv4l-0 libv4l-dev
@@ -97,6 +98,7 @@ function do_cv3_install ()
    cd ~/opencv-3.2.0/
    if [ ! -d "build" ]; then
      mkdir build
+   fi
    cd build
    cmake -D CMAKE_BUILD_TYPE=RELEASE \
 	-D CMAKE_INSTALL_PREFIX=/usr/local \
@@ -104,7 +106,8 @@ function do_cv3_install ()
 	-D INSTALL_PYTHON_EXAMPLES=ON \
 	-D OPENCV_EXTRA_MODULES_PATH=~/opencv_contrib-3.2.0/modules \
 	-D BUILD_EXAMPLES=ON \
-	-D ENABLE_NEON=ON ..  
+	-D ENABLE_NEON=ON .. 
+    
     echo "---------------------------------------" 
     echo " Review cmake messages above for Errors"
     echo "---------------------------------------" 
@@ -116,41 +119,18 @@ function do_cv3_install ()
               echo "Now go for a nice long walk or binge watch Game of Thrones"      
               make -j2
               echo "------------------------------------"  
-              echo " Check if opencv 3.2 Compile Had Errors "
+              echo " Check if opencv 3.2.0 Compile Had Errors "
               echo "------------------------------------"               
-              read -p "Was Compile Successful y/n ?" choice
-              case "$choice" in            
-                y|Y ) echo "Installing opencv 3.2.0"
-                      sudo make install
-                      sudo make clean
-                      echo "Please Reboot to Complete install of opencv 3.2.0"
-                      read -p "Reboot Now? (y/n)?" choice
-                      case "$choice" in 
-                         y|Y ) echo "yes"
-                               echo "Rebooting Now"
-                               sudo reboot
-                               ;;
-                         n|N ) echo "Back To Main Menu"
-                               ;;
-                           * ) echo "invalid Selection"
-                               exit 1
-                               ;;
-                      ;;
-                n|N ) echo "Please Investigate Problem and Try Again"
-                      exit 1
-                      ;;
-                  * ) echo "invalid Selection"
-                      exit 1
-                      ;;  
-              esac                      
-            ;;
+              echo "Reboot to Complete Install of OpenCV"
+              exit 0
+              ;;
         n|N ) echo "cmake failed so Investigate Problem and Try again"
               exit 1
               ;;
           * ) echo "invalid Selection"
               exit 1
               ;;
-      esac
+    esac
 }
 
 
@@ -158,17 +138,11 @@ function do_cv3_install ()
 function do_about()
 {
   whiptail --title "About" --msgbox " \
-   sonic-track project Install Assist
+   OpenCV 3.2.0 Install Menu Assist
       written by Claude Pageau
 
-This Menu will help install opencv3 if required
-
-To Run sonic-track
-depending on how you have things configured
-Run
-
-cd ~/sonic-track
-./sonic-track.sh                    
+This Menu will help install opencv 3.2.0 if required
+You will be asked to reboot during installation
 
              Good Luck 
 \
@@ -180,11 +154,10 @@ cd ~/sonic-track
 function do_main_menu ()
 {
   SELECTION=$(whiptail --title "sonic-track opencv 3.2.0 Install" --menu "Arrow/Enter Selects or Tab Key" 20 70 10 --cancel-button Quit --ok-button Select \
-  "a " "Raspbian Jessie Update, Upgrade and rpi-update" \
+  "a " "Raspbian Jessie Update and Upgrade" \
   "b " "OpenCV3 3.2.0 Install Build Dependencies and Download Source" \
   "c " "OpenCV3 3.2.0 Make, Compile and Install" \
-  "d " "sonic-track Edit config.py Settings" \
-  "e " "About" \
+  "d " "About" \
   "q " "Quit Menu Back to Console"  3>&1 1>&2 2>&3)
 
   RET=$?
@@ -195,13 +168,10 @@ function do_main_menu ()
       a\ *) do_rpi_update ;;
       b\ *) do_cv3_dep ;;
       c\ *) do_cv3_install ;; 
-      d\ *) nano ~/sonic-track/config.py ;;
-      e\ *) do_about ;;
-      q\ *) echo "To Run sonic-track run the following commands"
-            echo ""
-            echo "cd ~/sonic-track"
-            echo "./sonic-track.sh"
-            echo ""
+      d\ *) do_about ;;
+      q\ *) echo "After OpenCV 3.2.0 Installation is Complete"
+            echo "Reboot to Finalize Install of Opencv"
+            echo "Then Test OpenCV"
             echo "Good Luck ..."
             exit 0 ;;
          *) whiptail --msgbox "Programmer error: unrecognized option" 20 60 1 ;;
