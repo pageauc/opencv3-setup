@@ -116,12 +116,18 @@ function do_cv3_install ()
     case "$choice" in
         y|Y ) echo "Compiling openCV3 ver 3.2.0"
               echo "This will take approx 3 to 4 hours to complete."
-              echo "Now go for a nice long walk or binge watch Game of Thrones"      
+              echo "Now go for a nice long walk or binge watch Game of Thrones" 
+              echo "Start make -j2  (using 2 of 4 cpu cores)"
+              echo ""
+              echo "If single core edit this script to change line 125 to remove -j2" 
+              echo "----------------------------------------------------------------"
+              read -p "Press Enter to Start Compile"             
               make -j2
-              echo "------------------------------------"  
-              echo " Check if opencv 3.2.0 Compile Had Errors "
-              echo "------------------------------------"               
-              echo "Reboot to Complete Install of OpenCV"
+              echo "--------------------------------------------"  
+              echo " Check above for opencv 3.2.0 Compile Errors"
+              echo "--------------------------------------------"               
+              echo "If OK Reboot to Complete Install of OpenCV"
+              echo "If Errors Please Investigate Problem"
               exit 0
               ;;
         n|N ) echo "cmake failed so Investigate Problem and Try again"
@@ -138,11 +144,15 @@ function do_cv3_install ()
 function do_about()
 {
   whiptail --title "About" --msgbox " \
-   OpenCV 3.2.0 Install Menu Assist
-      written by Claude Pageau
+        OpenCV 3.2.0 Install Menu Assist
+          written by Claude Pageau
 
 This Menu will help install opencv 3.2.0 if required
 You will be asked to reboot during installation
+
+Run Menu Pick Selection in order and verify successful completion
+before progressing to next step.  This install is configured for
+a multicore Raspberry Pi.  Modify this script under
 
              Good Luck 
 \
