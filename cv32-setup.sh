@@ -155,8 +155,13 @@ before progressing to next step.  This install is configured for
 a multicore Raspberry Pi make -j2.  Modify this script  at
 approx line 125 and remove -j2 after the make command.
 
+For Additional Details See https://github.com/pageauc/opencv3-setup
 
-             Good Luck 
+Script Steps Based on GitHub Repo 
+https://github.com/Tes3awy/OpenCV-3.2.0-Compiling-on-Raspberry-Pi
+
+             Good Luck
+            
 \
 " 35 70 35
 }
