@@ -144,15 +144,17 @@ function do_cv3_install ()
 function do_about()
 {
   whiptail --title "About" --msgbox " \
-        OpenCV 3.2.0 Install Menu Assist
-          written by Claude Pageau
+                OpenCV 3.2.0 Install Menu Assist
+                  written by Claude Pageau
 
 This Menu will help install opencv 3.2.0 if required
-You will be asked to reboot during installation
+You will be asked to reboot during installation.
 
-Run Menu Pick Selection in order and verify successful completion
+Run Menu Pick Selections in order and verify successful completion
 before progressing to next step.  This install is configured for
-a multicore Raspberry Pi.  Modify this script under
+a multicore Raspberry Pi make -j2.  Modify this script  at
+approx line 125 and remove -j2 after the make command.
+
 
              Good Luck 
 \
