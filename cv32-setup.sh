@@ -2,7 +2,7 @@
 # Script to assist with installing sonic-track and OpenCV3
 # If problems are encountered exit to command to try to resolve
 # Then retry menu pick again or continue to next step
-ver="ver 0.37"
+ver="ver 0.39"
 
 #------------------------------------------------------------------------------
 function do_anykey ()
@@ -119,18 +119,25 @@ function do_cv3_compile ()
     echo "---------------------------------------"
     echo "n exits to console"
     read -p "Was cmake successful y/n ?" choice
+    echo "---------------------------------------"    
     case "$choice" in
-        y|Y ) echo "NOTE"
-              echo "----"
+        y|Y ) echo "IMPORTANT"
+              echo "---------"
               echo "Compile of openCV ver 3.2.0 will take approx 3 to 4 hours ...."  
-              echo "If single core Edit this script to change line 125 make to remove -j2"
-              echo "----------------------------------------------------------------"
               echo "Once Compile is started go for a nice long walk"
               echo "or Binge watch Game of Thrones or Something Else....."
               echo ""
-              echo "Run make -j2  (using 2 of 4 cpu cores)"
-              read -p "Press Enter to Begin Compiling"
-              make -j2
+              read -p "Is this a quadcore RPI y/n" cores
+                case "$cores" in
+                   y|Y ) echo "Selected Quad Core Option"
+                         echo "Running make -j2"
+                         make -j2
+                         ;;
+                     * ) echo "Selected Single Core Option"
+                         echo "Running make" 
+                         make                   
+                         ;;                                                 
+                esac
               echo "--------------------------------------------"
               echo " Check above for Compile Errors"
               echo "--------------------------------------------"
