@@ -2,7 +2,7 @@
 # Script to assist with installing sonic-track and OpenCV3
 # If problems are encountered exit to command to try to resolve
 # Then retry menu pick again or continue to next step
-ver="ver 0.41"
+ver="ver 0.42"
 
 #------------------------------------------------------------------------------
 function do_anykey ()
@@ -15,7 +15,7 @@ function do_anykey ()
             echo "Bye"
             exit 1
             ;;
-        * ) echo "invalid Selection"
+        * ) echo "Return to Main Menu"
             ;;
    esac
 }
