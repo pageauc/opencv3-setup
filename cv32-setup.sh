@@ -98,6 +98,7 @@ function do_cv3_compile ()
    else  
      cd ~/opencv-3.2.0/ 
      mkdir build
+     cd build
    fi
    cmake -D CMAKE_BUILD_TYPE=RELEASE \
 	-D CMAKE_INSTALL_PREFIX=/usr/local \
@@ -228,12 +229,12 @@ https://github.com/Tes3awy/OpenCV-3.2.0-Compiling-on-Raspberry-Pi
 #------------------------------------------------------------------------------
 function do_main_menu ()
 {
-  SELECTION=$(whiptail --title "opencv 3.2.0 Install Assist ver 3.3" --menu "Arrow/Enter Selects or Tab Key" 20 70 10 --cancel-button Quit --ok-button Select \
+  SELECTION=$(whiptail --title "opencv 3.2.0 Install Assist ver 3.5" --menu "Arrow/Enter Selects or Tab Key" 20 70 10 --cancel-button Quit --ok-button Select \
   "a " "Raspbian Jessie Update and Upgrade" \
   "b " "OpenCV 3.2.0 Install Build Dependencies and Download Source" \
-  "c " "OpenCV 3.2.0 Run cmake and make (compile)" \
-  "d " "OpenCV 3.2.0 Run make install and Configure" \
-  "e " "OpenCV 3.2.0 Remove zip Files and Source Folders" \
+  "c " "OpenCV 3.2.0 Run cmake and make (compile Takes 3-4 hours)" \
+  "d " "OpenCV 3.2.0 Run make install" \
+  "e " "OpenCV 3.2.0 Remove Source Folders and zip Files (optional)" \
   "f " "About" \
   "q " "Quit Menu Back to Console"  3>&1 1>&2 2>&3)
 
@@ -254,7 +255,7 @@ function do_main_menu ()
             echo "      Then Test OpenCV 3.2.0"
             echo ""
             echo "If Testing is Successful"
-            echo "      You can Remove opencv zip and source folders"
+            echo "      You can Remove opencv source folders and zip files"
             echo "Good Luck ..."
             exit 0 ;;
          *) whiptail --msgbox "Programmer error: unrecognized option" 20 60 1 ;;
