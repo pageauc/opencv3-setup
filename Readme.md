@@ -1,11 +1,12 @@
-## Raspberry Pi Menu Driven OpenCV3 3.2.0 Compile from Source Script
+## Raspberry Pi Menu Driven OpenCV 3.2.0 Compile from Source Script
 #### Whiptail menu enabled script to help compile opencv3 from source  
 
 ### Introduction
 This Bash script uses a whiptail menu to assist users who want to compile opencv 3.2.0 from source.
-It will update/upgrade Raspberry Pi, Install build dependencies, download source, perform a cmake and compile source.
-Users will be prompted to review output for errors and elect to continue.  They can also repeat a particular step from
-the menu if required
+It will update/upgrade Raspberry Pi, Install build dependencies, download source and unzip, perform
+a cmake, compile source, make install and optional cleanup.  
+Users will be prompted to review output for errors and elect to continue.  They can also repeat a
+particular step from the menu if required
 
 ### How to Install
 
