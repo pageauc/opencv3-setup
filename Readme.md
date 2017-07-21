@@ -37,9 +37,10 @@ Select Menu items in order. You will be asked to review output logs for success 
 You may be asked to reboot at certain steps. After a Reboot login and run cv32-setup.sh again 
 and proceed to next menu item 
 
-This install is based on https://github.com/Tes3awy/OpenCV-3.2.0-Compiling-on-Raspberry-Pi 
+This install is based on https://github.com/Tes3awy/OpenCV-3.2.0-Compiling-on-Raspberry-Pi    
+
 Note due to system security, there are some configuration steps that must be done manually using nano.
-Please review step 14 on link above for further instructions.
+Please review Step 14 on link above for further instructions.
     
 Have Fun   
 Claude Pageau    
