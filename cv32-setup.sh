@@ -35,11 +35,12 @@ function do_rpi_update ()
    echo "---------------------------------"    
    sudo apt-get upgrade
    echo "Done Raspbian Upgrade ..."
-   echo "It is Time to Reboot after"
-   echo "updating Raspbian Jessie"
-   echo "After Reboot rerun to this script and Select"
-   echo "Menu Pick: OpenCV3 3.2.0 Install Build Dependencies and Download Source"
-   echo "-----------------------------------------------------------------------"    
+   echo ""
+   echo "After a Reboot rerun this script and Select"
+   echo "Menu Pick: OpenCV 3.2.0 Install Build Dependencies and Download Source"
+   echo "-----------------------------------------------------------------------"
+   echo "If there were Significant Changes then Reboot Recommended"
+   echo ""   
    read -p "Reboot Now? (y/n)?" choice
    case "$choice" in 
      y|Y ) echo "yes"
@@ -77,24 +78,22 @@ function do_cv3_dep ()
    echo "Done Install of Build Essentials and Dependencies ..."
    echo "-----------------------------------------------------"    
    echo "Download and unzip opencv 3.2.0 Source Files"
-   echo "-------------------------------"    
+   echo "-----------------------------------------------------"    
    wget -O opencv.zip https://github.com/Itseez/opencv/archive/3.2.0.zip
    unzip opencv.zip
    wget -O opencv_contrib.zip https://github.com/Itseez/opencv_contrib/archive/3.2.0.zip   
    unzip opencv_contrib.zip   
    echo "Done Install of Build Essentials, Dependencies and OpenCV 3.2.0 Source."
-   echo "Next Step Select Menu Pick:  OpenCV3 3.2.0 Make, Compile and Install"
-   echo "--------------------------------------------------------------------"       
+   echo "Next Step Select Menu Pick:  OpenCV3 3.2.0 Make, Compile and Install"    
    do_anykey
 }
 
 function do_cv3_install ()
 {
    cd ~
-   echo "cmake prior to compiling opencv 3.0.0"
-   echo "-------------------------------------"
+   echo "Running cmake prior to compiling opencv 3.2.0"
+   echo "---------------------------------------------"
    echo "This will take a few minutes ...."   
-   # Compile opencv3 for RPI
    cd ~/opencv-3.2.0/
    if [ ! -d "build" ]; then
      mkdir build
@@ -114,27 +113,28 @@ function do_cv3_install ()
     echo "n exits to console"
     read -p "Was cmake successful y/n ?" choice
     case "$choice" in
-        y|Y ) echo "Compiling openCV3 ver 3.2.0"
-              echo "This will take approx 3 to 4 hours to complete."
-              echo "Now go for a nice long walk or binge watch Game of Thrones" 
-              echo "Start make -j2  (using 2 of 4 cpu cores)"
-              echo ""
-              echo "If single core edit this script to change line 125 to remove -j2" 
+        y|Y ) echo "Compile of openCV ver 3.2.0 will take approx 3 to 4 hours ...."
+              echo "NOTE"
+              echo "If single core Edit this script to change line 125 to remove -j2" 
               echo "----------------------------------------------------------------"
-              read -p "Press Enter to Start Compile"             
+              echo "Once Compile is started go for a nice long walk"
+              echo "or Binge watch Game of Thrones or Something Else....."
+              echo ""              
+              echo "Run make -j2  (using 2 of 4 cpu cores)"
+              read -p "Press Enter to Begin Compiling"             
               make -j2
               echo "--------------------------------------------"  
-              echo " Check above for opencv 3.2.0 Compile Errors"
+              echo " Check above for Compile Errors"
               echo "--------------------------------------------"               
               echo "If OK Reboot to Complete Install of OpenCV"
               echo "If Errors Please Investigate Problem"
-              exit 0
+              do_anykey
               ;;
-        n|N ) echo "cmake failed so Investigate Problem and Try again"
+        n|N ) echo "If cmake Failed. Investigate Problem and Try again"
               exit 1
               ;;
           * ) echo "invalid Selection"
-              exit 1
+              do_anykey
               ;;
     esac
 }
