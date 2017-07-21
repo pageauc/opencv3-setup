@@ -7,11 +7,11 @@ ver="ver 0.41"
 #------------------------------------------------------------------------------
 function do_anykey ()
 {
-   read -p "m)enu e)xit ?" choice
+   echo "Press Enter to Return to Main Menu"
+   echo "or e)xit to Exit to Terminal session" 
+   read -p "Press (Enter/e)? " choice
    case "$choice" in
-      m|M ) echo "Return to Main Menu"
-            ;;
-      e|E ) echo "Install Aborted. Exit Menu"
+      e|E ) echo "User Exited Menu to Terminal."
             echo "Bye"
             exit 1
             ;;
