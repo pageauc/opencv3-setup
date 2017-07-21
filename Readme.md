@@ -41,7 +41,16 @@ This install is based on https://github.com/Tes3awy/OpenCV-3.2.0-Compiling-on-Ra
 
 Note due to system security, there are some configuration steps that must be done manually using nano.
 Please review Step 14 on link above for further instructions.
-    
+ 
+### Prerequisites
+
+* RPI Connection to Internet    
+* Reasonably Recent Jessie Full Operating System Installed   
+* Sufficient Free Disk Space > 1 GB  df -h to check    
+* Determine if RPI is a Quadcore cpu  cat /proc/cpuinfo        
+* Basic knowledge of unix commands   
+* Patience since this will take a few hours    
+ 
 Have Fun   
 Claude Pageau    
 YouTube Channel https://www.youtube.com/user/pageaucp   
