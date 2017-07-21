@@ -2,7 +2,7 @@
 # Script to assist with installing sonic-track and OpenCV3
 # If problems are encountered exit to command to try to resolve
 # Then retry menu pick again or continue to next step
-ver="ver 0.39"
+ver="ver 0.40"
 
 #------------------------------------------------------------------------------
 function do_anykey ()
@@ -39,7 +39,7 @@ function do_rpi_update ()
    echo "-----------------------------------------------------------------------"
    echo "If there were Significant Changes then Reboot Recommended"
    echo ""
-   read -p "Reboot Now? (y/n)?" choice
+   read -p "Reboot Now? (y/n)? " choice
    case "$choice" in
      y|Y ) echo "yes"
            echo "Rebooting Now"
@@ -100,7 +100,9 @@ function do_cv3_compile ()
      mkdir build
      cd build
    fi
-   echo "Running cmake This will take a few minutes ...."     
+   echo "Running cmake This will take a few minutes ...."  
+   echo "Note: at configuring done step you may have to wait a while"
+   echo "so be patient ...."   
    cmake -D CMAKE_BUILD_TYPE=RELEASE \
 	-D CMAKE_INSTALL_PREFIX=/usr/local \
 	-D INSTALL_C_EXAMPLES=OFF \
@@ -113,7 +115,7 @@ function do_cv3_compile ()
     echo " Review cmake messages above for Errors"
     echo "---------------------------------------"
     echo "n exits to console"
-    read -p "Was cmake successful y/n ?" choice
+    read -p "Was cmake successful (y/n)? " choice
     echo "---------------------------------------"    
     case "$choice" in
         y|Y ) echo "IMPORTANT"
@@ -122,7 +124,7 @@ function do_cv3_compile ()
               echo "Once Compile is started go for a nice long walk"
               echo "or Binge watch Game of Thrones or Something Else....."
               echo ""
-              read -p "Is this a quadcore RPI y/n" cores
+              read -p "Is this a quadcore RPI (y/n)? " cores
                 case "$cores" in
                    y|Y ) echo "Selected Quad Core Option"
                          echo "Running make -j2"
@@ -162,7 +164,7 @@ function do_cv3_install ()
       sudo ldconfig
       echo "Reboot to Complete Install of OpenCV 3.2.0"
       echo ""
-      read -p "Reboot Now? (y/n)?" choice
+      read -p "Reboot Now? (y/n)? " choice
       case "$choice" in
          y|Y ) echo "yes"
                echo "Rebooting Now"
@@ -188,7 +190,7 @@ function do_cv3_cleanup ()
     echo "------------------------------------------"
     echo "Remove OpenCV 3.2.0 Source Folders and zip files (optional)"
     echo ""
-    read -p "Remove Now? (y/n)?" choice
+    read -p "Remove Now? (y/n)? " choice
     case "$choice" in
        y|Y ) echo "yes"
              cd ~
