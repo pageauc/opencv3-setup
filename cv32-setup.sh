@@ -90,22 +90,17 @@ function do_cv3_dep ()
 function do_cv3_compile ()
 {
    cd ~
-   if [ ! -d "opencv-3.2.0/build" ] ; then
-      echo "Could Not Find Directory /home/pi/opencv-3.2.0/build"
-      echo "Retry Menu Pick: Install Build Dependencies and Download Source"
-      do_anykey
-      return 1
-   fi
    echo "Running cmake prior to compiling opencv 3.2.0"
    echo "---------------------------------------------"
-   echo "This will take a few minutes ...."   
    if [ -d "~/opencv-3.2.0/build" ] ; then
      cd ~/opencv-3.2.0/build 
-   else  
+   else 
+     echo "Create build directory"
      cd ~/opencv-3.2.0/ 
      mkdir build
      cd build
    fi
+   echo "Running cmake This will take a few minutes ...."     
    cmake -D CMAKE_BUILD_TYPE=RELEASE \
 	-D CMAKE_INSTALL_PREFIX=/usr/local \
 	-D INSTALL_C_EXAMPLES=OFF \
