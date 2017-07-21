@@ -2,7 +2,7 @@
 # Script to assist with installing sonic-track and OpenCV3
 # If problems are encountered exit to command to try to resolve
 # Then retry menu pick again or continue to next step
-ver="ver 0.42"
+ver="ver 0.43"
 
 #------------------------------------------------------------------------------
 function do_anykey ()
@@ -92,17 +92,17 @@ function do_cv3_compile ()
    cd ~
    echo "Running cmake prior to compiling opencv 3.2.0"
    echo "---------------------------------------------"
-   if [ -d "~/opencv-3.2.0/build" ] ; then
-     cd ~/opencv-3.2.0/build 
-   else 
-     echo "Create build directory"
-     cd ~/opencv-3.2.0/ 
-     mkdir build
-     cd build
+   build_dir='/home/pi/opencv-3.2.0/build/'
+   if [ ! -d "$build_dir" ] ; then
+     echo "Create build directory $build_dir"
+     mkdir $build_dir
    fi
-   echo "Running cmake This will take a few minutes ...."  
+   cd $build_dir  
+   echo "cmake Will Take a Few minutes ...."  
    echo "Note: At configuring done step you may have to wait a while"
-   echo "so be patient ...." 
+   echo "so be patient ...."
+   echo "---------------------------------------------"  
+   read -p "Press Enter to Continue"
    
    cmake -D CMAKE_BUILD_TYPE=RELEASE \
 	-D CMAKE_INSTALL_PREFIX=/usr/local \
@@ -117,7 +117,7 @@ function do_cv3_compile ()
     echo "---------------------------------------"
     echo "y) Starts compile of opencv 3.2.0 from source"
     echo "n) Does a make clean ready for next cmake attempt, once problem resolved."
-    read -p "Was cmake successful (y/n)? " choice
+    read -p "Was cmake Successful (y/n)? " choice
     echo "---------------------------------------"    
     case "$choice" in
         y|Y ) echo "IMPORTANT"
