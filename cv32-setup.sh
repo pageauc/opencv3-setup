@@ -2,7 +2,7 @@
 # Script to assist with installing sonic-track and OpenCV3
 # If problems are encountered exit to command to try to resolve
 # Then retry menu pick again or continue to next step
-ver="ver 0.36"
+ver="ver 0.37"
 
 #------------------------------------------------------------------------------
 function do_anykey ()
@@ -90,6 +90,12 @@ function do_cv3_dep ()
 function do_cv3_compile ()
 {
    cd ~
+   if [ ! -d "opencv-3.2.0/build" ] ; then
+      echo "Could Not Find Directory /home/pi/opencv-3.2.0/build"
+      echo "Retry Menu Pick: Install Build Dependencies and Download Source"
+      do_anykey
+      return 1
+   fi
    echo "Running cmake prior to compiling opencv 3.2.0"
    echo "---------------------------------------------"
    echo "This will take a few minutes ...."   
@@ -184,9 +190,10 @@ function do_cv3_cleanup ()
     case "$choice" in
        y|Y ) echo "yes"
              cd ~
-             echo "Removing zip Files"
+             echo "Remove zip Files"
              rm open*zip
-             echo "Removing OpenCV 3.2.0 Install Folders"
+             rm get-pip.py
+             echo "Remove OpenCV 3.2.0 Install Folders"
              sudo rm -R opencv-3.2.0
              sudo rm -R opencv_contrib-3.2.0
              echo "Done Removal of opencv-3.2.0 Source Folders and zip files .."
