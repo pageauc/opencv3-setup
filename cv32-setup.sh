@@ -2,7 +2,7 @@
 # Script to assist with installing sonic-track and OpenCV3
 # If problems are encountered exit to command to try to resolve
 # Then retry menu pick again or continue to next step
-# version 0.33
+ver="ver 0.36"
 
 #------------------------------------------------------------------------------
 function do_anykey ()
@@ -82,7 +82,7 @@ function do_cv3_dep ()
    wget -O opencv_contrib.zip https://github.com/Itseez/opencv_contrib/archive/3.2.0.zip
    unzip opencv_contrib.zip
    echo "Done Install of Build Essentials, Dependencies and OpenCV 3.2.0 Source."
-   echo "Next Step Select Menu Pick:  OpenCV3 3.2.0 Make, Compile and Install"
+   echo "Next Step Select Menu Pick:  OpenCV3 3.2.0 Run cmake and make"
    do_anykey
 }
 
@@ -129,7 +129,7 @@ function do_cv3_compile ()
               echo " Check above for Compile Errors"
               echo "--------------------------------------------"
               echo "If Errors Please Investigate Problem"
-              echo "If OK Select Menu Pick: make install"
+              echo "If OK Select Menu Pick: Run make install"
               do_anykey
               ;;
         n|N ) echo "If cmake Failed. Investigate Problem and Try again"
@@ -150,28 +150,28 @@ function do_cv3_install ()
     echo "---------------------------------"
     if [ -d "/home/pi/opencv-3.2.0/build" ] ; then
       cd ~/opencv-3.2.0/build
+      sudo make install
+      sudo ldconfig
+      echo "Reboot to Complete Install of OpenCV 3.2.0"
+      echo ""
+      read -p "Reboot Now? (y/n)?" choice
+      case "$choice" in
+         y|Y ) echo "yes"
+               echo "Rebooting Now"
+               sudo reboot
+               ;;
+         n|N ) echo "Back To Main Menu"
+               ;;
+           * ) echo "invalid Selection"
+               ;;
+      esac            
     else
-      echo "Error- Directory Not Found  ~/opencv-3.2.0/build"
+      echo "Error- Directory Not Found  /home/pi/opencv-3.2.0/build"
       echo "Go Back to Earlier Menu Step"
       echo "----------------------------"
       do_anykey
       return 1
     fi
-    sudo make install
-    sudo ldconfig
-    echo "Reboot to Complete Install of OpenCV 3.2.0"
-    echo ""
-    read -p "Reboot Now? (y/n)?" choice
-    case "$choice" in
-       y|Y ) echo "yes"
-             echo "Rebooting Now"
-             sudo reboot
-             ;;
-       n|N ) echo "Back To Main Menu"
-             ;;
-         * ) echo "invalid Selection"
-             ;;
-   esac
 }
 
 #------------------------------------------------------------------------------
@@ -229,7 +229,7 @@ https://github.com/Tes3awy/OpenCV-3.2.0-Compiling-on-Raspberry-Pi
 #------------------------------------------------------------------------------
 function do_main_menu ()
 {
-  SELECTION=$(whiptail --title "opencv 3.2.0 Install Assist ver 3.5" --menu "Arrow/Enter Selects or Tab Key" 20 70 10 --cancel-button Quit --ok-button Select \
+  SELECTION=$(whiptail --title "opencv 3.2.0 Install Assist $ver" --menu "Arrow/Enter Selects or Tab Key" 20 70 10 --cancel-button Quit --ok-button Select \
   "a " "Raspbian Jessie Update and Upgrade" \
   "b " "OpenCV 3.2.0 Install Build Dependencies and Download Source" \
   "c " "OpenCV 3.2.0 Run cmake and make (compile Takes 3-4 hours)" \
