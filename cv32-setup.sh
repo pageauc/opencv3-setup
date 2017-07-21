@@ -2,7 +2,7 @@
 # Script to assist with installing sonic-track and OpenCV3
 # If problems are encountered exit to command to try to resolve
 # Then retry menu pick again or continue to next step
-# version 0.32
+# version 0.33
 
 #------------------------------------------------------------------------------
 function do_anykey ()
@@ -92,12 +92,13 @@ function do_cv3_compile ()
    cd ~
    echo "Running cmake prior to compiling opencv 3.2.0"
    echo "---------------------------------------------"
-   echo "This will take a few minutes ...."
-   cd ~/opencv-3.2.0/
-   if [ ! -d "build" ]; then
+   echo "This will take a few minutes ...."   
+   if [ -d "~/opencv-3.2.0/build" ] ; then
+     cd ~/opencv-3.2.0/build 
+   else  
+     cd ~/opencv-3.2.0/ 
      mkdir build
    fi
-   cd build
    cmake -D CMAKE_BUILD_TYPE=RELEASE \
 	-D CMAKE_INSTALL_PREFIX=/usr/local \
 	-D INSTALL_C_EXAMPLES=OFF \
@@ -112,9 +113,10 @@ function do_cv3_compile ()
     echo "n exits to console"
     read -p "Was cmake successful y/n ?" choice
     case "$choice" in
-        y|Y ) echo "Compile of openCV ver 3.2.0 will take approx 3 to 4 hours ...."
-              echo "NOTE"
-              echo "If single core Edit this script to change line 125 to remove -j2"
+        y|Y ) echo "NOTE"
+              echo "----"
+              echo "Compile of openCV ver 3.2.0 will take approx 3 to 4 hours ...."  
+              echo "If single core Edit this script to change line 125 make to remove -j2"
               echo "----------------------------------------------------------------"
               echo "Once Compile is started go for a nice long walk"
               echo "or Binge watch Game of Thrones or Something Else....."
@@ -132,7 +134,7 @@ function do_cv3_compile ()
         n|N ) echo "If cmake Failed. Investigate Problem and Try again"
               sudo make clean
               echo "Done make clean"
-              echo "Ready to Try full compile once problem resolved"
+              echo "Ready to Try full compile once problem resolved."
               do_anykey
               ;;
           * ) echo "invalid Selection"
@@ -145,31 +147,17 @@ function do_cv3_install ()
 {
     echo "Perform OpenCV 3.2.0 make install"
     echo "---------------------------------"
+    if [ -d "/home/pi/opencv-3.2.0/build" ] ; then
+      cd ~/opencv-3.2.0/build
+    else
+      echo "Error- Directory Not Found  ~/opencv-3.2.0/build"
+      echo "Go Back to Earlier Menu Step"
+      echo "----------------------------"
+      do_anykey
+      return 1
+    fi
     sudo make install
     sudo ldconfig
-    if grep -i "/usr/local/lib" /etc/ld.so.conf.d/opencv.conf
-    then
-      echo "Found Entry /usr/local/bin"
-      echo "In File /etc/ld.so.conf.d/opencv.conf"
-    else
-      echo "Inserting Entry /usr/local/lib"
-      echo "into File /etc/ld.so.conf.d/opencv.conf"
-      sudo echo "/usr/local/lib"  >> /etc/ld.so.conf.d/opencv.conf
-      sudo echo " " >> /etc/ld.so.conf.d/opencv.conf
-      echo "Done Config of /etc/ld.so.conf.d/opencv.conf File"
-    fi
-    sudo ldconfig
-    if grep -i "pkgconfig" /etc/bash.bashrc
-    then
-      echo "Found Entry pkgconfig"
-      echo "In File /etc/ld.so.conf.d/opencv.conf"
-    else
-      echo "Inserting Entry /usr/local/lib"
-      echo "into File /etc/ld.so.conf.d/opencv.conf"
-      sudo echo 'PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig' >> /etc/bash.bashrc
-      sudo echo "export PKG_CONFIG_PATH"  >> /etc/bash.bashrc
-      echo "Done Config of /etc/bash.bashrc File" 
-    fi
     echo "Reboot to Complete Install of OpenCV 3.2.0"
     echo ""
     read -p "Reboot Now? (y/n)?" choice
@@ -189,7 +177,7 @@ function do_cv3_install ()
 function do_cv3_cleanup ()
 {
     echo "------------------------------------------"
-    echo "Remove OpenCV 3.2.0 zip and source Folders"
+    echo "Remove OpenCV 3.2.0 Source Folders and zip files (optional)"
     echo ""
     read -p "Remove Now? (y/n)?" choice
     case "$choice" in
@@ -200,7 +188,7 @@ function do_cv3_cleanup ()
              echo "Removing OpenCV 3.2.0 Install Folders"
              sudo rm -R opencv-3.2.0
              sudo rm -R opencv_contrib-3.2.0
-             echo "Done Cleanup..."
+             echo "Done Removal of opencv-3.2.0 Source Folders and zip files .."
              do_anykey
              ;;
        n|N ) echo "Back To Main Menu"
@@ -237,11 +225,10 @@ https://github.com/Tes3awy/OpenCV-3.2.0-Compiling-on-Raspberry-Pi
 " 35 70 35
 }
 
-
 #------------------------------------------------------------------------------
 function do_main_menu ()
 {
-  SELECTION=$(whiptail --title "opencv 3.2.0 Install Assist" --menu "Arrow/Enter Selects or Tab Key" 20 70 10 --cancel-button Quit --ok-button Select \
+  SELECTION=$(whiptail --title "opencv 3.2.0 Install Assist ver 3.3" --menu "Arrow/Enter Selects or Tab Key" 20 70 10 --cancel-button Quit --ok-button Select \
   "a " "Raspbian Jessie Update and Upgrade" \
   "b " "OpenCV 3.2.0 Install Build Dependencies and Download Source" \
   "c " "OpenCV 3.2.0 Run cmake and make (compile)" \
@@ -261,9 +248,13 @@ function do_main_menu ()
       d\ *) do_cv3_install ;;
       e\ *) do_cv3_cleanup ;;
       f\ *) do_about ;;
-      q\ *) echo "After OpenCV 3.2.0 Installation is Complete"
-            echo "Reboot to Finalize Install of Opencv"
-            echo "Then Test OpenCV"
+      q\ *) echo "NOTE"
+            echo "After OpenCV 3.2.0 Installation is Complete"
+            echo "      Reboot to Finalize Install"
+            echo "      Then Test OpenCV 3.2.0"
+            echo ""
+            echo "If Testing is Successful"
+            echo "      You can Remove opencv zip and source folders"
             echo "Good Luck ..."
             exit 0 ;;
          *) whiptail --msgbox "Programmer error: unrecognized option" 20 60 1 ;;
