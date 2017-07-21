@@ -46,9 +46,9 @@ Please review Step 14 on link above for further instructions.
 
 * RPI Connection to Internet    
 * Reasonably Recent Jessie Full Operating System Installed   
-* Sufficient Free Disk Space > 1 GB  df -h to check    
+* Sufficient Free Disk Space > 3 GB  df -h to check    
 * Determine if RPI is a Quadcore cpu  cat /proc/cpuinfo        
-* Basic knowledge of unix commands   
+* Basic knowledge of unix terminal commands   
 * Patience since this will take a few hours    
  
 Have Fun   
