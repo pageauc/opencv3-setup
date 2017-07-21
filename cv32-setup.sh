@@ -2,7 +2,7 @@
 # Script to assist with installing sonic-track and OpenCV3
 # If problems are encountered exit to command to try to resolve
 # Then retry menu pick again or continue to next step
-ver="ver 0.40"
+ver="ver 0.41"
 
 #------------------------------------------------------------------------------
 function do_anykey ()
@@ -101,8 +101,9 @@ function do_cv3_compile ()
      cd build
    fi
    echo "Running cmake This will take a few minutes ...."  
-   echo "Note: at configuring done step you may have to wait a while"
-   echo "so be patient ...."   
+   echo "Note: At configuring done step you may have to wait a while"
+   echo "so be patient ...." 
+   
    cmake -D CMAKE_BUILD_TYPE=RELEASE \
 	-D CMAKE_INSTALL_PREFIX=/usr/local \
 	-D INSTALL_C_EXAMPLES=OFF \
@@ -114,7 +115,8 @@ function do_cv3_compile ()
     echo "---------------------------------------"
     echo " Review cmake messages above for Errors"
     echo "---------------------------------------"
-    echo "n exits to console"
+    echo "y) Starts compile of opencv 3.2.0 from source"
+    echo "n) Does a make clean ready for next cmake attempt, once problem resolved."
     read -p "Was cmake successful (y/n)? " choice
     echo "---------------------------------------"    
     case "$choice" in
