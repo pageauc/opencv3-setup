@@ -11,8 +11,8 @@ particular step from the menu if required
 ### How to Install
 
 #### Quick Install   
-Easy Install of sonic-track onto a Raspberry Pi Computer with latest Raspbian.
-This is a whiptail menu system that allows install of opencv3 if required 
+Easy Install of opencv3-setup onto a Raspberry Pi Computer with Recent Raspbian Jessie Build.
+This is a whiptail menu system that allows install of opencv 3.2.0
 
     curl -L https://raw.github.com/pageauc/opencv3-setup/master/setup.sh | bash
 
