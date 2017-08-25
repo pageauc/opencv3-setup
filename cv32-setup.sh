@@ -126,17 +126,7 @@ function do_cv3_compile ()
               echo "Once Compile is started go for a nice long walk"
               echo "or Binge watch Game of Thrones or Something Else....."
               echo ""
-              read -p "Is this a quadcore RPI (y/n)? " cores
-                case "$cores" in
-                   y|Y ) echo "Selected Quad Core Option"
-                         echo "Running make -j2"
-                         make -j2
-                         ;;
-                     * ) echo "Selected Single Core Option"
-                         echo "Running make" 
-                         make                   
-                         ;;                                                 
-                esac
+              make -j1
               echo "--------------------------------------------"
               echo " Check above for Compile Errors"
               echo "--------------------------------------------"
