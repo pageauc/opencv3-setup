@@ -2,13 +2,20 @@
 # Script to assist with installing sonic-track and OpenCV3
 # If problems are encountered exit to command to try to resolve
 # Then retry menu pick again or continue to next step
-ver="ver 0.43"
+ver="ver 0.44"
+
+install_dir='/home/pi/tmp_cv3'    # Working folder for Download/Compile of opencv files
+                                  # Note Use symbolic link to external drive mnt if sd card too small
+if [ ! -d $install_dir ] ; then
+    echo "Create dir $install_dir"
+    mkdir $install_dir
+fi
 
 #------------------------------------------------------------------------------
 function do_anykey ()
 {
    echo "Press Enter to Return to Main Menu"
-   echo "or e)xit to Exit to Terminal session" 
+   echo "or e)xit to Exit to Terminal session"
    read -p "Press (Enter/e)? " choice
    case "$choice" in
       e|E ) echo "User Exited Menu to Terminal."
@@ -23,7 +30,7 @@ function do_anykey ()
 #------------------------------------------------------------------------------
 function do_rpi_update ()
 {
-   cd ~
+   cd $install_dir
    # Update Raspbian to Lastest Releases
    echo "Updating Raspbian Please Wait ..."
    echo "---------------------------------"
@@ -55,7 +62,7 @@ function do_rpi_update ()
 #------------------------------------------------------------------------------
 function do_cv3_dep ()
 {
-   cd ~/
+   cd $install_dir
    # Install opencv3 build dependencies
    echo "Installing opencv 3.2.0 build and run dependencies"
    echo "--------------------------------------------------"
@@ -89,26 +96,26 @@ function do_cv3_dep ()
 #------------------------------------------------------------------------------
 function do_cv3_compile ()
 {
-   cd ~
+   cd $install_dir
    echo "Running cmake prior to compiling opencv 3.2.0"
    echo "---------------------------------------------"
-   build_dir='/home/pi/opencv-3.2.0/build/'
+   build_dir=$install_dir/opencv-3.2.0/build
    if [ ! -d "$build_dir" ] ; then
      echo "Create build directory $build_dir"
      mkdir $build_dir
    fi
-   cd $build_dir  
-   echo "cmake Will Take a Few minutes ...."  
+   cd $build_dir
+   echo "cmake Will Take a Few minutes ...."
    echo "Note: At configuring done step you may have to wait a while"
    echo "so be patient ...."
-   echo "---------------------------------------------"  
+   echo "---------------------------------------------"
    read -p "Press Enter to Continue"
-   
+
    cmake -D CMAKE_BUILD_TYPE=RELEASE \
 	-D CMAKE_INSTALL_PREFIX=/usr/local \
 	-D INSTALL_C_EXAMPLES=OFF \
 	-D INSTALL_PYTHON_EXAMPLES=ON \
-	-D OPENCV_EXTRA_MODULES_PATH=~/opencv_contrib-3.2.0/modules \
+	-D OPENCV_EXTRA_MODULES_PATH=$install_dir/opencv_contrib-3.2.0/modules \
 	-D BUILD_EXAMPLES=ON \
 	-D ENABLE_NEON=ON ..
 
@@ -118,11 +125,11 @@ function do_cv3_compile ()
     echo "y) Starts compile of opencv 3.2.0 from source"
     echo "n) Does a make clean ready for next cmake attempt, once problem resolved."
     read -p "Was cmake Successful (y/n)? " choice
-    echo "---------------------------------------"    
+    echo "---------------------------------------"
     case "$choice" in
         y|Y ) echo "IMPORTANT"
               echo "---------"
-              echo "Compile of openCV ver 3.2.0 will take approx 3 to 4 hours ...."  
+              echo "Compile of openCV ver 3.2.0 will take approx 3 to 4 hours ...."
               echo "Once Compile is started go for a nice long walk"
               echo "or Binge watch Game of Thrones or Something Else....."
               echo ""
@@ -150,8 +157,8 @@ function do_cv3_install ()
 {
     echo "Perform OpenCV 3.2.0 make install"
     echo "---------------------------------"
-    if [ -d "/home/pi/opencv-3.2.0/build" ] ; then
-      cd ~/opencv-3.2.0/build
+    if [ -d "$install_dir/opencv-3.2.0/build" ] ; then
+      cd $install_dir/opencv-3.2.0/build
       sudo make install
       sudo ldconfig
       echo "Reboot to Complete Install of OpenCV 3.2.0"
@@ -166,7 +173,7 @@ function do_cv3_install ()
                ;;
            * ) echo "invalid Selection"
                ;;
-      esac            
+      esac
     else
       echo "Error- Directory Not Found  /home/pi/opencv-3.2.0/build"
       echo "Go Back to Earlier Menu Step"
@@ -185,7 +192,7 @@ function do_cv3_cleanup ()
     read -p "Remove Now? (y/n)? " choice
     case "$choice" in
        y|Y ) echo "yes"
-             cd ~
+             cd $install_dir
              echo "Remove zip Files"
              rm open*zip
              rm get-pip.py

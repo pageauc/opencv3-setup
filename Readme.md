@@ -29,6 +29,22 @@ From logged in RPI SSH session or console terminal perform the following.
 
 ### How to Run Menu
 
+A temporary working folder will be created to store the downloaded opencv
+and source,build files. The Default location is /home/pi/tmp_cv3.  If there is limited space
+on the Raspbian SD card you may want to create a symoblic link to an external drive
+or memory stick.  Then edit(nano) opencv3-setup.sh and change the install_dir
+variable to point to the symbolic link for the external storage device. 
+
+Sample commands to use an external ntfs usb hard drive.
+
+    cd ~
+    sudo apt-get install ntfs-3g   # Make sure ntfs support installed
+    sudo fdisk -l     # will list drive if installed
+    mkdir mnt
+    sudo mount -t ntfs-3g /dev/sda1 /home/pi/mnt
+    mkdir /home/pi/mnt/tmp_cv3
+    ln -s /home/pi/mnt/tmp_cv3 tmp_cv3
+
 To Run the whiptail menu setup script.  From a logged in ssh or terminal session run
 
     cd ~/opencv3-setup
