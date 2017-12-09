@@ -63,7 +63,7 @@ Please review Step 14 on link above for further instructions.
 
 * RPI Connection to Internet    
 * Reasonably Recent Jessie Full Operating System Installed   
-* Sufficient Free Disk Space > 3 GB  df -h to check    
+* Sufficient Free Disk Space > 3 GB  df -h to check. To Free disk space see [How to Free Space on Raspbian](http://raspi.tv/2016/how-to-free-up-some-space-on-your-raspbian-sd-card-remove-wolfram-libreoffice)  
 * Determine if RPI is a Quadcore cpu  cat /proc/cpuinfo        
 * Basic knowledge of unix terminal commands   
 * Patience since this will take a few hours    
