@@ -2,7 +2,7 @@
 # Script to assist with installing OpenCV3
 # If problems are encountered exit to command to try to resolve
 # Then retry menu pick again or continue to next step
-ver="ver 0.50"
+ver="ver 0.51"
 
 install_dir='/home/pi/tmp_cv3'    # Working folder for Download/Compile of opencv files
                                   # Note Use symbolic link to external drive mnt if sd card too small
@@ -94,7 +94,7 @@ function do_cv3_dep ()
    sudo apt-get install -y default-jdk ant
    sudo apt-get install -y libgtkglext1-dev
    sudo apt-get install -y v4l-utils
-   sudo apt-get install -y gphoto2 
+   sudo apt-get install -y gphoto2
    sudo apt-get -y autoremove
    wget https://bootstrap.pypa.io/get-pip.py
    sudo python get-pip.py
@@ -213,13 +213,9 @@ function do_cv3_cleanup ()
     case "$choice" in
        y|Y ) echo "yes"
              cd $install_dir
-             echo "Remove zip Files"
-             rm open*zip
-             rm get-pip.py
-             echo "Remove OpenCV 3.2.0 Install Folders"
-             sudo rm -R opencv-3.2.0
-             sudo rm -R opencv_contrib-3.2.0
-             echo "Done Removal of opencv-3.2.0 Source Folders and zip files .."
+             cd ..
+             sudo rm -R $install_dir
+             echo "Done Removing $install_dir Source Folders and zip files .."
              do_anykey
              ;;
        n|N ) echo "Back To Main Menu"

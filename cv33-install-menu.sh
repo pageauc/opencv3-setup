@@ -2,7 +2,7 @@
 # Script to assist with installing OpenCV3
 # If problems are encountered exit to command to try to resolve
 # Then retry menu pick again or continue to next step
-ver="ver 0.50"
+ver="ver 0.51"
 
 install_dir='/home/pi/tmp_cv3'    # Working folder for Download/Compile of opencv files
                                   # Note Use symbolic link to external drive mnt if sd card too small
@@ -215,13 +215,9 @@ function do_cv3_cleanup ()
     case "$choice" in
        y|Y ) echo "yes"
              cd $install_dir
-             echo "Remove zip Files"
-             rm open*zip
-             rm get-pip.py
-             echo "Remove OpenCV 3.3.0 Install Folders"
-             sudo rm -R opencv-3.3.0
-             sudo rm -R opencv_contrib-3.3.0
-             echo "Done Removal of opencv-3.3.0 Source Folders and zip files .."
+             cd ..
+             sudo rm -R $install_dir
+             echo "Done Removing $install_dir Source Folders and zip files .."
              do_anykey
              ;;
        n|N ) echo "Back To Main Menu"
