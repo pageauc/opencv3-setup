@@ -34,11 +34,12 @@ function do_rpi_update ()
    # Update Raspbian to Lastest Releases
    echo "Updating Raspbian Please Wait ..."
    echo "---------------------------------"
-   sudo apt-get update
+   sudo apt-get -y update
    echo "Done Raspbian Update ...."
    echo "Upgrading Raspbian Please Wait ..."
    echo "---------------------------------"
-   sudo apt-get upgrade
+   sudo apt-get -y upgrade
+   sudo apt-get -y autoremove
    echo "Done Raspbian Upgrade ..."
    echo ""
    echo "After a Reboot rerun this script and Select"
@@ -93,6 +94,8 @@ function do_cv3_dep ()
    sudo apt-get install -y default-jdk ant
    sudo apt-get install -y libgtkglext1-dev
    sudo apt-get install -y v4l-utils
+   sudo apt-get install -y gphoto2 
+   sudo apt-get -y autoremove
    wget https://bootstrap.pypa.io/get-pip.py
    sudo python get-pip.py
    sudo apt-get install -y python2.7-dev

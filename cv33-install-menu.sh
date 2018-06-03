@@ -34,11 +34,12 @@ function do_rpi_update ()
    # Update Raspbian to Lastest Releases
    echo "Updating Raspbian Please Wait ..."
    echo "---------------------------------"
-   sudo apt-get update
+   sudo apt-get -y update
    echo "Done Raspbian Update ...."
    echo "Upgrading Raspbian Please Wait ..."
    echo "---------------------------------"
-   sudo apt-get upgrade
+   sudo apt-get -y upgrade
+   sudo apt-get -y autoremove
    echo "Done Raspbian Upgrade ..."
    echo ""
    echo "After a Reboot rerun this script and Select"
