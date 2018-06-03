@@ -1,6 +1,6 @@
 #!/bin/bash
 # Convenient opencv3 install script written by Claude Pageau 1-Jul-2016
-ver="0.50"
+ver="0.51"
 DEST_DIR='opencv3-setup'  # Default folder install location
 
 cd ~
@@ -36,13 +36,18 @@ echo "Done Download
 
 chmod +x *sh
 
+# Delete existing setup.sh and Force running setup from github repo curl command
+if [ -f "setup.sh" ] ; then  
+    rm setup.sh
+fi
+
 echo "
 Done Permissions
 -------------------------------------------------------------
 To Run Appropiate OpenCV3 Menu Install Script
 
 WARNING -  It is recommended you have a minimum size
-           16GB SD card with at least 5GB free or mounted storage drive
+           16GB SD card with at least 5GB free or mount a storage drive
 
     cd ~/opencv3-setup
 
