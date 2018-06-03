@@ -2,7 +2,7 @@
 # Script to assist with installing sonic-track and OpenCV3
 # If problems are encountered exit to command to try to resolve
 # Then retry menu pick again or continue to next step
-ver="ver 0.44"
+ver="ver 0.50"
 
 install_dir='/home/pi/tmp_cv3'    # Working folder for Download/Compile of opencv files
                                   # Note Use symbolic link to external drive mnt if sd card too small
@@ -42,7 +42,7 @@ function do_rpi_update ()
    echo "Done Raspbian Upgrade ..."
    echo ""
    echo "After a Reboot rerun this script and Select"
-   echo "Menu Pick: OpenCV 3.2.0 Install Build Dependencies and Download Source"
+   echo "Menu Pick: OpenCV 3.3.0 Install Build Dependencies and Download Source"
    echo "-----------------------------------------------------------------------"
    echo "If there were Significant Changes then Reboot Recommended"
    echo ""
@@ -64,7 +64,7 @@ function do_cv3_dep ()
 {
    cd $install_dir
    # Install opencv3 build dependencies
-   echo "Installing opencv 3.2.0 build and run dependencies"
+   echo "Installing opencv 3.3.0 build and run dependencies"
    echo "--------------------------------------------------"
    sudo apt-get install -y build-essential cmake pkg-config
    sudo apt-get install -y libjpeg-dev libtiff5-dev libjasper-dev libpng12-dev
@@ -82,14 +82,14 @@ function do_cv3_dep ()
    sudo pip install numpy
    echo "Done Install of Build Essentials and Dependencies ..."
    echo "-----------------------------------------------------"
-   echo "Download and unzip opencv 3.2.0 Source Files"
+   echo "Download and unzip opencv 3.3.0 Source Files"
    echo "-----------------------------------------------------"
-   wget -O opencv.zip https://github.com/Itseez/opencv/archive/3.2.0.zip
+   wget -O opencv.zip https://github.com/Itseez/opencv/archive/3.3.0.zip
    unzip opencv.zip
-   wget -O opencv_contrib.zip https://github.com/Itseez/opencv_contrib/archive/3.2.0.zip
+   wget -O opencv_contrib.zip https://github.com/Itseez/opencv_contrib/archive/3.3.0.zip
    unzip opencv_contrib.zip
-   echo "Done Install of Build Essentials, Dependencies and OpenCV 3.2.0 Source."
-   echo "Next Step Select Menu Pick:  OpenCV3 3.2.0 Run cmake and make"
+   echo "Done Install of Build Essentials, Dependencies and OpenCV 3.3.0 Source."
+   echo "Next Step Select Menu Pick:  OpenCV3 3.3.0 Run cmake and make"
    do_anykey
 }
 
@@ -97,9 +97,9 @@ function do_cv3_dep ()
 function do_cv3_compile ()
 {
    cd $install_dir
-   echo "Running cmake prior to compiling opencv 3.2.0"
+   echo "Running cmake prior to compiling opencv 3.3.0"
    echo "---------------------------------------------"
-   build_dir=$install_dir/opencv-3.2.0/build
+   build_dir=$install_dir/opencv-3.3.0/build
    if [ ! -d "$build_dir" ] ; then
      echo "Create build directory $build_dir"
      mkdir $build_dir
@@ -115,21 +115,21 @@ function do_cv3_compile ()
 	-D CMAKE_INSTALL_PREFIX=/usr/local \
 	-D INSTALL_C_EXAMPLES=OFF \
 	-D INSTALL_PYTHON_EXAMPLES=ON \
-	-D OPENCV_EXTRA_MODULES_PATH=$install_dir/opencv_contrib-3.2.0/modules \
+	-D OPENCV_EXTRA_MODULES_PATH=$install_dir/opencv_contrib-3.3.0/modules \
 	-D BUILD_EXAMPLES=ON \
 	-D ENABLE_NEON=ON ..
 
     echo "---------------------------------------"
     echo " Review cmake messages above for Errors"
     echo "---------------------------------------"
-    echo "y) Starts compile of opencv 3.2.0 from source"
+    echo "y) Starts compile of opencv 3.3.0 from source"
     echo "n) Does a make clean ready for next cmake attempt, once problem resolved."
     read -p "Was cmake Successful (y/n)? " choice
     echo "---------------------------------------"
     case "$choice" in
         y|Y ) echo "IMPORTANT"
               echo "---------"
-              echo "Compile of openCV ver 3.2.0 will take approx 3 to 4 hours ...."
+              echo "Compile of openCV ver 3.3.0 will take approx 3 to 4 hours ...."
               echo "Once Compile is started go for a nice long walk"
               echo "or Binge watch Game of Thrones or Something Else....."
               echo ""
@@ -155,13 +155,13 @@ function do_cv3_compile ()
 #------------------------------------------------------------------------------
 function do_cv3_install ()
 {
-    echo "Perform OpenCV 3.2.0 make install"
+    echo "Perform OpenCV 3.3.0 make install"
     echo "---------------------------------"
-    if [ -d "$install_dir/opencv-3.2.0/build" ] ; then
-      cd $install_dir/opencv-3.2.0/build
+    if [ -d "$install_dir/opencv-3.3.0/build" ] ; then
+      cd $install_dir/opencv-3.3.0/build
       sudo make install
       sudo ldconfig
-      echo "Reboot to Complete Install of OpenCV 3.2.0"
+      echo "Reboot to Complete Install of OpenCV 3.3.0"
       echo ""
       read -p "Reboot Now? (y/n)? " choice
       case "$choice" in
@@ -175,7 +175,7 @@ function do_cv3_install ()
                ;;
       esac
     else
-      echo "Error- Directory Not Found  /home/pi/opencv-3.2.0/build"
+      echo "Error- Directory Not Found  /home/pi/opencv-3.3.0/build"
       echo "Go Back to Earlier Menu Step"
       echo "----------------------------"
       do_anykey
@@ -187,7 +187,7 @@ function do_cv3_install ()
 function do_cv3_cleanup ()
 {
     echo "------------------------------------------"
-    echo "Remove OpenCV 3.2.0 Source Folders and zip files (optional)"
+    echo "Remove OpenCV 3.3.0 Source Folders and zip files (optional)"
     echo ""
     read -p "Remove Now? (y/n)? " choice
     case "$choice" in
@@ -196,10 +196,10 @@ function do_cv3_cleanup ()
              echo "Remove zip Files"
              rm open*zip
              rm get-pip.py
-             echo "Remove OpenCV 3.2.0 Install Folders"
-             sudo rm -R opencv-3.2.0
-             sudo rm -R opencv_contrib-3.2.0
-             echo "Done Removal of opencv-3.2.0 Source Folders and zip files .."
+             echo "Remove OpenCV 3.3.0 Install Folders"
+             sudo rm -R opencv-3.3.0
+             sudo rm -R opencv_contrib-3.3.0
+             echo "Done Removal of opencv-3.3.0 Source Folders and zip files .."
              do_anykey
              ;;
        n|N ) echo "Back To Main Menu"
@@ -214,10 +214,10 @@ function do_cv3_cleanup ()
 function do_about()
 {
   whiptail --title "About" --msgbox " \
-                OpenCV 3.2.0 Install Menu Assist
+                OpenCV 3.3.0 Install Menu Assist
                   written by Claude Pageau
 
-This Menu will help install opencv 3.2.0 if required
+This Menu will help install opencv 3.3.0 if required
 You will be asked to reboot during installation.
 
 Run Menu Pick Selections in order and verify successful completion
@@ -239,12 +239,12 @@ https://github.com/Tes3awy/OpenCV-3.2.0-Compiling-on-Raspberry-Pi
 #------------------------------------------------------------------------------
 function do_main_menu ()
 {
-  SELECTION=$(whiptail --title "opencv 3.2.0 Install Assist $ver" --menu "Arrow/Enter Selects or Tab Key" 20 70 10 --cancel-button Quit --ok-button Select \
+  SELECTION=$(whiptail --title "opencv 3.3.0 Install Assist $ver" --menu "Arrow/Enter Selects or Tab Key" 20 70 10 --cancel-button Quit --ok-button Select \
   "a " "Raspbian Jessie Update and Upgrade" \
-  "b " "OpenCV 3.2.0 Install Build Dependencies and Download Source" \
-  "c " "OpenCV 3.2.0 Run cmake and make (compile Takes 3-4 hours)" \
-  "d " "OpenCV 3.2.0 Run make install" \
-  "e " "OpenCV 3.2.0 Remove Source Folders and zip Files (optional)" \
+  "b " "OpenCV 3.3.0 Install Build Dependencies and Download Source" \
+  "c " "OpenCV 3.3.0 Run cmake and make (compile Takes 3-4 hours)" \
+  "d " "OpenCV 3.3.0 Run make install" \
+  "e " "OpenCV 3.3.0 Remove Source Folders and zip Files (optional)" \
   "f " "About" \
   "q " "Quit Menu Back to Console"  3>&1 1>&2 2>&3)
 
@@ -260,9 +260,9 @@ function do_main_menu ()
       e\ *) do_cv3_cleanup ;;
       f\ *) do_about ;;
       q\ *) echo "NOTE"
-            echo "After OpenCV 3.2.0 Installation is Complete"
+            echo "After OpenCV 3.3.0 Installation is Complete"
             echo "      Reboot to Finalize Install"
-            echo "      Then Test OpenCV 3.2.0"
+            echo "      Then Test OpenCV 3.3.0"
             echo ""
             echo "If Testing is Successful"
             echo "      You can Remove opencv source folders and zip files"
