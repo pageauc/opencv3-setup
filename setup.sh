@@ -19,6 +19,7 @@ INSTALL_PATH=$( pwd )
 
 # Remember where this script was launched from
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 echo "
 -------------------------------------------------------------
       setup.sh script ver $ver
@@ -49,6 +50,7 @@ WARNING -  It is recommended you have a minimum size
     ./cv32-install-menu.sh
 or
     ./cv33-install-menu.sh"
+
 
 echo $DEST_DIR "Good Luck Claude ..."
 echo "Bye"
