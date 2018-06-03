@@ -13,8 +13,8 @@ The appropriate install menu script menu picks will
 * Update/upgrade Raspbian for Raspberry Pi
 * Install build dependencies
 * Download opencv3 source and unzip
-* Run ***cmake***
-* Compile opencv3 source code
+* Run ***cmake*** to configure build
+* Run ***make*** to Compile opencv3 source code
 * Run ***make install*** to install new opencv python files
 * Cleanup Files to release disk space (optional). 
 
