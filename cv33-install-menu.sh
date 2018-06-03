@@ -96,10 +96,12 @@ function do_cv3_dep ()
    sudo apt-get install -y default-jdk ant
    sudo apt-get install -y libgtkglext1-dev
    sudo apt-get install -y v4l-utils
+   sudo apt-get install -y gphoto2
    wget https://bootstrap.pypa.io/get-pip.py
    sudo python get-pip.py
    sudo apt-get install -y python2.7-dev
    sudo pip install numpy
+   sudo apt-get -y autoremove
    echo "Done Install of Build Essentials and Dependencies ..."
    echo "-----------------------------------------------------"
    echo "Download and unzip opencv 3.3.0 Source Files"
