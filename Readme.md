@@ -1,6 +1,8 @@
 ## Raspberry Pi Menu Driven OpenCV 3 Compile from Source Script
 #### Whiptail menu enabled script to help compile opencv3 from source  
 
+![cv3-install-menu](https://github.com/pageauc/opencv-setup/blob/master/menu.png)
+
 ## Quick Install   
 Easy Install of opencv3-setup onto a Raspberry Pi Computer with Recent Raspbian Jessie Build.
 This is a whiptail menu system that allows install of opencv 3.2.0 or 3.3.0
