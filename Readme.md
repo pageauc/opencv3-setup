@@ -29,12 +29,15 @@ From a logged in RPI SSH session or console terminal perform the following.
 
 ## Prerequisites
 
-* Basic knowledge of unix terminal commands   
+* Basic knowledge of unix terminal commands.
+There are some optional configuration steps that 
+must be done manually using nano.  
 * Patience since this will take a few hours  
 * Working RPI connected to Internet
+* RPI with 1GB of memory with a single CPU core or better
 * Recent Jessie or Stretch Raspbian Release
 * Recommended min 16GB SD card with at least 6 GB Free.
-if Free disk space is low or You have a smaller system SD.
+If Free disk space is low or You have a smaller system SD.
 You can mount USB memory or hard disk and change the
 install_dir variable in this script to point to the new path.
   
@@ -93,37 +96,30 @@ opencv3-install-menu.sh
 
 Then change the ***install_dir*** variable to point to the symbolic link
 for the external storage device.  ctrl-x y to save and exit nano. 
+see example below
 
-Sample commands to use an external ntfs usb hard drive.
+Sample commands to mount and use an external ntfs USB hard drive.
+plug ntfs formatted disk into RPI USB slot
 
     cd ~
+    sudo apt-get update
     sudo apt-get install ntfs-3g   # Make sure ntfs support installed
-    sudo fdisk -l     # will list drive if installed
+    sudo fdisk -l                  # will list drive if installed
+    cd ~/
     mkdir mnt
     sudo mount -t ntfs-3g /dev/sda1 /home/pi/mnt
-    mkdir /home/pi/mnt/tmp_cv3
-    ln -s /home/pi/mnt/tmp_cv3 tmp_cv3
+    cd ~/opencv-setup
+    nano cv3-install-menu.sh
 
-To Run the whiptail menu setup script.    
-From a logged in ssh or terminal session run
+In nano edit opencv_dir variable per
 
-    cd ~/opencv3-setup
-    ./cv32-install-menu.sh
+    install_dir='/home/pi/mnt/tmp_cv3'
 
-or
-    ./cv32-install-menu.sh
-        
-Select Menu items in order. You will be asked to review output logs for success
-before proceeding to next step.
-You may be asked to reboot at certain steps. After a Reboot login and run 
-appropriate install menu script again then proceed to next menu item 
-
+ctrl-x y to save change and exit    
+    
+## Credits
 This install is based on   
 https://github.com/Tes3awy/OpenCV-3.2.0-Compiling-on-Raspberry-Pi    
-
-Note due to system security, there are some configuration steps that 
-must be done manually using nano.
-Please review Step 14 on link above for further instructions.
  
 Have Fun   
 Claude Pageau    
