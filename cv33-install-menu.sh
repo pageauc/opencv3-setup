@@ -2,7 +2,7 @@
 # Script to assist with installing OpenCV3
 # If problems are encountered exit to command to try to resolve
 # Then retry menu pick again or continue to next step
-ver="ver 0.51"
+ver="ver 0.52"
 
 install_dir='/home/pi/tmp_cv3'    # Working folder for Download/Compile of opencv files
                                   # Note Use symbolic link to external drive mnt if sd card too small
@@ -225,7 +225,6 @@ function do_cv3_cleanup ()
          * ) echo "invalid Selection"
              ;;
    esac
-
 }
 
 #------------------------------------------------------------------------------
@@ -259,11 +258,11 @@ https://github.com/Tes3awy/OpenCV-3.3.0-Compiling-on-Raspberry-Pi
 function do_main_menu ()
 {
   SELECTION=$(whiptail --title "opencv 3.3.0 Install Assist $ver" --menu "Arrow/Enter Selects or Tab Key" 20 70 10 --cancel-button Quit --ok-button Select \
-  "a " "Raspbian Jessie Update and Upgrade" \
-  "b " "OpenCV 3.3.0 Install Build Dependencies and Download Source" \
-  "c " "OpenCV 3.3.0 Run cmake and make (compile Takes 3-4 hours)" \
-  "d " "OpenCV 3.3.0 Run make install" \
-  "e " "OpenCV 3.3.0 Remove Source Folders and zip Files (optional)" \
+  "a " "Raspbian Update and Upgrade" \
+  "b " "Install Build Dependencies and Download Source" \
+  "c " "Run cmake and make (compile Takes 3-4 hours)" \
+  "d " "Run make install" \
+  "e " "Remove Source Folders and zip Files (optional)" \
   "f " "About" \
   "q " "Quit Menu Back to Console"  3>&1 1>&2 2>&3)
 
@@ -272,12 +271,18 @@ function do_main_menu ()
     exit 0
   elif [ $RET -eq 0 ]; then
     case "$SELECTION" in
-      a\ *) do_rpi_update ;;
-      b\ *) do_cv3_dep ;;
-      c\ *) do_cv3_compile ;;
-      d\ *) do_cv3_install ;;
-      e\ *) do_cv3_cleanup ;;
-      f\ *) do_about ;;
+      a\ *) do_rpi_update
+            do_main_menu ;;
+      b\ *) do_cv3_dep
+            do_main_menu ;;
+      c\ *) do_cv3_compile
+            do_main_menu ;;
+      d\ *) do_cv3_install
+            do_main_menu ;;
+      e\ *) do_cv3_cleanup
+            do_main_menu ;;
+      f\ *) do_about
+            do_main_menu ;;
       q\ *) echo "NOTE"
             echo "After OpenCV 3.3.0 Installation is Complete"
             echo "      Reboot to Finalize Install"
@@ -292,7 +297,6 @@ function do_main_menu ()
   fi
 }
 
-while true; do
-   do_main_menu
-done
+do_main_menu
+
 
