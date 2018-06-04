@@ -24,7 +24,6 @@ From a logged in RPI SSH session or console terminal perform the following.
     chmod +x setup.sh
     ./setup.sh
     cd ~/opencv3-setup
-    chmod +x *.sh
     ./cv3-install-menu.sh
 
 ## Prerequisites
