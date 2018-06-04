@@ -69,12 +69,12 @@ The ***cv3-install.menu.sh*** script and menu picks will
 ## Instructions
 For a Full Build on a New OS
 It is recommended you have a minimum 16GB SD card with at least 6GB free.
-Less Space will be needed depending on what dependencies are already
-installed.  
+Less space may be needed depending on what dependencies are already
+installed. RPI needs 1GB or RAM memory 
 
-You can change the opencv install location by editing
-the opencv3-install-menu.sh using nano and changing the variable
-***install_dir*** variable
+You can change the opencv install location by editing 
+the cv3-install-menu.sh using nano and changing the
+***install_dir*** variable.
 
 The opencv version number can also be change using the
 ***opencv_ver*** variable.  The version number will be verified at launch
