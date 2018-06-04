@@ -70,15 +70,23 @@ The ***cv3-install.menu.sh*** script and menu picks will
 For a Full Build on a New OS
 It is recommended you have a minimum 16GB SD card with at least 6GB free.
 Less Space will be needed depending on what dependencies are already
-installed.  You can change the opencv install location by editing
+installed.  
+
+You can change the opencv install location by editing
 the opencv3-install-menu.sh using nano and changing the variable
-opencv_dir.  The opencv version number can also be change using the
-opencv_ver variable.  The version number will be verified at launch
-with repo at https://github.com/Itseez/opencv/archive/
+***install_dir*** variable
+
+The opencv version number can also be change using the
+***opencv_ver*** variable.  The version number will be verified at launch
+against repo at https://github.com/Itseez/opencv/archive/
+See  https://github.com/opencv/opencv/releases     
+and https://github.com/opencv/opencv_contrib/releases for valid zip versions    
+
 You will be asked to reboot during some installation steps.
-If you answer yes to successful completion of a step, you will be
+If you answer yes on successful completion of a step, you will be
 sent to the next step otherwise you will be sent to the terminal
 to review errors or back to the main menu as appropriate.
+
 For Additional Details See https://github.com/pageauc/opencv3-setup
 Script Steps Based on GitHub Repo
 https://github.com/Tes3awy/OpenCV-3.2.0-Compiling-on-Raspberry-Pi
