@@ -99,18 +99,19 @@ particular step from the menu if required to correct any errors.
 and build files. Default location is ***/home/pi/tmp_cv3*** 
  
 ***IMPORTANT*** If there is limited space on the Raspbian SD card
-you may want to create a symbolic link to an external drive
-or memory stick.  Then edit 
+you may want to change ***install_dir*** variable to point to
+an external storage drive.
 
     cd ~/opencv3-setup
     nano opencv3-install-menu.sh   
 
-Change the ***install_dir*** variable to point to the symbolic link
-for the external storage device.  ctrl-x y to save and exit nano. 
-For more details see example mount commands below.
+Change the ***install_dir*** variable to point to the desired mount location
+or a symbolic link to the desired external storage device. ctrl-x y to save
+and exit nano. For more details see example mount commands below.
 
 Sample commands to mount and use an external ntfs USB hard drive.
-plug ntfs formatted disk into RPI USB slot
+Plug ntfs formatted disk into a RPI USB slot.  From SSH or terminal session
+use sample commands below. (Note) modify to suit your conditions
 
     cd ~
     sudo apt-get update
@@ -128,7 +129,7 @@ In nano edit ***install_dir*** variable per
 
 ctrl-x y to save change and exit. Run ***cv3-install.menu.sh***
 and the script will create the ***/home/pi/mnt/tmp_cv3*** folder
-on the mounted USB drive mount. To check free disk space run
+on the mounted USB drive. To check free disk space run
 
     df -h 
     
