@@ -86,17 +86,19 @@ https://github.com/Tes3awy/OpenCV-3.2.0-Compiling-on-Raspberry-Pi
 Users will be prompted to review output for errors and elect to continue.  You can repeat a
 particular step from the menu if required to correct any errors.
 
-A temporary working folder will be created to store the downloaded opencv
-and source,build files. The Default location is /home/pi/tmp_cv3.  
+A temporary working folder will be created per ***cv3-menu-install.sh***
+***install_dir*** variable to store the downloaded opencv
+and source and build files. The Default location is /home/pi/tmp_cv3.  
 ***IMPORTANT*** If there is limited space on the Raspbian SD card
-you may want to create a symoblic link to an external drive
-or memory stick.  Then edit(nano) 
+you may want to create a symbolic link to an external drive
+or memory stick.  Then edit 
 
-opencv3-install-menu.sh   
+    cd ~/opencv3-setup
+    nano opencv3-install-menu.sh   
 
-Then change the ***install_dir*** variable to point to the symbolic link
+and change the ***install_dir*** variable to point to the symbolic link
 for the external storage device.  ctrl-x y to save and exit nano. 
-see example below
+see example below mount command below
 
 Sample commands to mount and use an external ntfs USB hard drive.
 plug ntfs formatted disk into RPI USB slot
@@ -111,11 +113,15 @@ plug ntfs formatted disk into RPI USB slot
     cd ~/opencv-setup
     nano cv3-install-menu.sh
 
-In nano edit opencv_dir variable per
+In nano edit ***install_dir*** variable per
 
     install_dir='/home/pi/mnt/tmp_cv3'
 
-ctrl-x y to save change and exit    
+ctrl-x y to save change and exit. Run ***cv3-install.menu.sh***
+and the script will create the ***/home/pi/mnt/tmp_cv3*** folder
+on the mounted USB drive mount. To check free disk space run
+
+    df -h 
     
 ## Credits
 This install is based on   
