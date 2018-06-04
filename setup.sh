@@ -40,21 +40,17 @@ if [ -f "setup.sh" ] ; then
     rm setup.sh
 fi
 
-echo "
-Done Permissions
+echo "Done Permissions
 -------------------------------------------------------------
-To Run Appropiate OpenCV3 Menu Install Script
-
-WARNING -  It is recommended you have a minimum size
-           16GB SD card with at least 6GB Free 
-           or mount USB Storage Media or Drive
+WARNING - It is recommended you have a minimum size
+          16GB system SD card with at least 6GB Free 
+          or mount USB Storage Media or Drive and 
+          edit opencv_dir variable in this script
 
     cd ~/opencv3-setup
-
     ./cv3-install-menu.sh
 
 See ABOUT Menu Pick for more Details.
 
-echo $DEST_DIR "Good Luck Claude ..."
-echo "Bye"
-
+Good Luck Claude ...
+Bye"

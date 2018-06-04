@@ -412,7 +412,7 @@ to review errors or back to the main menu as appropriate.
 For Additional Details See https://github.com/pageauc/opencv3-setup
 Script Steps Based on GitHub Repo
 https://github.com/Tes3awy/OpenCV-3.2.0-Compiling-on-Raspberry-Pi
-                  Good Luck
+                      Good Luck
 \
 " 0 0 0
 }
