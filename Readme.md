@@ -1,26 +1,6 @@
 ## Raspberry Pi Menu Driven OpenCV 3 Compile from Source Script
 #### Whiptail menu enabled script to help compile opencv3 from source  
 
-## Introduction
-This Bash script uses a whiptail menu to assist users who want to 
-compile opencv 3.2.0 or 3.3.0 from source. It is recommended you have a minimum
-size 16GB SD card with at least 5GB free.  
-To Check free disk space run
-
-    df -h
-
-The appropriate install menu script menu picks will 
-* Update/upgrade Raspbian for Raspberry Pi
-* Install build dependencies
-* Download opencv3 source and unzip
-* Run ***cmake*** to configure build
-* Run ***make*** to Compile opencv3 source code
-* Run ***make install*** to install new opencv python files
-* Cleanup Files to release disk space (optional). 
-
-Users will be prompted to review output for errors and elect to continue.  They can also repeat a
-particular step from the menu if required
-
 ## Quick Install   
 Easy Install of opencv3-setup onto a Raspberry Pi Computer with Recent Raspbian Jessie Build.
 This is a whiptail menu system that allows install of opencv 3.2.0 or 3.3.0
@@ -32,14 +12,76 @@ From a computer logged into the RPI via ssh (Putty) session
 *  Then select ssh(Putty) window, mouse right click, paste.   
 The command should download and run the install setup.sh script.
 
+***To Run***
+
+    cd ~/opencv3-setup
+    ./cv3-install-menu.sh
+
 ## Manual Install   
-From logged in RPI SSH session or console terminal perform the following.
+From a logged in RPI SSH session or console terminal perform the following.
 
     wget https://raw.github.com/pageauc/opencv3-setup/master/setup.sh
     chmod +x setup.sh
     ./setup.sh
+    cd ~/opencv3-setup
+    chmod +x *.sh
+    ./cv3-install-menu.sh
 
-## How to Run Menu
+## Prerequisites
+
+* Basic knowledge of unix terminal commands   
+* Patience since this will take a few hours  
+* Working RPI connected to Internet
+* Recent Jessie or Stretch Raspbian Release
+* Recommended min 16GB SD card with at least 6 GB Free.
+if Free disk space is low or You have a smaller system SD.
+You can mount USB memory or hard disk and change the
+install_dir variable in this script to point to the new path.
+  
+To Check free disk space run
+
+    df -h
+
+## How To Run Menu
+
+    cd ~/opencv3-setup
+    ./cv3-install-menu.sh
+
+Start at Step 1 and follow instructions.
+
+## Operation
+This menu driven install script will download and
+compile opencv3 from source code. Default is opencv 3.3.0
+The ***cv3-install.menu.sh*** script and menu picks will
+
+* Validate that opencv_ver variable setting is correct 
+* Update/upgrade Raspbian for Raspberry Pi
+* Install build dependencies
+* Download opencv3 source zip files and unzip
+* Run ***cmake*** to configure build
+* Run ***make*** to Compile opencv3 source code
+* Run ***make install*** to install new opencv python files
+* Run ***make clean*** to Delete Source directory to release disk space (optional). 
+
+## Instructions
+For a Full Build on a New OS
+It is recommended you have a minimum 16GB SD card with at least 6GB free.
+Less Space will be needed depending on what dependencies are already
+installed.  You can change the opencv install location by editing
+the opencv3-install-menu.sh using nano and changing the variable
+opencv_dir.  The opencv version number can also be change using the
+opencv_ver variable.  The version number will be verified at launch
+with repo at https://github.com/Itseez/opencv/archive/
+You will be asked to reboot during some installation steps.
+If you answer yes to successful completion of a step, you will be
+sent to the next step otherwise you will be sent to the terminal
+to review errors or back to the main menu as appropriate.
+For Additional Details See https://github.com/pageauc/opencv3-setup
+Script Steps Based on GitHub Repo
+https://github.com/Tes3awy/OpenCV-3.2.0-Compiling-on-Raspberry-Pi
+
+Users will be prompted to review output for errors and elect to continue.  You can repeat a
+particular step from the menu if required to correct any errors.
 
 A temporary working folder will be created to store the downloaded opencv
 and source,build files. The Default location is /home/pi/tmp_cv3.  
@@ -47,9 +89,7 @@ and source,build files. The Default location is /home/pi/tmp_cv3.
 you may want to create a symoblic link to an external drive
 or memory stick.  Then edit(nano) 
 
-opencv32-install-menu.sh     
-or   
-opencv33-install-menu.sh   
+opencv3-install-menu.sh   
 
 Then change the ***install_dir*** variable to point to the symbolic link
 for the external storage device.  ctrl-x y to save and exit nano. 
@@ -84,16 +124,6 @@ https://github.com/Tes3awy/OpenCV-3.2.0-Compiling-on-Raspberry-Pi
 Note due to system security, there are some configuration steps that 
 must be done manually using nano.
 Please review Step 14 on link above for further instructions.
- 
-### Prerequisites
-
-* RPI Connection to Internet    
-* Reasonably Recent Jessie/Stretch Full Operating System Installed   
-* Sufficient Free Disk Space > 5 GB  df -h to check. 
-  To Free disk space see [How to Free Space on Raspbian](http://raspi.tv/2016/how-to-free-up-some-space-on-your-raspbian-sd-card-remove-wolfram-libreoffice)  
-* Determine if RPI is a Quadcore cpu  cat /proc/cpuinfo        
-* Basic knowledge of unix terminal commands   
-* Patience since this will take a few hours    
  
 Have Fun   
 Claude Pageau    

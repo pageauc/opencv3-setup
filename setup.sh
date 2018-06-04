@@ -26,8 +26,7 @@ echo "
 -------------------------------------------------------------
 1 - Downloading opencv3-setup github repo files"
 
-wget -O cv32-install-menu.sh https://raw.github.com/pageauc/opencv3-setup/master/cv32-install-menu.sh
-wget -O cv33-install-menu.sh https://raw.github.com/pageauc/opencv3-setup/master/cv33-install-menu.sh
+wget -O cv3-install-menu.sh https://raw.github.com/pageauc/opencv3-setup/master/cv3-install-menu.sh
 wget -O Readme.md https://raw.github.com/pageauc/opencv3-setup/master/Readme.md
 
 echo "Done Download
@@ -37,7 +36,7 @@ echo "Done Download
 chmod +x *sh
 
 # Delete existing setup.sh and Force running setup from github repo curl command
-if [ -f "setup.sh" ] ; then  
+if [ -f "setup.sh" ] ; then
     rm setup.sh
 fi
 
@@ -47,13 +46,14 @@ Done Permissions
 To Run Appropiate OpenCV3 Menu Install Script
 
 WARNING -  It is recommended you have a minimum size
-           16GB SD card with at least 5GB free or mount a storage drive
+           16GB SD card with at least 6GB Free 
+           or mount USB Storage Media or Drive
 
     cd ~/opencv3-setup
 
-    ./cv32-install-menu.sh
-or
-    ./cv33-install-menu.sh"
+    ./cv3-install-menu.sh
+
+See ABOUT Menu Pick for more Details.
 
 echo $DEST_DIR "Good Luck Claude ..."
 echo "Bye"
