@@ -2,7 +2,7 @@
 # Script to assist with installing OpenCV3
 # If problems are encountered exit to command to try to resolve
 # Then retry menu pick again or continue to next step
-prog_ver='ver 1.0'
+prog_ver='ver 1.1'
 
 opencv_ver='3.4.1'   # This needs to be a valid opencv3 version number
                      # See https://github.com/opencv/opencv/releases
@@ -35,11 +35,6 @@ else
     exit 1
 fi
 
-if [ ! -d $install_dir ] ; then
-    echo "Create dir $install_dir"
-    mkdir $install_dir
-fi
-
 #------------------------------------------------------------------------------
 function do_anykey ()
 {
@@ -59,7 +54,7 @@ function do_rpi_update ()
 {
    clear
    # Update Raspbian to Lastest Releases
-   echo "Step 1 - Update/Upgrade Raspbian Please Wait ..."
+   echo "STEP 1 - Update/Upgrade Raspbian Please Wait ..."
    echo ""
    echo "sudo apt-get update    Please Wait ..."
    echo ""
@@ -93,15 +88,12 @@ function do_cv3_dep ()
 {
    clear
    # Install opencv3 build dependencies
-   echo "Step 2 - Install opencv $opencv_ver Build Dependencies"
+   echo "STEP 2 - Install opencv $opencv_ver Build Dependencies"
    echo ""
    echo "This step will install opencv $opencv_ver Build Dependencies"
    echo "Then Download and unzip opencv source files to $install_dir Folder"
    echo ""
    df -h
-   echo ""
-   echo "Current Space used by $install_dir"
-   du -sh $install_dir
    echo ""
    echo "A Fresh Build Needs at Least 16GB SD with 5-6 GB Free. Free Space"
    echo "could be less depending on what dependencies are already installed"
@@ -115,8 +107,7 @@ function do_cv3_dep ()
       * ) echo ""
           ;;
    esac
-   cd $install_dir
-   echo "Installing Dependencies  Please Wait ..."
+   echo "STEP 2-1 Installing Dependencies  Please Wait ..."
    echo ""
    sudo apt-get install -y build-essential
    sudo apt-get install -y git
@@ -148,7 +139,14 @@ function do_cv3_dep ()
    sudo apt-get install -y libgtkglext1-dev
    sudo apt-get install -y v4l-utils
    sudo apt-get install -y gphoto2
+   echo "Perform sudo apt-get autoremove"
+   echo ""
    sudo apt-get -y autoremove
+   if [ ! -d $install_dir ] ; then
+       echo "Create dir $install_dir"
+       mkdir $install_dir
+   fi
+   cd $install_dir
    echo ""
    echo "Install pip"
    rm get-pip.py
@@ -158,23 +156,23 @@ function do_cv3_dep ()
    echo "Install numpy"
    sudo pip install numpy
    echo ""
-   echo "Perform sudo apt-get autoremove"
-   echo ""
    echo "Done Install of Build Essentials and Dependencies ..."
    echo ""
-   echo "Download and unzip opencv $opencv_ver Source Files"
+   echo "STEP 2-2 Download and unzip opencv $opencv_ver Source Files"
    echo ""
    wget -O opencv.zip https://github.com/Itseez/opencv/archive/$opencv_ver.zip
    unzip -o opencv.zip
    echo ""
-   echo "Download and unzip opencv $opencv_ver Contrib Files"
+   echo "STEP 3-3 Download and unzip opencv $opencv_ver Contrib Files"
    echo ""
    wget -O opencv_contrib.zip https://github.com/Itseez/opencv_contrib/archive/$opencv_ver.zip
    unzip -o opencv_contrib.zip
    echo ""
    echo "Done Requirements for OpenCV $opencv_ver Source Build."
    echo ""
-   read -p "Proceed to Step 3 COMPILE (y/n)?" choice
+   df -h
+   echo ""
+   read -p "Proceed to STEP 3 COMPILE (y/n)?" choice
    case "$choice" in
      y|Y ) do_cv3_compile
            ;;
@@ -188,12 +186,12 @@ function do_cv3_compile ()
 {
    if [ ! -d $install_dir ] ; then
        echo "ERROR - $install_dir Director Not Found"
-       echo "        Retry Previous Step2 DEP Menu Pick"
+       echo "        Retry Previous STEP 2 DEP Menu Pick"
        do_anykey
    fi
    cd $install_dir
    clear
-   echo "Step 3 Run cmake Prior to Compiling opencv $opencv_ver with make -j1"
+   echo "STEP 3 Run cmake Prior to Compiling opencv $opencv_ver with make -j1"
    echo ""
    build_dir=$install_dir/opencv-$opencv_ver/build
    if [ ! -d "$build_dir" ] ; then
@@ -289,11 +287,11 @@ function do_cv3_compile ()
 function do_cv3_install ()
 {
     clear
-    echo "Step 4 - Perform OpenCV $opencv_ver make install"
+    echo "STEP 4 - Perform OpenCV $opencv_ver make install"
     echo ""
     echo "This Step will copy the compiled code to the system folders"
     echo "WARNING - Do NOT run this unless you have successfully completed"
-    echo "          Step 3 COMPILE"
+    echo "          STEP 3 COMPILE"
     read -p "Run make install Now? (y/n)? " choice
     case "$choice" in
        y|Y ) echo "Running make install"
@@ -317,7 +315,7 @@ function do_cv3_install ()
       esac
     else
       echo "ERROR- Directory Not Found  /home/pi/opencv-$opencv_ver/build"
-      echo "Go Back to Earlier Menu Step"
+      echo "Go Back to Earlier Menu STEP"
       echo ""
       do_anykey
     fi
