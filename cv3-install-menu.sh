@@ -2,7 +2,7 @@
 # Script to assist with installing OpenCV3
 # If problems are encountered exit to command to try to resolve
 # Then retry menu pick again or continue to next step
-prog_ver="ver 0.6"
+prog_ver="ver 0.61"
 
 opencv_ver='3.3.0'   # This needs to be a valid opencv3 version number
 

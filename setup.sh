@@ -1,6 +1,6 @@
 #!/bin/bash
 # Convenient opencv3 install script written by Claude Pageau 1-Jul-2016
-ver="0.51"
+ver="0.61"
 DEST_DIR='opencv3-setup'  # Default folder install location
 
 cd ~
