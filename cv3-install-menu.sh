@@ -2,9 +2,10 @@
 # Script to assist with installing OpenCV3
 # If problems are encountered exit to command to try to resolve
 # Then retry menu pick again or continue to next step
-prog_ver="ver 0.61"
+prog_ver="ver 1.0"
 
-opencv_ver='3.3.0'   # This needs to be a valid opencv3 version number
+opencv_ver='3.4.1'   # This needs to be a valid opencv3 version number
+                     # See https://github.com/opencv/opencv/releases
 
 install_dir='/home/pi/tmp_cv3'    # Working folder for Download/Compile of opencv files
                                   # Note Use symbolic link to external drive mount point

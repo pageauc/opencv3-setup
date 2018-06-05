@@ -41,6 +41,8 @@ must be done manually using nano.
 * Patience since this will take a few hours
 * Working RPI connected to Internet
 * RPI with 1GB of memory with a single CPU core or better
+* It is suggested you temporarily disable the desktop and run
+in terminal mode to save some RAM memory.
 * Recent Jessie or Stretch Raspbian Release
 * Recommended min 16GB SD card with at least 6 GB Free.
 If Free disk space is low or You have a smaller system SD.
@@ -76,7 +78,13 @@ The ***cv3-install.menu.sh*** script and menu picks will
 For a Full Build on a New OS
 It is recommended you have a minimum 16GB SD card with at least 6GB free.
 Less space may be needed depending on what dependencies are already
-installed. RPI needs 1GB or RAM memory
+installed. You can recover most of the disk space after the build
+by running the DELETE menu pick.
+
+RPI needs 1GB or RAM memory and it is suggested you temporarily
+disable the desktop and run in terminal mode.  This can be done using
+
+sudo raspi-config
 
 You can change the opencv install location by editing
 the cv3-install-menu.sh using nano and changing the
