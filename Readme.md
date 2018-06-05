@@ -109,7 +109,7 @@ on the mounted USB drive. To check free disk space run
 
     df -h
     
-## Change opencv_ver
+## Changing opencv_ver
 The opencv version number can also be change using the
 ***opencv_ver*** variable.  The version number will be verified at launch
 against repo at https://github.com/Itseez/opencv/archive/
@@ -143,9 +143,9 @@ an external storage drive.
 
 Change the ***install_dir*** variable to point to the desired mount location
 or a symbolic link to the desired external storage device. ctrl-x y to save
-and exit nano. For more details see example mount commands below.
+and exit nano. See example mount commands below.
 
-For more details on mount external USB storage   
+For more details on mounting external USB storage   
 see https://www.htpcguides.com/properly-mount-usb-storage-raspberry-pi/
 
 Sample commands to mount and use an external ntfs USB hard drive.
