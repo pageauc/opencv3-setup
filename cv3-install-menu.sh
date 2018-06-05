@@ -2,7 +2,7 @@
 # Script to assist with installing OpenCV3
 # If problems are encountered exit to command to try to resolve
 # Then retry menu pick again or continue to next step
-prog_ver='ver 1.1'
+prog_ver='ver 1.2'
 
 opencv_ver='3.4.1'   # This needs to be a valid opencv3 version number
                      # See https://github.com/opencv/opencv/releases
@@ -11,28 +11,33 @@ install_dir='/home/pi/tmp_cv3'    # Working folder for Download/Compile of openc
                                   # Note Use symbolic link to external drive mount point
                                   # if sd card too small  Min 5-6 GB Free Space is Needed
 
-function validate_url(){
-  if [[ `wget -S --spider $1  2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then echo "true"; fi
-}
-
 clear
 echo "$0 $prog_ver    written by Claude Pageau"
 echo ""
-opencv_zip='https://github.com/Itseez/opencv/archive/$opencv_ver.zip'
+opencv_zip="https://github.com/Itseez/opencv/archive/$opencv_ver.zip"
 echo "Checking opencv version $opencv_ver"
-if `validate_url $opencv_zip`; then
+
+# Check if there is a url at the destination link
+wget -S --spider $opencv_zip 2>&1 | grep -q 'HTTP/1.1 200 OK'
+if [ $? -eq 0 ]; then
     echo "Variable opencv_ver=$opencv_ver Is a Valid opencv Version"
     sleep 4
 else
-    echo "OpenCV $opencv_zip Does Not Exist"
-    echo "Make sure variable opencv_ver=$opencv_ver"
-    echo "is correct opencv version"
+    echo "--------------------------------------------"
+    echo "ERROR: $opencv_zip Not Found."
+    echo "1 Check Internet Connection."
+    echo "2 Check variable opencv_ver=$opencv_ver"
+    echo "  Using url verify opencv zip release is valid"
+    echo "  at https://github.com/opencv/opencv/releases"
     echo ""
-    echo "use nano to edit opencv_ver=$opencv_ver to a valid opencv version"
-    echo "also check internet connection."
+    echo "Run command below to Edit this script file"
     echo ""
-    read -p "Press Enter to Exit" choice
-    exit 1
+    echo "    nano $0"
+    echo ""
+    echo "Edit variable opencv_ver=$opencv_ver"
+    echo "Change to a valid opencv release number eg 3.4.1"
+    echo ""
+    echo "Bye ..."
 fi
 
 #------------------------------------------------------------------------------
@@ -447,14 +452,9 @@ function do_main_menu ()
             do_main_menu ;;
       7\ *) do_about
             do_main_menu ;;
-      q\ *) echo "NOTE"
-            echo "After OpenCV Installation is Complete"
-            echo "      Reboot to Finalize Install"
-            echo "      Then Test OpenCV $opencv_ver"
-            echo ""
-            echo "If Testing is Successful"
-            echo "      You can Remove opencv source folders and zip files"
-            echo "Good Luck ..."
+      q\ *) echo ""
+            echo "$0 $prog_ver    written by Claude Pageau"
+            echo "Bye ..."
             exit 0 ;;
          *) whiptail --msgbox "Programmer error: unrecognized option" 20 60 1 ;;
     esac || whiptail --msgbox "There was an error running selection $SELECTION" 20 60 1
