@@ -74,16 +74,7 @@ The ***cv3-install.menu.sh*** script and menu picks will
 * Run ***make install*** to install new opencv python files
 * Run ***make clean*** to Delete Source directory to release disk space (optional).
 
-## Instructions
-
-### Disk Space
-For a Full Build on a New OS
-It is recommended you have a minimum 16GB SD card with at least 6GB free.
-Less space may be needed depending on what dependencies are already
-installed. You can recover most of the disk space after the build
-by running the DELETE menu pick.
-
-### RAM Memory
+## RAM Memory
 RPI needs 1GB or RAM memory and it is suggested you temporarily
 disable the desktop and run in terminal mode.  This can be done using
 
@@ -91,7 +82,14 @@ disable the desktop and run in terminal mode.  This can be done using
 
 Select ***Boot Options***, ***B1 Desktop / CLI*** then ***B1 or B2 Console***    
 
-### Changing install_dir 
+## Disk Space
+For a Full Build on a New OS
+It is recommended you have a minimum 16GB SD card with at least 6GB free.
+Less space may be needed depending on what dependencies are already
+installed. You can recover most of the disk space after the build
+by running the DELETE menu pick.
+
+## Changing install_dir 
 ***cv3-menu-install.sh*** will create a working or install folder per
 ***install_dir***. This folder will store downloaded opencv source
 and build files. Default location is ***/home/pi/tmp_cv3***  
@@ -111,27 +109,31 @@ on the mounted USB drive. To check free disk space run
 
     df -h
     
-### Change opencv_ver
+## Change opencv_ver
 The opencv version number can also be change using the
 ***opencv_ver*** variable.  The version number will be verified at launch
 against repo at https://github.com/Itseez/opencv/archive/
 See  https://github.com/opencv/opencv/releases
 and https://github.com/opencv/opencv_contrib/releases for valid zip versions
 
+## Menuing
+From the main menu select ***1 UPDATE* menu pick.  Follow Instructions that
+will guide you through the menu steps.  If there are errors you can
+exit to the terminal to review output messages.  Problems will most likely
+be related to Disk Space or Memory problems.    
 
 You will be asked to reboot during some installation steps.
 If you answer yes on successful completion of a step, you will be
 sent to the next step otherwise you will be sent to the terminal
 to review errors or back to the main menu as appropriate.
+You may see warnings or not
+found messages and this is normal.  Eg tesseract ocr Not Found.
 
-For Additional Details See https://github.com/pageauc/opencv3-setup
-Script Steps Based on GitHub Repo
-https://github.com/Tes3awy/OpenCV-3.2.0-Compiling-on-Raspberry-Pi
+Users will be prompted to review output for errors and elect to continue.
+You can repeat a particular step from the menu if required to after
+correcting or resolving any errors.
 
-Users will be prompted to review output for errors and elect to continue.  You can repeat a
-particular step from the menu if required to correct any errors.
-
-### Mount External USB Storage
+## Mount External USB Storage
 ***IMPORTANT*** If there is limited space on the Raspbian SD card
 you may want to change ***install_dir*** variable to point to
 an external storage drive.
@@ -176,8 +178,10 @@ See my other github repo at https://github.com/pageauc
 for various opencv motion and camera projects.
 
 ## Credits
-This install is based on
+Script Steps Based on GitHub Repo
 https://github.com/Tes3awy/OpenCV-3.2.0-Compiling-on-Raspberry-Pi
+
+For Additional Details See https://github.com/pageauc/opencv3-setup
 
 Have Fun
 Claude Pageau
