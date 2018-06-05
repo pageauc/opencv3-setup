@@ -22,11 +22,15 @@ then right click and select copy.
 
 ## Manual Install   
 From a logged in RPI SSH session or console terminal perform the following.
+This will allow you to review the code before installing.
 
+    cd ~
     wget https://raw.github.com/pageauc/opencv3-setup/master/setup.sh
     chmod +x setup.sh
     ./setup.sh
+    rm setup.sh
     cd ~/opencv3-setup
+    more cv3-install-menu.sh
     ./cv3-install-menu.sh
 
 ## Prerequisites
