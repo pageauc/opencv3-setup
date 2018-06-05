@@ -101,7 +101,7 @@ In nano edit ***install_dir*** variable where mnt is your mount path location
 Note the ***tmp_cv3** folder will automatically be created when the menu
 is restarted.  See sample mount instructions below.
 
-    install_dir='/home/pi/mnt'
+    install_dir='/home/pi/mnt/tmp_cv3'
 
 ctrl-x y to save change and exit. Run ***cv3-install.menu.sh***
 and the script will create the ***/home/pi/mnt/tmp_cv3*** folder
