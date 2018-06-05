@@ -119,7 +119,7 @@ you may want to change ***install_dir*** variable to point to
 an external storage drive.
 
     cd ~/opencv3-setup
-    nano opencv3-install-menu.sh
+    nano cv3-install-menu.sh
 
 Change the ***install_dir*** variable to point to the desired mount location
 or a symbolic link to the desired external storage device. ctrl-x y to save
