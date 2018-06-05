@@ -70,7 +70,6 @@ function do_rpi_update ()
    echo ""
    sudo apt-get -y upgrade
    sudo apt-get -y autoremove
-   sudo apt -y autoremove
    echo ""
    echo "Done Raspbian Upgrade ..."
    echo ""

@@ -52,6 +52,7 @@ IMPORTANT - It is recommended you have a minimum size
     ./cv3-install-menu.sh
 
 See ABOUT Menu Pick and Readme.md for more Details.
+https://github.com/pageauc/opencv3-setup
 
 Good Luck Claude ...
 Bye"
