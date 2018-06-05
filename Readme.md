@@ -75,28 +75,49 @@ The ***cv3-install.menu.sh*** script and menu picks will
 * Run ***make clean*** to Delete Source directory to release disk space (optional).
 
 ## Instructions
+
+### Disk Space
 For a Full Build on a New OS
 It is recommended you have a minimum 16GB SD card with at least 6GB free.
 Less space may be needed depending on what dependencies are already
 installed. You can recover most of the disk space after the build
 by running the DELETE menu pick.
 
+### RAM Memory
 RPI needs 1GB or RAM memory and it is suggested you temporarily
 disable the desktop and run in terminal mode.  This can be done using
 
     sudo raspi-config
 
 Select ***Boot Options***, ***B1 Desktop / CLI*** then ***B1 or B2 Console***    
-    
+
+### Changing install_dir 
+***cv3-menu-install.sh*** will create a working or install folder per
+***install_dir***. This folder will store downloaded opencv source
+and build files. Default location is ***/home/pi/tmp_cv3***  
 You can change the opencv install location by editing
 the cv3-install-menu.sh using nano and changing the
 ***install_dir*** variable.
 
+In nano edit ***install_dir*** variable where mnt is your mount path location
+Note the ***tmp_cv3** folder will automatically be created when the menu
+is restarted.  See sample mount instructions below.
+
+    install_dir='/home/pi/mnt'
+
+ctrl-x y to save change and exit. Run ***cv3-install.menu.sh***
+and the script will create the ***/home/pi/mnt/tmp_cv3*** folder
+on the mounted USB drive. To check free disk space run
+
+    df -h
+    
+### Change opencv_ver
 The opencv version number can also be change using the
 ***opencv_ver*** variable.  The version number will be verified at launch
 against repo at https://github.com/Itseez/opencv/archive/
 See  https://github.com/opencv/opencv/releases
 and https://github.com/opencv/opencv_contrib/releases for valid zip versions
+
 
 You will be asked to reboot during some installation steps.
 If you answer yes on successful completion of a step, you will be
@@ -110,10 +131,7 @@ https://github.com/Tes3awy/OpenCV-3.2.0-Compiling-on-Raspberry-Pi
 Users will be prompted to review output for errors and elect to continue.  You can repeat a
 particular step from the menu if required to correct any errors.
 
-***cv3-menu-install.sh*** will create a working or install folder per
-***install_dir***. This folder will store downloaded opencv source
-and build files. Default location is ***/home/pi/tmp_cv3***
-
+### Mount External USB Storage
 ***IMPORTANT*** If there is limited space on the Raspbian SD card
 you may want to change ***install_dir*** variable to point to
 an external storage drive.
@@ -124,6 +142,9 @@ an external storage drive.
 Change the ***install_dir*** variable to point to the desired mount location
 or a symbolic link to the desired external storage device. ctrl-x y to save
 and exit nano. For more details see example mount commands below.
+
+For more details on mount external USB storage   
+see https://www.htpcguides.com/properly-mount-usb-storage-raspberry-pi/
 
 Sample commands to mount and use an external ntfs USB hard drive.
 Plug ntfs formatted disk into a RPI USB slot.  From SSH or terminal session
@@ -138,16 +159,6 @@ use sample commands below. (Note) modify to suit your conditions
     sudo mount -t ntfs-3g /dev/sda1 /home/pi/mnt
     cd ~/opencv-setup
     nano cv3-install-menu.sh
-
-In nano edit ***install_dir*** variable per
-
-    install_dir='/home/pi/mnt/tmp_cv3'
-
-ctrl-x y to save change and exit. Run ***cv3-install.menu.sh***
-and the script will create the ***/home/pi/mnt/tmp_cv3*** folder
-on the mounted USB drive. To check free disk space run
-
-    df -h
 
 ## Testing Build
 To Test build run python or python3
