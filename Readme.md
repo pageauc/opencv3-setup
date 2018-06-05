@@ -126,12 +126,12 @@ You will be asked to reboot during some installation steps.
 If you answer yes on successful completion of a step, you will be
 sent to the next step otherwise you will be sent to the terminal
 to review errors or back to the main menu as appropriate.
-You may see warnings or not
-found messages and this is normal.  Eg tesseract ocr Not Found.
+You may see warnings or not found messages and this is normal.  
+ Eg tesseract (OCR) Not Found.
 
 Users will be prompted to review output for errors and elect to continue.
-You can repeat a particular step from the menu if required to after
-correcting or resolving any errors.
+You can repeat a particular step from the menu if required after
+correcting or resolving any issues or errors.
 
 ## Mount External USB Storage
 ***IMPORTANT*** If there is limited space on the Raspbian SD card
@@ -174,8 +174,9 @@ At the >>> python prompt enter the following
 
 You should see output indicating the opencv version installed.
 Press ctrl-d to exit python interpreter
+
 See my other github repo at https://github.com/pageauc
-for various opencv motion and camera projects.
+for various opencv motion and opencv camera projects.
 
 ## Credits
 Script Steps Based on GitHub Repo
