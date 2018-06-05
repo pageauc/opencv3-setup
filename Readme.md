@@ -133,6 +133,21 @@ and the script will create the ***/home/pi/mnt/tmp_cv3*** folder
 on the mounted USB drive. To check free disk space run
 
     df -h 
+
+## Testing Build
+To Test build run python or python3
+
+    python3
+    
+At the >>> python prompt enter the following
+
+    import cv2
+    cv2.__version__
+    
+You should see output indicating the opencv version installed.   
+Press ctrl-d to exit python interpreter   
+See my other github repo at https://github.com/pageauc     
+for various opencv motion and camera projects.
     
 ## Credits
 This install is based on   
