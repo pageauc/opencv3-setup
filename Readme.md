@@ -84,8 +84,10 @@ by running the DELETE menu pick.
 RPI needs 1GB or RAM memory and it is suggested you temporarily
 disable the desktop and run in terminal mode.  This can be done using
 
-sudo raspi-config
+    sudo raspi-config
 
+Select ***Boot Options***, ***B1 Desktop / CLI*** then ***B1 or B2 Console***    
+    
 You can change the opencv install location by editing
 the cv3-install-menu.sh using nano and changing the
 ***install_dir*** variable.
