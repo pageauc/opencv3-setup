@@ -563,6 +563,19 @@ function do_upgrade()
 }
 
 #------------------------------------------------------------------------------
+function do_log ()
+{
+  if [ -f "$LOG_FILE" ] ; then
+     more $LOG_FILE
+     do_main_menu
+  else
+     echo "Log File Not Found $LOG_FILE"
+     do_anykey
+     do_main_menu
+  fi
+}
+
+#------------------------------------------------------------------------------
 function do_about()
 {
   whiptail --title "About" --msgbox "\
@@ -577,7 +590,7 @@ https://github.com/Itseez/opencv/archive/
 when this menu script is run.
 
 Prerequisites
-1 - RPI connected to Working Internet Connection
+1 - RPI 2 or 3 Connected to Working Internet Connection
 2 - Recent Jessie or Stretch Raspbian Release
     Recommended min 16GB SD card with at least 6 GB Free.
     if Free disk space is low or You have a smaller system SD.
@@ -607,7 +620,8 @@ function do_main_menu ()
   "4 INSTALL $OPENCV_VER" "Run make install (Copy Files to production)" \
   "5 DELETE" "$INSTALL_DIR Source Folder and Files" \
   "6 UPGRADE" "$0 $PROG_VER Files from GitHub" \
-  "7 ABOUT" "Information about this program" \
+  "7 LOG" "View Log File cv3-log.txt" \
+  "8 ABOUT" "Information about this program" \
   "q QUIT" "Exit This Menu Program"  3>&1 1>&2 2>&3)
 
   RET=$?
@@ -627,7 +641,9 @@ function do_main_menu ()
             do_main_menu ;;
       6\ *) do_upgrade
             do_main_menu ;;
-      7\ *) do_about
+      7\ *) do_log
+            do_main_menu ;;
+      8\ *) do_about
             do_main_menu ;;
       q\ *) echo ""
             echo "$0 $PROG_VER    written by Claude Pageau"
