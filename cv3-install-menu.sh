@@ -2,31 +2,55 @@
 # Script to assist with installing OpenCV3
 # If problems are encountered exit to command to try to resolve
 # Then retry menu pick again or continue to next step
-prog_ver='ver 1.2'
+PROG_VER='ver 2.0'
+PROG_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" # folder location of this script
+LOG_FILE="$PROG_DIR/cv3-log.txt"
 
-opencv_ver='3.4.1'   # This needs to be a valid opencv3 version number
+OPENCV_VER='3.4.1'   # This needs to be a valid opencv3 version number
                      # See https://github.com/opencv/opencv/releases
 
-install_dir='/home/pi/tmp_cv3'    # Working folder for Download/Compile of opencv files
+INSTALL_DIR='/home/pi/tmp_cv3'    # Working folder for Download/Compile of opencv files
                                   # Note Use symbolic link to external drive mount point
                                   # if sd card too small  Min 5-6 GB Free Space is Needed
 
+# Get Total Memory
+TOTAL_MEM=$(free -m | grep Mem | tr -s " " | cut -f 2 -d " ")
+# Get Total Swap Memory
+TOTAL_SWAP=$(free -m | grep Swap | tr -s " " | cut -f 2 -d " ")
+
+# Set the number of cores for Compile make
+# 1G memory gets two cores otherwise only one both get 1024 MB Swap
+if [ "$TOTAL_MEM" -gt "512" ] ; then
+    COMPILE_CORES="-j2"
+else
+    COMPILE_CORES="-j1"
+fi
+
+# Create Log File if it Does Not Exist
+if [ ! -f $LOG_FILE ] ; then
+   echo "$0 $PROG_VER OPENCV_VER=$OPENCV_VER" > $LOG_FILE
+   uname -a >> $LOG_FILE
+   echo " ----- Start CPU Info -----" >> $LOG_FILE
+   cat /proc/cpuinfo >> $LOG_FILE
+   echo "------ End CPU Info -------" >> $LOG_FILE
+fi
+
 clear
-echo "$0 $prog_ver    written by Claude Pageau"
+echo "$0 $PROG_VER    written by Claude Pageau"
 echo ""
-opencv_zip="https://github.com/Itseez/opencv/archive/$opencv_ver.zip"
-echo "Checking opencv version $opencv_ver"
+opencv_zip="https://github.com/Itseez/opencv/archive/$OPENCV_VER.zip"
+echo "Checking opencv version $OPENCV_VER"
 
 # Check if there is a url at the destination link
 wget -S --spider $opencv_zip 2>&1 | grep -q 'HTTP/1.1 200 OK'
 if [ $? -eq 0 ]; then
-    echo "Variable opencv_ver=$opencv_ver Is a Valid opencv Version"
+    echo "Variable OPENCV_VER=$OPENCV_VER Is a Valid opencv Version"
     sleep 4
 else
-    echo "--------------------------------------------"
-    echo "ERROR: $opencv_zip Not Found."
+    echo "----------------- ERROR ------------------------"
+    echo "File Not Found at $opencv_zip"
     echo "1 Check Internet Connection."
-    echo "2 Check variable opencv_ver=$opencv_ver"
+    echo "2 Check variable OPENCV_VER=$OPENCV_VER"
     echo "  Using url verify opencv zip release is valid"
     echo "  at https://github.com/opencv/opencv/releases"
     echo ""
@@ -34,9 +58,9 @@ else
     echo ""
     echo "    nano $0"
     echo ""
-    echo "Edit variable opencv_ver=$opencv_ver"
+    echo "Edit variable OPENCV_VER=$OPENCV_VER"
     echo "Change to a valid opencv release number eg 3.4.1"
-    echo ""
+    echo "------------------------------------------------"
     echo "Bye ..."
 fi
 
@@ -55,28 +79,77 @@ function do_anykey ()
 }
 
 #------------------------------------------------------------------------------
+function do_swap_check ()
+{
+    if [ "$TOTAL_SWAP" -gt "1000" ] ; then
+        echo "Total Mem is $TOTAL_MEM MB so $TOTAL_SWAP MB Swap is OK"
+    else
+        if [ ! -f "/etc/dphys-swapfile.bak" ] ; then
+            echo "Temporarily Increase Swap Space to 1024 MB"
+            sudo cp /etc/dphys-swapfile /etc/dphys-swapfile.bak
+            sudo cp $PROG_DIR/dphys-swapfile.1024 /etc/dphys-swapfile
+            echo "Stop Swap  Wait ..."
+            sudo /etc/init.d/dphys-swapfile stop
+            echo "Start Swap Wait ..."
+            sudo /etc/init.d/dphys-swapfile start
+            echo "Done ..."
+            TOTAL_SWAP=$(free -m | grep Swap | tr -s " " | cut -f 2 -d " ")
+            echo "Total Mem $TOTAL_MEM MB Swap is Now OK at $TOTAL_SWAP MB"
+        fi
+    fi
+}
+
+function do_swap_back ()
+{
+    if [ -f "/etc/dphys-swapfile.bak" ] ; then
+        echo "Found File /etc/dphys-swapfile.bak"
+        echo "Returning Swap Settings Back Previous"
+        sudo cp /etc/dphys-swapfile.bak /etc/dphys-swapfile
+        sudo rm /etc/dphys-swapfile.bak
+        echo "Stop Swap  Wait ..."
+        sudo /etc/init.d/dphys-swapfile stop
+        echo "Start Swap Wait ..."
+        sudo /etc/init.d/dphys-swapfile start
+        echo "Done ..."
+        TOTAL_SWAP=$(free -m | grep Swap | tr -s " " | cut -f 2 -d " ")
+        echo "Total Mem $TOTAL_MEM MB Total Swap is $TOTAL_SWAP MB"
+    fi
+}
+
+#------------------------------------------------------------------------------
 function do_rpi_update ()
 {
    clear
    # Update Raspbian to Lastest Releases
-   echo "STEP 1 - Update/Upgrade Raspbian Please Wait ..."
-   echo ""
-   echo "sudo apt-get update    Please Wait ..."
-   echo ""
+   DATE=$(date)
+   echo "$DATE STEP 1 - Update/Upgrade Raspbian Please Wait ..." | tee -a $LOG_FILE
+   echo "$DATE sudo apt-get update    Please Wait ..." | tee -a $LOG_FILE
+   START=$(date +%s)
+   echo "-- Update Start: $DATE" | tee -a $LOG_FILE
    sudo apt-get -y update
-   echo "Done Raspbian Update ...."
+   DATE=$(date)
+   END=$(date +%s)
+   DIFF=$((END - START))
+   echo "-- Update End: $DATE" | tee -a $LOG_FILE
+   echo "-- Update Took: $(($DIFF / 60)) min $(($DIFF % 60)) sec" | tee -a $LOG_FILE
    echo ""
-   echo "sudo apt-get upgrade   Please Wait ..."
-   echo ""
+   DATE=$(date)
+   echo "$DATE sudo apt-get upgrade   Please Wait ..."
+   START=$(date +%s)
+   echo "-- Upgrade Start: $DATE" | tee -a $LOG_FILE
    sudo apt-get -y upgrade
+   DATE=$(date)
+   END=$(date +%s)
+   DIFF=$((END - START))
+   echo "-- Upgrade End: $DATE" | tee -a $LOG_FILE
+   echo "-- Upgrade Took: $(($DIFF / 60)) min $(($DIFF % 60)) sec" | tee -a $LOG_FILE
    sudo apt-get -y autoremove
    echo ""
-   echo "Done Raspbian Upgrade ..."
-   echo ""
-   echo "After a Reboot Run this menu script and Select"
+   echo "------------------ STEP 1 INSTRUCTIONS --------------------"
+   echo "If there are Significant Changes then a Reboot Is Required."
+   echo "After Reboot Run this menu script again and Select"
    echo "Menu Pick: 2 DEP Install Build Dependencies and Download Source"
-   echo ""
-   echo "If there were Significant Changes then Reboot Recommended"
+   echo "-----------------------------------------------------------"
    read -p "Reboot Now? (y/n)? " choice
    case "$choice" in
      y|Y ) echo "yes"
@@ -93,27 +166,32 @@ function do_cv3_dep ()
 {
    clear
    # Install opencv3 build dependencies
-   echo "STEP 2 - Install opencv $opencv_ver Build Dependencies"
+   echo "STEP 2 - Install opencv $OPENCV_VER Build Dependencies"
    echo ""
-   echo "This step will install opencv $opencv_ver Build Dependencies"
-   echo "Then Download and unzip opencv source files to $install_dir Folder"
+   echo "This step will install opencv $OPENCV_VER Build Dependencies"
+   echo "Then Download and unzip opencv source files to $INSTALL_DIR Folder"
    echo ""
    df -h
    echo ""
+   echo "---------------- STEP 2 INSTRUCTIONS ---------------"
    echo "A Fresh Build Needs at Least 16GB SD with 5-6 GB Free. Free Space"
    echo "could be less depending on what dependencies are already installed"
    echo "If you are using a smaller system SD or are Low on Free Disk Space."
-   echo "You can mount USB media and change variable install_dir in this script."
+   echo "You can mount USB media and change variable INSTALL_DIR in this script."
    echo "Installs Will Take a While so be Patient ..."
-   read -p "Continue? (y/n)? " choice
+   echo "----------------------------------------------------"
+   read -p "Install Dep and Source? (y/n)? " choice
    case "$choice" in
     n|N ) do_main_menu
           ;;
       * ) echo ""
           ;;
    esac
-   echo "STEP 2-1 Installing Dependencies  Please Wait ..."
+   DATE=$(date)
+   echo "$DATE STEP 2-1 Installing Dependencies  Please Wait ..." | tee -a $LOG_FILE
    echo ""
+   START=$(date +%s)
+   echo "-- apt-get-install Start: $DATE" | tee -a $LOG_FILE
    sudo apt-get install -y build-essential
    sudo apt-get install -y git
    sudo apt-get install -y cmake
@@ -144,14 +222,19 @@ function do_cv3_dep ()
    sudo apt-get install -y libgtkglext1-dev
    sudo apt-get install -y v4l-utils
    sudo apt-get install -y gphoto2
+   DATE=$(date)
+   END=$(date +%s)
+   DIFF=$((END - START))
+   echo "-- apt-get-install End: $DATE" | tee -a $LOG_FILE
+   echo "-- apt-get-install Took: $(($DIFF / 60)) min $(($DIFF % 60)) sec" | tee -a $LOG_FILE
    echo "Perform sudo apt-get autoremove"
    echo ""
    sudo apt-get -y autoremove
-   if [ ! -d $install_dir ] ; then
-       echo "Create dir $install_dir"
-       mkdir $install_dir
+   if [ ! -d $INSTALL_DIR ] ; then
+       echo "Create dir $INSTALL_DIR"
+       mkdir $INSTALL_DIR
    fi
-   cd $install_dir
+   cd $INSTALL_DIR
    echo ""
    echo "Install pip"
    rm get-pip.py
@@ -161,23 +244,39 @@ function do_cv3_dep ()
    echo "Install numpy"
    sudo pip install numpy
    echo ""
-   echo "Done Install of Build Essentials and Dependencies ..."
+   echo "$DATE Done Install of Build Essentials and Dependencies ..." | tee -a $LOG_FILE
    echo ""
-   echo "STEP 2-2 Download and unzip opencv $opencv_ver Source Files"
+   DATE=$(date)
+   echo "$DATE STEP 2-2 Download and unzip opencv $OPENCV_VER Source Files" | tee -a $LOG_FILE
    echo ""
-   wget -O opencv.zip https://github.com/Itseez/opencv/archive/$opencv_ver.zip
+   START=$(date +%s)
+   echo "-- opencv.zip Start: $DATE" | tee -a $LOG_FILE
+   wget -O opencv.zip https://github.com/Itseez/opencv/archive/$OPENCV_VER.zip
    unzip -o opencv.zip
+   DATE=$(date)
+   END=$(date +%s)
+   DIFF=$((END - START))
+   echo "-- opencv.zip End: $DATE" | tee -a $LOG_FILE
+   echo "-- opencv.zip Took: $(($DIFF / 60)) min $(($DIFF % 60)) sec" | tee -a $LOG_FILE
    echo ""
-   echo "STEP 3-3 Download and unzip opencv $opencv_ver Contrib Files"
+   DATE=$(date)
+   echo "$DATE STEP 2-3 Download and unzip opencv $OPENCV_VER Contrib Files" | tee -a $LOG_FILE
    echo ""
-   wget -O opencv_contrib.zip https://github.com/Itseez/opencv_contrib/archive/$opencv_ver.zip
+   START=$(date +%s)
+   echo "-- opencv.zip Start: $DATE" | tee -a $LOG_FILE
+   wget -O opencv_contrib.zip https://github.com/Itseez/opencv_contrib/archive/$OPENCV_VER.zip
    unzip -o opencv_contrib.zip
+   DATE=$(date)
+   END=$(date +%s)
+   DIFF=$((END - START))
+   echo "-- opencv_contrib.zip End: $DATE" | tee -a $LOG_FILE
+   echo "-- opencv_contrib.zip Took: $(($DIFF / 60)) min $(($DIFF % 60)) sec" | tee -a $LOG_FILE
    echo ""
-   echo "Done Requirements for OpenCV $opencv_ver Source Build."
+   echo "Done Requirements for OpenCV $OPENCV_VER Source Build."
    echo ""
    df -h
    echo ""
-   read -p "Proceed to STEP 3 COMPILE (y/n)?" choice
+   read -p "Proceed to STEP 3 COMPILE (y/n)? " choice
    case "$choice" in
      y|Y ) do_cv3_compile
            ;;
@@ -189,140 +288,210 @@ function do_cv3_dep ()
 #------------------------------------------------------------------------------
 function do_cv3_compile ()
 {
-   if [ ! -d $install_dir ] ; then
-       echo "ERROR - $install_dir Director Not Found"
-       echo "        Retry Previous STEP 2 DEP Menu Pick"
-       do_anykey
+   if [ ! -d $INSTALL_DIR ] ; then
+       clear
+       echo "---------- STEP 3 ERROR --------------"
+       echo " $INSTALL_DIR Director Not Found."
+       echo " You Need to Run STEP 2 DEP Menu Pick"
+       echo " in Order to Install Dependencies"
+       echo " and Download Opencv3 Source Files"
+       echo "--------------------------------------"
+       read -p "Proceed to STEP 2 DEP (y/n)? " choice
+       case "$choice" in
+         y|Y ) do_cv3_dep
+               ;;
+          * ) do_main_menu
+              ;;
+       esac
    fi
-   cd $install_dir
+   cd $INSTALL_DIR
    clear
-   echo "STEP 3 Run cmake Prior to Compiling opencv $opencv_ver with make -j1"
+   DATE=$(date)
+   echo "$DATE STEP 3 Run cmake Prior to Compiling opencv $OPENCV_VER with make -j1" | tee -a $LOG_FILE
    echo ""
-   build_dir=$install_dir/opencv-$opencv_ver/build
+   build_dir=$INSTALL_DIR/opencv-$OPENCV_VER/build
    if [ ! -d "$build_dir" ] ; then
      echo "Create build directory $build_dir"
      mkdir $build_dir
    fi
    cd $build_dir
-   echo "Current Folder is"
-   pwd
+   echo "------------- STEP 3 INSTRUCTIONS -----------------"
+   echo " cmake Will Take a Few Minutes ...."
+   echo " At End of cmake You Will See a Messages"
+   echo " Configuring done and Generating done"
+   echo " These Will Take a While to Finish"
+   echo " So Be Patient ....."
+   echo "---------------------------------------------------"
+   read -p "Start cmake (y/n)? " choice
+   case "$choice" in
+     n|Y ) do_main_menu
+           ;;
+       * ) echo "$DATE STEP 3-1 Run cmake for opencv $OPENCV_VER" | tee -a $LOG_FILE
+           ;;
+   esac
+   START=$(date +%s)
+   echo "-- cmake Start: $DATE" | tee -a $LOG_FILE
+   cat /proc/device-tree/model | grep -aq "Raspberry Pi 3"
+   if [ $? -eq 0 ]; then
+       # This optimizes for Raspberry Pi 3 Models but is turned off for RPI B+
+       echo "-- Compile for Non Raspberry Pi 3 ENABLE NEON=ON" | tee -a $LOG_FILE
+       cmake -D CMAKE_BUILD_TYPE=RELEASE \
+        -D CMAKE_INSTALL_PREFIX=/usr/local \
+        -D INSTALL_C_EXAMPLES=OFF \
+        -D INSTALL_PYTHON_EXAMPLES=ON \
+        -D OPENCV_EXTRA_MODULES_PATH=$INSTALL_DIR/opencv_contrib-$OPENCV_VER/modules \
+        -D BUILD_EXAMPLES=ON \
+        -D ENABLE_NEON=ON ..
+   else
+       echo "-- Compile for Raspberry Pi 3 ENABLE NEON=OFF" | tee -a $LOG_FILE
+       cmake -D CMAKE_BUILD_TYPE=RELEASE \
+        -D CMAKE_INSTALL_PREFIX=/usr/local \
+        -D INSTALL_C_EXAMPLES=OFF \
+        -D INSTALL_PYTHON_EXAMPLES=ON \
+        -D OPENCV_EXTRA_MODULES_PATH=$INSTALL_DIR/opencv_contrib-$OPENCV_VER/modules \
+        -D BUILD_EXAMPLES=ON \
+        -D ENABLE_NEON=OFF ..
+   fi
+   echo "----------------------- End of cmake Messages -------------------------"
+   DATE=$(date)
+   END=$(date +%s)
+   DIFF=$((END - START))
+   echo "-- cmake End: $DATE" | tee -a $LOG_FILE
+   echo "-- cmake Took: $(($DIFF / 60)) min $(($DIFF % 60)) sec" | tee -a $LOG_FILE
+   echo "---------- STEP 3-1 INSTRUCTIONS ------------"
+   echo " 1- Review cmake messages above for Errors"
+   echo " 2- Check that Python 2 and Python 3 sections"
+   echo "    Have directory path entries"
+   echo " 3- Check cvconfig.h points to a build folder"
+   echo " 4- Last Messages should say"
+   echo "-- Configuring done"
+   echo "-- Generating done"
+   echo "-- build files have been written to: ..."
+   echo "---------------------------------------------"
+   read -p "Was cmake Successful (y/n)? " choice
    echo ""
-   echo "            IMPORTANT"
-   echo "cmake Will Take a Few Minutes ...."
-   echo "At End of cmake You Will See a Message"
-   echo "configuring done"
-   echo "It Will Take a While to Finish So Be Patient ....."
-   echo ""
-   read -p "Press Enter to Continue"
-
-   cmake -D CMAKE_BUILD_TYPE=RELEASE \
-	-D CMAKE_INSTALL_PREFIX=/usr/local \
-	-D INSTALL_C_EXAMPLES=OFF \
-	-D INSTALL_PYTHON_EXAMPLES=ON \
-	-D OPENCV_EXTRA_MODULES_PATH=$install_dir/opencv_contrib-$opencv_ver/modules \
-	-D BUILD_EXAMPLES=ON \
-	-D ENABLE_NEON=ON ..
-
-    echo "---------------------------------------"
-    echo ""
-    echo " Review cmake messages above for Errors"
-    echo " Check that Python 2 and Python 3 sections"
-    echo " Have directory path entries"
-    echo " Also Check cvconfig.h points to a build folder"
-    echo " Last Messages should say"
-    echo "-- Configuring done"
-    echo "-- Generating done"
-    echo "-- build files have been written to:"
-    echo ""
-    echo "---------------------------------------"
-    echo ""
-    read -p "Was cmake Successful (y/n)? " choice
-    echo ""
-    case "$choice" in
-        y|Y ) echo "IMPORTANT"
-              echo ""
-              echo "Full Compile of openCV $opencv_ver will take approx 3 to 4 hours ...."
-              echo "Once Compile is started, Go for a nice Long Walk"
-              echo "or Binge watch Game of Thrones or Something Else....."
-              echo ""
-              read -p "Start Compile Now? (y/n)? " choice
-              case "$choice" in
-                y|Y ) echo "Start Compile of opencv $opencv_ver"
-                      make -j1
-                      echo "--------------------------------------------"
-                      echo " Check above for Compile Errors"
-                      echo "--------------------------------------------"
-                      echo "If Errors Found Please Investigate Problem"
-                      read -p "Was Compile make Successful? (y/n)? " choice
-                      case "$choice" in
-                        y|Y ) do_cv3_install
-                              ;;
-                          * ) exit 1
-                              ;;
-                      esac
-                      ;;
-                  * ) do_main_menu
-                      ;;
-              esac
-              ;;
-        * ) echo "If cmake Failed. Investigate Problem and Try again"
-            echo "You Can Run make clean to Clear Existing cmake"
-            echo "and force a full compile from scratch"
-            echo "Otherwise Compile Will Continue Where It Left Off"
-            echo "Once you Resolve make Error Issues."
-            echo ""
-            read -p "Run make clean (y/n)? " choice
-            case "$choice" in
-              n|N ) echo "No make clean Performed"
-                    echo "Exit to Terminal to Review cmake Messages."
-                    exit 1
-                    ;;
-                * ) echo "Running sudo make clean"
-                    sudo make clean
-                    echo "Done make clean"
-                    echo "Ready to Try Full cmake Once Problems Resolved."
-                    exit 1
-                    ;;
-            esac
-            ;;
-    esac
+   case "$choice" in
+       y|Y ) echo "--------------- STEP 3-2 IMPORTANT ------------------------"
+             echo "Full Compile of openCV $OPENCV_VER will take many hours ..."
+             echo "A single core RPI with 512 MB RAM can take approx 27 hours"
+             echo "A quad core RPI with 1034 MB RAM can take 3 - 6 hours"
+             echo ""
+             echo "Once Compile is started, Go for a nice Long Walk"
+             echo "or Binge watch Game of Thrones or Something Else....."
+             echo "-----------------------------------------------------------"
+             read -p "Start Compile Now? (y/n)? " choice
+             case "$choice" in
+               y|Y ) do_swap_check
+                     DATE=$(date)
+                     echo "$DATE STEP 3-2 Start Compile of opencv $OPENCV_VER" | tee -a $LOG_FILE
+                     START=$(date +%s)
+                     echo "-- make Start: $DATE" | tee -a $LOG_FILE
+                     make $COMPILE_CORES
+                     echo "--------------- End of make $COMPILE_CORES Messages ----------------"
+                     DATE=$(date)
+                     END=$(date +%s)
+                     DIFF=$((END - START))
+                     do_swap_back
+                     echo "-- make End: $DATE" | tee -a $LOG_FILE
+                     echo "-- make Took:  $(($DIFF / 60)) min $(($DIFF % 60)) sec" | tee -a $LOG_FILE
+                     echo "----------- STEP 3-2 INSTRUCTIONS --------------"
+                     echo "1- 1f Compile make $COMPILE_CORES is 100 percent"
+                     echo "   Proceed to STEP 4 make install"
+                     echo "2- If Less than 100 percent complete"
+                     echo "   Record Errors and Investigate Problem"
+                     echo "   and Retry 3 COMPILE Menu Pick"
+                     echo "   Compile make will Continue where it Left Off"
+                     echo "------------------------------------------------"
+                     read -p "Was Compile make Successful? (y/n)? " choice
+                     case "$choice" in
+                       y|Y ) do_cv3_install
+                             ;;
+                         * ) exit 1
+                             ;;
+                     esac
+                     ;;
+                 * ) do_main_menu
+                     ;;
+             esac
+             ;;
+       * ) echo "------------ STEP 3-1 INSTRUCTIONS ---------------"
+           echo "If cmake Failed. Investigate Problem and Try again"
+           echo "You Can Run make clean to Clear Existing cmake"
+           echo "and force a full compile from scratch"
+           echo "Otherwise Compile Will Continue Where It Left Off"
+           echo "Once you Resolve make Error Issues."
+           echo "--------------------------------------------------"
+           read -p "(optional) Run make clean (y/n)? " choice
+           case "$choice" in
+             y|Y ) echo "Running sudo make clean"
+                   sudo make clean
+                   echo "Done make clean"
+                   echo "Ready to Try Full cmake Once Problems Resolved."
+                   ;;
+               * ) echo "No make clean Performed"
+                   ;;
+           esac
+           echo "Exit to Terminal to Review Errors"
+           exit 1
+           ;;
+   esac
 }
 
 #------------------------------------------------------------------------------
 function do_cv3_install ()
 {
     clear
-    echo "STEP 4 - Perform OpenCV $opencv_ver make install"
-    echo ""
+    DATE=$(date)
+    echo "$DATE STEP 4 - Perform OpenCV $OPENCV_VER make install"
+    echo "--------------- STEP 4 INSTRUCTIONS ----------------------------"
     echo "This Step will copy the compiled code to the system folders"
     echo "WARNING - Do NOT run this unless you have successfully completed"
     echo "          STEP 3 COMPILE"
+    echo "----------------------------------------------------------------"
     read -p "Run make install Now? (y/n)? " choice
     case "$choice" in
-       y|Y ) echo "Running make install"
+       y|Y ) echo "Running make install  Wait ...."
              echo ""
              ;;
          * ) do_main_menu
              ;;
     esac
-    if [ -d "$install_dir/opencv-$opencv_ver/build" ] ; then
-      cd $install_dir/opencv-$opencv_ver/build
-      sudo make install
-      sudo ldconfig
-      echo "Reboot to Complete Install of OpenCV $open_ver"
-      read -p "Reboot Now? (y/n)? " choice
-      case "$choice" in
-         y|Y ) echo "Rebooting Now to Enable Changes"
-               sudo reboot
-               ;;
-           * ) do_main_menu
-               ;;
-      esac
+    if [ -d "$INSTALL_DIR/opencv-$OPENCV_VER/build" ] ; then
+       cd $INSTALL_DIR/opencv-$OPENCV_VER/build
+       DATE=$(date)
+       echo "$DATE STEP 4 Start make install of opencv $OPENCV_VER" | tee -a $LOG_FILE
+       START=$(date +%s)
+       echo "-- make install Start: $DATE" | tee -a $LOG_FILE
+       sudo make install
+       sudo ldconfig
+       DATE=$(date)
+       END=$(date +%s)
+       DIFF=$((END - START))
+       echo "-- make install End: $DATE" | tee -a $LOG_FILE
+       echo "-- make install Took:  $(($DIFF / 60)) min $(($DIFF % 60)) sec" | tee -a $LOG_FILE
+       echo "--------------- STEP 4 INSTRUCTIONS -------------"
+       echo "You Need to Reboot to Complete Install of OpenCV $open_ver"
+       echo "-------------------------------------------------"
+       read -p "Reboot Now? (y/n)? " choice
+       case "$choice" in
+          y|Y ) echo "Rebooting Now to Enable Changes"
+                sudo reboot
+                ;;
+            * ) do_main_menu
+                ;;
+       esac
     else
-      echo "ERROR- Directory Not Found  /home/pi/opencv-$opencv_ver/build"
-      echo "Go Back to Earlier Menu STEP"
-      echo ""
-      do_anykey
+       echo "------------------ STEP 4 ERROR ---------------------"
+       echo " Directory Not Found $INSTALL_DIR/opencv-$OPENCV_VER/build"
+       echo " You Need to Go Back to Step 2 to Install Source Files"
+       echo "-----------------------------------------------------"
+       read -p "Proceed to STEP 2 DEP (y/n)? " choice
+       case "$choice" in
+         y|Y ) do_cv3_dep
+               ;;
+          * ) do_main_menu
+              ;;
+       esac
     fi
 }
 
@@ -330,34 +499,42 @@ function do_cv3_install ()
 function do_cv3_cleanup ()
 {
     clear
-    echo "5 - Delete OpenCV $opencv_ver Source Folders and zip files (optional)"
+    if [ ! -d $INSTALL_DIR ] ; then
+        echo "----------- STEP 5 ERROR -------------------"
+        echo " Could Not File $INSTALL_DIR"
+        echo " You Need to Run MENU PICK 2 DEP "
+        echo " If You Have Not Previously Done This"
+        echo "--------------------------------------------"
+        do_anykey
+    fi
+    echo "5 - Delete OpenCV $OPENCV_VER Source Folders and zip files (optional)"
     echo ""
     echo "Current System Disk Status"
     df -h
-    echo ""
-    echo "Temporary Source Files are in $install_dir Folder"
-    echo "You can DELETE this folder and recover disk space"
-    du -sh $install_dir
-    echo ""
-    read -p "DELETE $install_dir Now? (y/n) " choice
+    echo "------------- STEP 5 INSTRUCTIONS ---------------"
+    echo "Temporary Source Files are in $INSTALL_DIR Folder"
+    echo "You can DELETE this Folder and recover disk space"
+    du -sh $INSTALL_DIR
+    echo "-------------------------------------------------"
+    read -p "DELETE $INSTALL_DIR Now? (y/n) " choice
     case "$choice" in
-       y|Y ) read -p "Are you Sure? (y/n)" choice
+       y|Y ) read -p "Are you Sure? (y/n) " choice
              case "$choice" in
                 y|Y ) echo ""
                       echo "BEFORE - Disk Space Status"
                       df -h
-                      echo "Deleting $install_dir"
+                      echo "Deleting $INSTALL_DIR"
                       ;;
                   * ) do_main_menu
                       ;;
              esac
-             cd $install_dir
+             cd $INSTALL_DIR
              cd ..
-             sudo rm -R $install_dir
+             sudo rm -R $INSTALL_DIR
              echo ""
              echo "AFTER - Disk Space Status"
              df -h
-             echo "Done Removing $install_dir Source Folders and zip files .."
+             echo "Done Removing $INSTALL_DIR Source Folders and zip files .."
              do_anykey
              ;;
        n|N ) echo "Back To Main Menu"
@@ -389,13 +566,13 @@ function do_upgrade()
 function do_about()
 {
   whiptail --title "About" --msgbox "\
-$0 $prog_ver written by Claude Pageau
+$0 $PROG_VER written by Claude Pageau
 GitHub https://github.com/pageauc/opencv3-setup
 
 This is a menu driven install script to download and
 compile opencv3 from source code. Default is opencv 3.3.0
-To change opencv_ver variable use nano to edit this script.
-The opencv_ver variable will be verified at
+To change OPENCV_VER variable use nano to edit this script.
+The OPENCV_VER variable will be verified at
 https://github.com/Itseez/opencv/archive/
 when this menu script is run.
 
@@ -405,7 +582,7 @@ Prerequisites
     Recommended min 16GB SD card with at least 6 GB Free.
     if Free disk space is low or You have a smaller system SD.
     You can mount USB memory or hard disk and change the
-    install_dir variable in this script to point to the new path.
+    INSTALL_DIR variable in this script to point to the new path.
 
 Instructions
 You will be asked to reboot during some installation steps.
@@ -423,13 +600,13 @@ https://github.com/Tes3awy/OpenCV-3.2.0-Compiling-on-Raspberry-Pi
 #------------------------------------------------------------------------------
 function do_main_menu ()
 {
-  SELECTION=$(whiptail --title "opencv $opencv_ver Compile Assist" --menu "Arrow/Enter Selects or Tab Key" 20 70 10 --cancel-button Quit --ok-button Select \
+  SELECTION=$(whiptail --title "opencv $OPENCV_VER Compile Assist" --menu "Arrow/Enter Selects or Tab Key" 20 70 10 --cancel-button Quit --ok-button Select \
   "1 UPDATE" "Run Raspbian Update and Upgrade" \
   "2 DEP" "Install Build Dependencies and Download Source" \
-  "3 COMPILE $opencv_ver" "Run cmake and make (Takes 3-4 hours)" \
-  "4 INSTALL $opencv_ver" "Run make install (Copy Files to production)" \
-  "5 DELETE" "$install_dir Source Folder and Files" \
-  "6 UPGRADE" "$0 $prog_ver Files from GitHub" \
+  "3 COMPILE $OPENCV_VER" "Run cmake and make $COMPILE_CORES" \
+  "4 INSTALL $OPENCV_VER" "Run make install (Copy Files to production)" \
+  "5 DELETE" "$INSTALL_DIR Source Folder and Files" \
+  "6 UPGRADE" "$0 $PROG_VER Files from GitHub" \
   "7 ABOUT" "Information about this program" \
   "q QUIT" "Exit This Menu Program"  3>&1 1>&2 2>&3)
 
@@ -453,7 +630,7 @@ function do_main_menu ()
       7\ *) do_about
             do_main_menu ;;
       q\ *) echo ""
-            echo "$0 $prog_ver    written by Claude Pageau"
+            echo "$0 $PROG_VER    written by Claude Pageau"
             echo "Bye ..."
             exit 0 ;;
          *) whiptail --msgbox "Programmer error: unrecognized option" 20 60 1 ;;

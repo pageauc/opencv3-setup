@@ -28,7 +28,7 @@ echo "
 
 wget -O cv3-install-menu.sh https://raw.github.com/pageauc/opencv3-setup/master/cv3-install-menu.sh
 wget -O Readme.md https://raw.github.com/pageauc/opencv3-setup/master/Readme.md
-
+wget -O dphys-swapfile.1024 https://raw.github.com/pageauc/opencv3-setup/master/dphys-swapfile.1024
 echo "Done Download
 -------------------------------------------------------------
 2 - Make Required Files Executable"
