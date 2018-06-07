@@ -4,16 +4,13 @@
 ![cv3-install-menu](https://github.com/pageauc/opencv3-setup/blob/master/menu.png)
 
 ## Quick Install
-Easy Install of opencv3-setup onto a Raspberry Pi Computer with Recent
-Raspbian Jessie or Stretch Build (not tested with earlier versions).
-
-    curl -L https://raw.github.com/pageauc/opencv3-setup/master/setup.sh | bash
-
-From a computer logged into the RPI via SSH (Putty) session
-* Use mouse to highlight command above, right click in highlighted area,
-then right click and select copy.
-* Select SSH(Putty) window, mouse right click, paste. If RPI has an internet
- connection, command should download and run the [setup.sh](https://github.com/pageauc/opencv3-setup/blob/master/setup.sh) script.
+Step1 - Use mouse to highlight command below, Then right click copy on highlighted command[/b].
+Step2 - On a logged in RPI SSH terminal session[b] right click paste then Enter[/b] to Run [b]setupl.sh[/b] script
+[code]
+ curl -L https://raw.github.com/pageauc/opencv3-setup/master/setup.sh | bash 
+[/code]
+curl comand will run the GitHub [setup.sh](https://github.com/pageauc/opencv3-setup/blob/master/setup.sh)
+script that will install files and configure into the ***~/opencv3-setup*** folder.
 
 ***To Run***
 
