@@ -59,8 +59,8 @@ To Check free disk space run
 Start at Step 1 and follow instructions.
 
 ## Operation
-This menu driven install script will download and
-compile opencv3 from source code. Default is currently opencv ver 3.4.1
+This menu driven install script will download, compile and install opencv3
+from source code. Default is currently opencv ver 3.4.1
 
 The ***cv3-install.menu.sh*** script and menu picks will
 
