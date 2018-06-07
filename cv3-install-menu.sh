@@ -598,7 +598,7 @@ function do_upgrade()
 function do_log ()
 {
   if [ -f "$LOG_FILE" ] ; then
-     more $LOG_FILE
+     cat $LOG_FILE | more
      do_main_menu
   else
      echo "Log File Not Found $LOG_FILE"
@@ -625,7 +625,7 @@ Prerequisites
 1 - RPI 2 or 3 Connected to Working Internet Connection
 2 - Recent Jessie or Stretch Raspbian Release
     Recommended min 16GB SD card with at least 6 GB Free.
-    if Free disk space is low or You have a smaller system SD.
+    If Free disk space is Low or You have a Small system SD.
     You can mount USB memory or hard disk and change the
     INSTALL_DIR variable in this script to point to the new path.
 
@@ -648,7 +648,7 @@ function do_main_menu ()
   SELECTION=$(whiptail --title "opencv $OPENCV_VER Compile Assist" --menu "Arrow/Enter Selects or Tab Key" 20 70 10 --cancel-button Quit --ok-button Select \
   "1 UPDATE" "Run Raspbian Update and Upgrade" \
   "2 DEP" "Install Build Dependencies and Download Source" \
-  "3 COMPILE $OPENCV_VER" "Run cmake and make $COMPILE_CORES" \
+  "3 COMPILE $OPENCV_VER" "Run cmake and make $COMPILE_CORES (be patient)" \
   "4 INSTALL $OPENCV_VER" "Run make install (Copy Files to production)" \
   "5 DELETE" "$INSTALL_DIR Source Folder and Files" \
   "6 UPGRADE" "$0 $PROG_VER Files from GitHub" \
