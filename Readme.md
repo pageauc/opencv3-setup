@@ -63,24 +63,27 @@ Start at Step 1 and follow instructions.
 
 ## Operation
 This menu driven install script will download and
-compile opencv3 from source code. Default is opencv 3.3.0
+compile opencv3 from source code. Default is currently opencv ver 3.4.1
+
 The ***cv3-install.menu.sh*** script and menu picks will
 
 * Validate that OPENCV_VER variable setting is correct
-* Create cv3-log.txt if it does not exist
-* Automatically Set number of make cores. Two cores if 1 GB RAM detected,
-otherwise one core is set.
+* Create cv3-log.txt If It Does Not Exist
+* Automatically Set number of make cores. 2 cores if 1 GB RAM detected,
+otherwise 1 core is set.
 * Update/upgrade Raspbian for Raspberry Pi
 * Install build dependencies
 * Download opencv3 source zip files and unzip
+* Auto Detect RPI3 and set NEON compile directive for cmake to enhance cv3 performance
 * Run ***cmake*** to configure build
-* Temporarily Increase Swap memory during make if required
+* Temporarily Increase Swap memory to 1024 MB During make
+* Detect Total mem and set compile cores. -j2 for 1 GB, -j1 for the Rest
 * Run ***make*** to Compile opencv3 source code
 * Run ***make install*** to install new opencv python files
 * Run ***make clean*** to Delete Source directory to release disk space (optional).
 
 ## RAM Memory
-If RPI has 1GB of RAM memory make will use two cores, otherwise one core
+If RPI has 1GB of RAM memory make will use 2 cores -j2, otherwise 1 core -j1
 will be used. Both will have Swap Memory temporarily set to 1024 MB during
 the make compile process step. At the end of the compile the original Swap
 config will be returned.
@@ -137,13 +140,16 @@ You can repeat a particular step from the menu if required after
 correcting or resolving any issues or errors.
 
 ## Logging
-A log file called ***cv3_log.txt*** will be created to record the times
-for each operation.  Review the log to check how long various steps took
-to complete.  Delete the log file to clear. A new log will be created
-when you restart the ***cv3-install-menu.sh***.  The log will 
-span multiple sessions. You must manually delete per commands below to clear.
+A log file called ***cv3_log.txt*** will be created to record system
+information and the date/time and details for each operation.  
+Review the log to check how long various steps took to complete.
+On exit you will be prompted if you want to clear the log file.
+A backup copy will be saved to ***cv3_log.txt.bak***. A new log will be created
+. The log can span multiple sessions. You must intentionally clear the log
+from the LOG menu or per commands below to clear.
 
     cd ~/opencv3-setup
+    cp cv3-log.txt cv3-log.txt.bak
     rm cv3-log.txt
 
 ## Mount External USB Storage
