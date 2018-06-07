@@ -4,12 +4,12 @@
 ![cv3-install-menu](https://github.com/pageauc/opencv3-setup/blob/master/menu.png)
 
 ## Quick Install
-Step1 - Use mouse to highlight command below, Then right click copy on highlighted command[/b].
+Step1 - Use mouse to highlight command below, Then right click copy on highlighted command     
 Step2 - On a logged in RPI SSH terminal session[b] right click paste then Enter[/b] to Run [b]setupl.sh[/b] script
-[code]
- curl -L https://raw.github.com/pageauc/opencv3-setup/master/setup.sh | bash 
-[/code]
-curl comand will run the GitHub [setup.sh](https://github.com/pageauc/opencv3-setup/blob/master/setup.sh)
+
+    curl -L https://raw.github.com/pageauc/opencv3-setup/master/setup.sh | bash 
+
+The curl comand will run the GitHub [setup.sh](https://github.com/pageauc/opencv3-setup/blob/master/setup.sh)
 script that will install files and configure into the ***~/opencv3-setup*** folder.
 
 ***To Run***
