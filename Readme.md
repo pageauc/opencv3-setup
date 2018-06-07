@@ -5,7 +5,7 @@
 
 ## Quick Install
 Step1 - Use mouse to highlight command below, Then right click copy on highlighted command     
-Step2 - On a logged in RPI SSH terminal session[b] right click paste then Enter[/b] to Run [b]setupl.sh[/b] script
+Step2 - On a logged in RPI SSH terminal session right click paste then Enter to Run ***setupl.sh*** script
 
     curl -L https://raw.github.com/pageauc/opencv3-setup/master/setup.sh | bash 
 
