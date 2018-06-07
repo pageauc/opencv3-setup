@@ -68,18 +68,16 @@ compile opencv3 from source code. Default is currently opencv ver 3.4.1
 The ***cv3-install.menu.sh*** script and menu picks will
 
 * Validate that OPENCV_VER variable setting is correct
-* Create cv3-log.txt If It Does Not Exist
-* Automatically Set number of make cores. 2 cores if 1 GB RAM detected,
-otherwise 1 core is set.
+* Create cv3-log.txt If It Does Not Exist. Records system information, date/times of steps including execution time.
 * Update/upgrade Raspbian for Raspberry Pi
 * Install build dependencies
 * Download opencv3 source zip files and unzip
 * Auto Detect RPI3 and set NEON compile directive for cmake to enhance cv3 performance
 * Run ***cmake*** to configure build
 * Temporarily Increase Swap memory to 1024 MB During make
-* Detect Total mem and set compile cores. -j2 for 1 GB, -j1 for the Rest
+* Auto Detect Total RAM memory and set compile cores. -j2 for 1 GB, -j1 for the Rest
 * Run ***make*** to Compile opencv3 source code
-* Run ***make install*** to install new opencv python files
+* Run ***make install*** to install new opencv python files to production.
 * Run ***make clean*** to Delete Source directory to release disk space (optional).
 
 ## RAM Memory
