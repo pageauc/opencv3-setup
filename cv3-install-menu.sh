@@ -301,7 +301,7 @@ function do_cv3_cmake ()
 {
    if [ ! -d $INSTALL_DIR ] ; then
        clear
-       echo "---------- STEP 3 ERROR --------------"
+       echo "---------- STEP 3-1 ERROR --------------"
        echo " $INSTALL_DIR Director Not Found."
        echo " You Need to Run STEP 2 DEP Menu Pick"
        echo " in Order to Install Dependencies"
@@ -318,7 +318,7 @@ function do_cv3_cmake ()
    cd $INSTALL_DIR
    clear
    DATE=$(date)
-   echo "$DATE STEP 3 Run cmake Prior to Compiling opencv $OPENCV_VER with make -j1" | tee -a $LOG_FILE
+   echo "$DATE STEP 3-1 Run cmake Prior to Compiling opencv $OPENCV_VER with make -j1" | tee -a $LOG_FILE
    echo ""
    if [ ! -d "$BUILD_DIR" ] ; then
      echo "Create build directory $BUILD_DIR"
@@ -344,7 +344,7 @@ function do_cv3_cmake ()
    cat /proc/device-tree/model | grep -aq "Raspberry Pi 3"
    if [ $? -eq 0 ]; then
        # This optimizes for Raspberry Pi 3 Models but is turned off for RPI B+
-       echo "-- Compile for Non Raspberry Pi 3 ENABLE NEON=ON" | tee -a $LOG_FILE
+       echo "-- cmake Compile for Non Raspberry Pi 3 ENABLE NEON=ON" | tee -a $LOG_FILE
        cmake -D CMAKE_BUILD_TYPE=RELEASE \
         -D CMAKE_INSTALL_PREFIX=/usr/local \
         -D INSTALL_C_EXAMPLES=OFF \
@@ -353,7 +353,7 @@ function do_cv3_cmake ()
         -D BUILD_EXAMPLES=ON \
         -D ENABLE_NEON=ON ..
    else
-       echo "-- Compile for Raspberry Pi 3 ENABLE NEON=OFF" | tee -a $LOG_FILE
+       echo "-- cmake Compile for Raspberry Pi 3 ENABLE NEON=OFF" | tee -a $LOG_FILE
        cmake -D CMAKE_BUILD_TYPE=RELEASE \
         -D CMAKE_INSTALL_PREFIX=/usr/local \
         -D INSTALL_C_EXAMPLES=OFF \
@@ -450,7 +450,7 @@ function do_cv3_make ()
            echo "2- If Less than 100 percent Complete"
            echo "   Record Errors and Investigate Problem."
            echo "------------------------------------------------"
-           read -p "Was Compile make Successful? (y/n)? " choice
+           read -p "Was make Compile Successful? (y/n)? " choice
            case "$choice" in
              y|Y ) do_cv3_install
                    ;;
