@@ -78,7 +78,9 @@ The ***cv3-install.menu.sh*** script and menu picks will
 * Auto Detect Total RAM memory and set compile cores. -j2 for 1 GB, -j1 for the Rest
 * Run ***make*** to Compile opencv3 source code
 * Run ***make install*** to install new opencv python files to production.
-* Run ***make clean*** to Delete Source directory to release disk space (optional).
+* Run optional ***make clean*** to clear build directory to force full recompile.
+* DELETE menu pick to optionally recover disk space by deleting the ***cv3-tmp*** folder containing
+opencv source and build files and folders.
 
 ## RAM Memory
 If RPI has 1GB of RAM memory make will use 2 cores -j2, otherwise 1 core -j1
