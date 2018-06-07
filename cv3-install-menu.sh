@@ -1,5 +1,5 @@
 #!/bin/bash
-PROG_VER='ver 2.2'
+PROG_VER='ver 2.3'
 # Script to assist with installing OpenCV3
 # If problems are encountered exit to command to try to resolve
 # Then retry menu pick again or continue to next step
@@ -15,34 +15,43 @@ INSTALL_DIR='/home/pi/tmp_cv3'    # Working folder for Download/Compile of openc
 
 #--------------------------- End of User Variables ----------------------------
 
-# System Created Variables
-PROG_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" # folder location of this script
-LOG_FILE="$PROG_DIR/cv3-log.txt"
-BUILD_DIR=$INSTALL_DIR/opencv-$OPENCV_VER/build
-# Get Total Memory
-TOTAL_MEM=$(free -m | grep Mem | tr -s " " | cut -f 2 -d " ")
-# Get Total Swap Memory
-TOTAL_SWAP=$(free -m | grep Swap | tr -s " " | cut -f 2 -d " ")
 
 #------------------------------------------------------------------------------
 function do_Initialize ()
 {
+   # System Created Variables
+   PROG_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" # folder location of this script
+   LOG_FILE="$PROG_DIR/cv3-log.txt"
+   BUILD_DIR=$INSTALL_DIR/opencv-$OPENCV_VER/build
+   # Get Total Memory
+   TOTAL_MEM=$(free -m | grep Mem | tr -s " " | cut -f 2 -d " ")
+   # Get Total Swap Memory
+   TOTAL_SWAP=$(free -m | grep Swap | tr -s " " | cut -f 2 -d " ")
+   DATE=$(date)
+   
    # Create Log File if it Does Not Exist
-   if [ ! -f $LOG_FILE ] ; then
-      echo "$0 $PROG_VER OPENCV_VER=$OPENCV_VER" > $LOG_FILE
-      uname -a >> $LOG_FILE
+   if [ ! -f $LOG_FILE ] ; then     
+      echo "$DATE" > $LOG_FILE
+      echo "$0 $PROG_VER OPENCV_VER=$OPENCV_VER  written by Claude Pageau" >> $LOG_FILE      
+      echo "------------------------ Start of Log -----------------------" >> $LOG_FILE
+      echo "" >> $LOG_FILE      
+      uname -a >> $LOG_FILE  
+      cat /proc/device-tree/model >> $LOG_FILE
+      echo "" >> $LOG_FILE 
+      # Set the number of cores for Compiling
+      # 1G mem gets 2 cores 512 mem gets 1 core, Both get 1024 MB Swap
+      if [ "$TOTAL_MEM" -gt "512" ] ; then
+         COMPILE_CORES="-j2"
+      else
+         COMPILE_CORES="-j1"
+      fi
+      echo "$TOTAL_MEM MB Total RAM mem  Compile Cores Set to $COMPILE_CORES" >> $LOG_FILE              
+      echo "" >> $LOG_FILE     
       echo " ----- Start CPU Info -----" >> $LOG_FILE
       cat /proc/cpuinfo >> $LOG_FILE
       echo "------ End CPU Info -------" >> $LOG_FILE
-   fi
-
-   # Set the number of cores for Compiling with make
-   # 1G memory gets two cores otherwise only one both get 1024 MB Swap
-   if [ "$TOTAL_MEM" -gt "512" ] ; then
-      COMPILE_CORES="-j2"
-   else
-      COMPILE_CORES="-j1"
-   fi
+      echo "" >> $LOG_FILE 
+   fi      
 }
 
 #------------------------------------------------------------------------------
@@ -598,12 +607,33 @@ function do_upgrade()
 function do_log ()
 {
   if [ -f "$LOG_FILE" ] ; then
-     cat $LOG_FILE | more
-     do_main_menu
+     stty igncr  # Suppress cr  
+     cat $LOG_FILE | more -d
+     echo ""
+     echo "------------------ End of Log -----------------"
+     echo ""
+     stty -igncr
+     echo "Note: Copy of Log will be Saved as $LOG_FILE.bak"
+     echo "------------------------------------------------"
+     read -p "Delete Log File (y/n)? " choice
+     case "$choice" in
+       y|Y ) cp $LOG_FILE $LOG_FILE.bak
+             rm $LOG_FILE
+             echo "Deleted $LOG_FILE"
+             echo "Saved Copy to $LOG_FILE.bak"
+             echo "------------------------------------------------"         
+             read -p "Press Enter To Return to Main Menu" choice
+             do_Initialize             
+             do_main_menu             
+             ;;
+         * ) do_main_menu
+             ;;
+     esac
   else
+     echo ""
      echo "Log File Not Found $LOG_FILE"
-     do_anykey
-     do_main_menu
+     echo ""
+     read -p "Press Enter To Return to Main Menu" choice
   fi
 }
 
