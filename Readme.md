@@ -76,7 +76,7 @@ The ***cv3-install.menu.sh*** script and menu picks will
 * Run ***make*** to Compile opencv3 source code
 * Run ***make install*** to install new opencv python files to production.
 * Run optional ***make clean*** to clear build directory to force full recompile.
-* DELETE menu pick to optionally recover disk space by deleting the ***cv3-tmp*** folder containing
+* DELETE menu pick to optionally recover disk space by deleting the ***tmp_cv3*** folder containing
 opencv source and build files and folders.
 
 ## RAM Memory
@@ -173,10 +173,15 @@ use sample commands below. (Note) modify to suit your conditions
     sudo apt-get install ntfs-3g   # Make sure ntfs support installed
     sudo fdisk -l                  # will list drive if installed
     cd ~/
-    mkdir mnt
-    sudo mount -t ntfs-3g /dev/sda1 /home/pi/mnt
+    mkdir /media/usb_cv3
+    sudo mount -t ntfs-3g /dev/sda1 /media/usb_cv3
+    df -h   #check space on usb device
     cd ~/opencv-setup
     nano cv3-install-menu.sh
+    
+in nano edit the variable per below.  ctrl-x y to save and exit.
+
+    INSTALL_DIR='/media/usb_cv3/tmp_cv3'
 
 ## Testing Build
 To Test build run for python or python3. See Example below
