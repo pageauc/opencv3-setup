@@ -28,16 +28,16 @@ function do_Initialize ()
    # Get Total Swap Memory
    TOTAL_SWAP=$(free -m | grep Swap | tr -s " " | cut -f 2 -d " ")
    DATE=$(date)
-   
+
    # Create Log File if it Does Not Exist
-   if [ ! -f $LOG_FILE ] ; then     
+   if [ ! -f $LOG_FILE ] ; then
       echo "$DATE" > $LOG_FILE
-      echo "$0 $PROG_VER OPENCV_VER=$OPENCV_VER  written by Claude Pageau" >> $LOG_FILE      
+      echo "$0 $PROG_VER OPENCV_VER=$OPENCV_VER  written by Claude Pageau" >> $LOG_FILE
       echo "------------------------ Start of Log -----------------------" >> $LOG_FILE
-      echo "" >> $LOG_FILE      
-      uname -a >> $LOG_FILE  
+      echo "" >> $LOG_FILE
+      uname -a >> $LOG_FILE
       cat /proc/device-tree/model >> $LOG_FILE
-      echo "" >> $LOG_FILE 
+      echo "" >> $LOG_FILE
       # Set the number of cores for Compiling
       # 1G mem gets 2 cores 512 mem gets 1 core, Both get 1024 MB Swap
       if [ "$TOTAL_MEM" -gt "512" ] ; then
@@ -45,13 +45,13 @@ function do_Initialize ()
       else
          COMPILE_CORES="-j1"
       fi
-      echo "$TOTAL_MEM MB Total RAM mem  Compile Cores Set to $COMPILE_CORES" >> $LOG_FILE              
-      echo "" >> $LOG_FILE     
+      echo "$TOTAL_MEM MB Total RAM mem  Compile Cores Set to $COMPILE_CORES" >> $LOG_FILE
+      echo "" >> $LOG_FILE
       echo " ----- Start CPU Info -----" >> $LOG_FILE
       cat /proc/cpuinfo >> $LOG_FILE
       echo "------ End CPU Info -------" >> $LOG_FILE
-      echo "" >> $LOG_FILE 
-   fi      
+      echo "" >> $LOG_FILE
+   fi
 }
 
 #------------------------------------------------------------------------------
@@ -607,7 +607,7 @@ function do_upgrade()
 function do_log ()
 {
   if [ -f "$LOG_FILE" ] ; then
-     stty igncr  # Suppress cr  
+     stty igncr  # Suppress cr
      cat $LOG_FILE | more -d
      echo ""
      echo "------------------ End of Log -----------------"
@@ -621,10 +621,10 @@ function do_log ()
              rm $LOG_FILE
              echo "Deleted $LOG_FILE"
              echo "Saved Copy to $LOG_FILE.bak"
-             echo "------------------------------------------------"         
+             echo "------------------------------------------------"
              read -p "Press Enter To Return to Main Menu" choice
-             do_Initialize             
-             do_main_menu             
+             do_Initialize
+             do_main_menu
              ;;
          * ) do_main_menu
              ;;
