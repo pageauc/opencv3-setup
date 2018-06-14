@@ -98,9 +98,9 @@ by running the DELETE menu pick.
 and build files. Default location is ***/home/pi/tmp_cv3***  
 You can change the opencv install location by editing
 the cv3-install-menu.sh using nano and changing the
-***INSTALL_DIR*** variable. Note the USB media must ***NOT be fat32*** since it
-is not compatible with compiling opencv.  Use a unix or NTFS format to avoid
-aborted compiling.
+***INSTALL_DIR*** variable. Note the USB media must ***NOT be formatted as FAT*** since it
+does not support symbolic links that are needed to compile opencv.
+Use a unix or NTFS format to avoid a failed make compile.
 
 In nano edit ***INSTALL_DIR*** variable where mnt is your mount path location
 Note the ***tmp_cv3** folder will automatically be created when the menu
