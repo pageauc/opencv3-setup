@@ -1,26 +1,28 @@
 #!/bin/bash
-PROG_VER='ver 2.3'
+PROG_VER='ver 2.5'
+
 # Script to assist with installing OpenCV3
 # If problems are encountered exit to command to try to resolve
 # Then retry menu pick again or continue to next step
 
-#--------------------------- End of User Variables ---------------------------
+PROG_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" # folder location of this script
+PROG_NAME=$(basename -- "$0" .sh)   # Extract Program Name minus .sh extension
+PROG_CONF="$PROG_DIR/$PROG_NAME.conf"  # Setup program conf file name
 
-OPENCV_VER='3.4.1'   # This needs to be a valid opencv3 version number
-                     # See https://github.com/opencv/opencv/releases
-
-INSTALL_DIR='/home/pi/tmp_cv3'    # Working folder for Download/Compile of opencv files
-                                  # Note Use symbolic link to external drive mount point
-                                  # if sd card too small  Min 5-6 GB Free Space is Needed
-
-#--------------------------- End of User Variables ----------------------------
-
+if [ -f $PROG_CONF ] ; then
+   source $PROG_CONF
+else
+   echo "ERROR : $PROG_CONF File Not Found."
+   echo "        Could Not Import $PROG_NAME variables"
+   echo "        Please Investigate or Download file from GitHub Repo"
+   echo "        https://github.com/pageauc/opencv3-setup"
+   exit 1
+fi
 
 #------------------------------------------------------------------------------
 function do_Initialize ()
 {
    # System Created Variables
-   PROG_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" # folder location of this script
    LOG_FILE="$PROG_DIR/cv3-log.txt"
    BUILD_DIR=$INSTALL_DIR/opencv-$OPENCV_VER/build
    # Get Total Memory
@@ -184,7 +186,29 @@ function do_rpi_update ()
 #------------------------------------------------------------------------------
 function do_cv3_dep ()
 {
-   clear
+  clear
+  if [ -d "$INSTALL_DIR/opencv-$OPENCV_VER" ] ; then
+    if (whiptail --title "WARNING" \
+    --yes-button "Back" --no-button "Repeat"  --yesno "\
+Found Dir $INSTALL_DIR/opencv-$OPENCV_VER
+If Previous Install was Successful,
+Do You Really Want to Repeat Step 2 and
+Install Dependencies and CV3 Source Files Again?
+\
+" 0 0) \
+    then
+      do_main_menu
+    else
+      do_cv3_dep_install
+    fi
+  else
+     do_cv3_dep_install
+  fi
+}
+
+#------------------------------------------------------------------------------
+function do_cv3_dep_install ()
+{
    # Install opencv3 build dependencies
    echo "STEP 2 Install opencv $OPENCV_VER Build Dependencies"
    echo ""
@@ -231,6 +255,7 @@ function do_cv3_dep ()
    sudo apt-get install -y libv4l-dev
    sudo apt-get install -y libxvidcore-dev
    sudo apt-get install -y libx264-dev
+   sudo apt-get install -y libqtgui4
    sudo apt-get install -y libatlas-base-dev
    sudo apt-get install -y python2.7-dev
    sudo apt-get install -y python3-dev
@@ -253,6 +278,18 @@ function do_cv3_dep ()
    if [ ! -d $INSTALL_DIR ] ; then
        echo "Create dir $INSTALL_DIR"
        mkdir $INSTALL_DIR
+       if [ $? -ne 0 ] ; then
+          echo "----------------- ERROR -------------------"
+          echo "Could Not Create Dir at $INSTALL_DIR"
+          echo "Check permissions"
+          echo "If on a mounted Device make sure"
+          echo "1- Device is mounted and is NOT FAT32"
+          echo "2- Device Must be writeable by Pi user."
+          echo "   Check ownership and permissions"
+          echo ""
+          echo "Exit to Terminal to Investigate"
+          exit 1
+       fi
    fi
    cd $INSTALL_DIR
    echo ""
@@ -349,11 +386,13 @@ function do_cv3_cmake ()
            ;;
    esac
    START=$(date +%s)
+   cat /proc/device-tree/model
+   echo ""
    echo "-- cmake Start: $DATE" | tee -a $LOG_FILE
    cat /proc/device-tree/model | grep -aq "Raspberry Pi 3"
    if [ $? -eq 0 ]; then
-       # This optimizes for Raspberry Pi 3 Models but is turned off for RPI B+
-       echo "-- cmake Compile for Non Raspberry Pi 3 ENABLE NEON=ON" | tee -a $LOG_FILE
+       # This optimizes for Raspberry Pi 3 Models
+       echo "-- cmake Compile for Raspberry Pi 3 ENABLE NEON=ON" | tee -a $LOG_FILE
        cmake -D CMAKE_BUILD_TYPE=RELEASE \
         -D CMAKE_INSTALL_PREFIX=/usr/local \
         -D INSTALL_C_EXAMPLES=OFF \
@@ -362,7 +401,7 @@ function do_cv3_cmake ()
         -D BUILD_EXAMPLES=ON \
         -D ENABLE_NEON=ON ..
    else
-       echo "-- cmake Compile for Raspberry Pi 3 ENABLE NEON=OFF" | tee -a $LOG_FILE
+       echo "-- cmake Compile for Raspberry Pi 2 ENABLE NEON=OFF" | tee -a $LOG_FILE
        cmake -D CMAKE_BUILD_TYPE=RELEASE \
         -D CMAKE_INSTALL_PREFIX=/usr/local \
         -D INSTALL_C_EXAMPLES=OFF \
@@ -442,7 +481,7 @@ function do_cv3_make ()
            echo "$DATE STEP 3-2 Start Compile of opencv $OPENCV_VER" | tee -a $LOG_FILE
            START=$(date +%s)
            echo "-- make $COMPILE_CORES  RAM=$TOTAL_MEM  SWAP=$TOTAL_SWAP" | tee -a $LOG_FILE
-           echo "-- mqke Start: $DATE" | tee -a $LOG_FILE
+           echo "-- make Start: $DATE" | tee -a $LOG_FILE
            make $COMPILE_CORES
            echo "--------------- End of make $COMPILE_CORES Messages ----------------"
            DATE=$(date)
