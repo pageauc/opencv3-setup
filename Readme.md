@@ -101,11 +101,15 @@ by running the DELETE menu pick.
 
 ## Changing INSTALL_DIR 
 ***cv3-menu-install.sh*** will create a working or install folder per
-***INSTALL_DIR***. This folder will store downloaded opencv source
+***INSTALL_DIR*** variable in ***/home/pi/tmp_cv3***. This folder will store downloaded opencv source
 and build files. Default location is ***/home/pi/tmp_cv3***  
 You can change the opencv install location by editing
-the cv3-install-menu.conf using nano and changing the
-***INSTALL_DIR*** variable. 
+the ***cv3-install-menu.conf*** file using nano and changing the ***INSTALL_DIR*** variable. 
+
+    cd ~/opencv3-setup
+    nano cv3-install-menu.conf
+ 
+ctrl-x y to save changes and exit.  Rerun ***cv3-menu-install.sh*** 
 
 ### IMPORTANT
 The USB or disk media must ***NOT be formatted as FAT*** since it
