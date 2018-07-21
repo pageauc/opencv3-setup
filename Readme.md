@@ -60,12 +60,13 @@ Start at Step 1 and follow instructions.
 
 ## Operation
 This menu driven install script will download, compile and install opencv3
-from source code. Default is currently opencv ver 3.4.2  To change opencv version 
+from source code. Default is currently opencv ver 3.4.2  To change opencv version
+edit the ***cv3-install-menu.conf*** file per
 
     cd ~/opencv3-setup
     nano cv3-install-menu.conf
     
-Edit the variable OPENCV_VER='3.4.2' and change to a valid version per   
+Edit the variable OPENCV_VER='3.4.2' and change to a valid version per information at  
 https://github.com/opencv/opencv/releases
 
 The ***cv3-install.menu.sh*** script and menu picks will
@@ -103,8 +104,11 @@ by running the DELETE menu pick.
 ***INSTALL_DIR***. This folder will store downloaded opencv source
 and build files. Default location is ***/home/pi/tmp_cv3***  
 You can change the opencv install location by editing
-the cv3-install-menu.sh using nano and changing the
-***INSTALL_DIR*** variable. Note the USB media must ***NOT be formatted as FAT*** since it
+the cv3-install-menu.conf using nano and changing the
+***INSTALL_DIR*** variable. 
+
+### IMPORTANT
+The USB or disk media must ***NOT be formatted as FAT*** since it
 does not support symbolic links that are needed to compile opencv.
 Use a unix or NTFS format to avoid a failed make compile.
 
@@ -121,7 +125,7 @@ on the mounted USB drive. To check free disk space run
     df -h
     
 ## Changing OPENCV_VER
-The opencv version number can also be change using the
+The opencv version number can also be change using the ***cv3-install.menu.conf***
 ***OPENCV_VER*** variable.  The version number will be verified at launch
 against repo at https://github.com/Itseez/opencv/archive/
 See  https://github.com/opencv/opencv/releases
