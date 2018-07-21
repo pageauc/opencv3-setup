@@ -1,6 +1,6 @@
 #!/bin/bash
 # Convenient opencv3 install script written by Claude Pageau 1-Jul-2016
-ver="1.0"
+ver="2.5"
 DEST_DIR='opencv3-setup'  # Default folder install location
 
 cd ~
@@ -27,6 +27,7 @@ echo "
 1 - Downloading opencv3-setup github repo files"
 
 wget -O cv3-install-menu.sh https://raw.github.com/pageauc/opencv3-setup/master/cv3-install-menu.sh
+wget -O cv3-install-menu.conf https://raw.github.com/pageauc/opencv3-setup/master/cv3-install-menu.conf
 wget -O Readme.md https://raw.github.com/pageauc/opencv3-setup/master/Readme.md
 wget -O dphys-swapfile.1024 https://raw.github.com/pageauc/opencv3-setup/master/dphys-swapfile.1024
 echo "Done Download
