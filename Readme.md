@@ -60,7 +60,13 @@ Start at Step 1 and follow instructions.
 
 ## Operation
 This menu driven install script will download, compile and install opencv3
-from source code. Default is currently opencv ver 3.4.1
+from source code. Default is currently opencv ver 3.4.2  To change opencv version 
+
+    cd ~/opencv3-setup
+    nano cv3-install-menu.conf
+    
+Edit the variable OPENCV_VER='3.4.2' and change to a valid version per   
+https://github.com/opencv/opencv/releases
 
 The ***cv3-install.menu.sh*** script and menu picks will
 
