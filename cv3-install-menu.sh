@@ -131,9 +131,9 @@ function do_swap_check ()
             echo "Temporarily Increase Swap Space to 1024 MB" | tee -a $LOG_FILE
             sudo cp /etc/dphys-swapfile /etc/dphys-swapfile.bak
             sudo cp $PROG_DIR/dphys-swapfile.1024 /etc/dphys-swapfile
-            echo "Stop Swap  Wait ..."
+            echo "Stop Swap  Wait ...  "
             sudo /etc/init.d/dphys-swapfile stop
-            echo "Start Swap Wait ..."
+            echo "Start Swap. First Time Might Take a While so Be Patient ..."
             sudo /etc/init.d/dphys-swapfile start
             echo "Done ..."
             TOTAL_SWAP=$(free -m | grep Swap | tr -s " " | cut -f 2 -d " ")
