@@ -479,8 +479,10 @@ function do_cv3_cmake ()
 function do_cv3_make ()
 {
    if [ ! -d "$BUILD_DIR" ] ; then
-      echo "----------- STEP 3-2 ERROR -----------"
+      echo "----------- STEP 3-2 WARN -----------"
       echo "Could Not Find Build Folder $BUILD_DIR"
+      echo "It will be Created Automatically."
+      echo "During Step 3-2 cmake."
       echo "--------------------------------------"
       read -p "STEP 3-2 Press Enter to Run cmake " choice
       do_cv3_cmake
