@@ -59,8 +59,9 @@ To Check free disk space run
 Start at Step 1 and follow instructions.
 
 ## Operation
-This menu driven install script will download, compile and install opencv3
-from source code. Default is currently opencv ver 3.4.2  To change opencv version
+This menu driven install script will Update/Upgrade OS, Install dependencies,
+download and unzip source files, perform cmake, run make compile, run make install, optional delete
+source and working folders/files. Default is currently opencv version is 3.4.2  To change opencv version
 edit the ***cv3-install-menu.conf*** file per
 
     cd ~/opencv3-setup
@@ -76,7 +77,7 @@ The ***cv3-install.menu.sh*** script and menu picks will
 * Update/upgrade Raspbian for Raspberry Pi
 * Install build dependencies
 * Download opencv3 source zip files and unzip
-* Auto Detect RPI3 and set NEON compile directive for cmake to enhance cv3 performance
+* Auto Detect RPI3 and set NEON compile directive for cmake to enhance cv3 performance. Off for non RPI 3's
 * Run ***cmake*** to configure build
 * Temporarily Increase Swap memory to 1024 MB During make
 * Auto Detect Total RAM memory and set compile cores. -j2 for 1 GB, -j1 for the Rest
@@ -168,7 +169,7 @@ from the LOG menu or per commands below to clear.
 ## Mount External USB Storage
 ***IMPORTANT*** If there is limited space on the Raspbian SD card
 you may want to change ***INSTALL_DIR*** variable to point to
-an external storage drive.
+an Non Fat external storage drive/device.
 
     cd ~/opencv3-setup
     nano cv3-install-menu.sh
@@ -189,15 +190,15 @@ use sample commands below. (Note) modify to suit your conditions
     sudo apt-get install ntfs-3g   # Make sure ntfs support installed
     sudo fdisk -l                  # will list drive if installed
     cd ~/
-    mkdir /media/usb_cv3
-    sudo mount -t ntfs-3g /dev/sda1 /media/usb_cv3
+    mkdir /media/usb_1
+    sudo mount -t ntfs-3g /dev/sda1 /media/usb_1
     df -h   #check space on usb device
     cd ~/opencv-setup
     nano cv3-install-menu.sh
     
 in nano edit the variable per below.  ctrl-x y to save and exit.
 
-    INSTALL_DIR='/media/usb_cv3/tmp_cv3'
+    INSTALL_DIR='/media/usb_1/tmp_cv3'
 
 ## Testing Build
 To Test build run for python or python3. See Example below
@@ -212,7 +213,7 @@ At the >>> python prompt enter the following
 You should see output indicating the opencv version installed.
 Press ctrl-d to exit python interpreter
 
-See my other github repo at https://github.com/pageauc
+See my other github repo at https://github.com/pageauc    
 for various opencv motion and opencv camera projects.
 
 ## Credits
@@ -222,7 +223,7 @@ https://github.com/Tes3awy/OpenCV-3.2.0-Compiling-on-Raspberry-Pi
 For Additional Details See https://github.com/pageauc/opencv3-setup
 
 Have Fun
-Claude Pageau
-YouTube Channel https://www.youtube.com/user/pageaucp
-GitHub Repo https://github.com/pageauc
+Claude Pageau   
+YouTube Channel https://www.youtube.com/user/pageaucp   
+GitHub Repo https://github.com/pageauc   
 
