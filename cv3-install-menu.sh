@@ -1,5 +1,5 @@
 #!/bin/bash
-PROG_VER='ver 2.5'
+PROG_VER='ver 2.6'
 
 # Script to assist with installing OpenCV3
 # If problems are encountered exit to command to try to resolve
@@ -12,11 +12,32 @@ PROG_CONF="$PROG_DIR/$PROG_NAME.conf"  # Setup program conf file name
 if [ -f $PROG_CONF ] ; then
    source $PROG_CONF
 else
-   echo "ERROR : $PROG_CONF File Not Found."
-   echo "        Could Not Import $PROG_NAME variables"
-   echo "        Please Investigate or Download file from GitHub Repo"
-   echo "        https://github.com/pageauc/opencv3-setup"
+   echo "ERROR: $PROG_CONF File Not Found."
+   echo "       Could Not Import $PROG_NAME variables"
+   echo "       Please Investigate or Download file from GitHub Repo"
+   echo "       https://github.com/pageauc/opencv3-setup"
    exit 1
+fi
+
+WORKING_DIR=$( dirname $INSTALL_DIR )
+echo "Checking File System type for $WORKING_DIR"
+if [ -d $WORKING_DIR ]; then
+    df -PTh $WORKING_DIR | awk '{print $2}' | grep fat
+    if [ $? -eq 0 ]; then
+        echo "ERROR: $WORKING_DIR is a FAT File System."
+        echo "       IMPORTANT: FAT Does Not Support symlinks"
+        echo "       that are Required to Compile opencv2"
+        echo "       Edit $PROG_CONF File and"
+        echo "       Change WORKING_DIR variable to Point to a Non FAT File System."
+        echo "       NOTE: Leave /tmp_cv3 Entry since Dir will be Created."
+        exit 1
+    fi
+else
+    echo "ERROR: $WORKING_DIR Directory NOT Found"
+    echo "       Check $PROG_CONF File and Edit"
+    echo "       INSTALL_DIR variable to Point to a Valid directory"
+    echo "       NOTE: Leave /tmp_cv3 Entry since Dir will be Created."
+    exit 1
 fi
 
 #------------------------------------------------------------------------------
