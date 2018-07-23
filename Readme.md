@@ -44,8 +44,8 @@ must be done manually using nano.
 during compile make. After Compile Swap will be Returned to Orginal Config
 * Recommended min 16GB SD card with at least 6 GB Free.
 If Free disk space is low or You have a smaller system SD.
-You can mount USB memory or hard disk and change the
-INSTALL_DIR variable in this script to point to the new path.
+You can mount non fat USB memory or hard disk and change the
+INSTALL_DIR variable in the ***cv3-install.menu.conf*** file to point to the new path.
 
 To Check free disk space run
 
@@ -56,7 +56,7 @@ To Check free disk space run
     cd ~/opencv3-setup
     ./cv3-install-menu.sh
 
-Start at Step 1 and follow instructions.
+Start at Step 1 and follow instructions. You will be prompted to optionally reboot.
 
 ## Operation
 This menu driven install script will Update/Upgrade OS, Install dependencies,
@@ -72,13 +72,14 @@ https://github.com/opencv/opencv/releases
 
 The ***cv3-install.menu.sh*** script and menu picks will
 
-* Validate that OPENCV_VER variable setting is correct
-* Create cv3-log.txt If It Does Not Exist. Records system information, date/times of steps including execution time.
-* Update/upgrade Raspbian for Raspberry Pi
+* Online validate that OPENCV_VER variable setting is correct
+* Check if INSTALL_DIR variable is pointing to a Non Fat File System.
+* Create cv3-log.txt file If It Does Not Exist. Records system information, date/times of steps including execution time.
+* Update/upgrade Raspbian for Raspberry Pi. prompts for optional reboot.
 * Install build dependencies
 * Download opencv3 source zip files and unzip
 * Auto Detect RPI3 and set NEON compile directive for cmake to enhance cv3 performance. Off for non RPI 3's
-* Run ***cmake*** to configure build
+* Run ***cmake*** to check and configure build
 * Temporarily Increase Swap memory to 1024 MB During make
 * Auto Detect Total RAM memory and set compile cores. -j2 for 1 GB, -j1 for the Rest
 * Run ***make*** to Compile opencv3 source code
