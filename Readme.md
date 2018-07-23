@@ -38,13 +38,10 @@ must be done manually using nano.
 * Patience since this will take a few hours
 * Recent Jessie or Stretch Raspbian Release
 * Working RPI 
-* Working Internet connected to RPI WIFI or RJ45 cable
-* RPI RAM Memory will be detected and make set for 1 or 2 cores
-* RPI SWAP will be Detected and Temporarily set to 1024 MB
-during compile make. After Compile Swap will be Returned to Orginal Config
+* Working Internet connected to RPI WIFI or RJ45 network cable
 * Recommended min 16GB SD card with at least 6 GB Free.
-If Free disk space is low or You have a smaller system SD.
-You can mount non fat USB memory or hard disk and change the
+If Free disk space is low or You have a smaller system SD card.
+You can mount Non fat USB memory or hard disk and change the
 INSTALL_DIR variable in the ***cv3-install.menu.conf*** file to point to the new path.
 
 To Check free disk space run
