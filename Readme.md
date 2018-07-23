@@ -153,6 +153,11 @@ Users will be prompted to review output for errors and elect to continue.
 You can repeat a particular step from the menu if required after
 correcting or resolving any issues or errors.
 
+Once compiling starts it will show you a percent progress.  ***Note*** If for some reason
+the compile is interrupted, You can restart the compile Menu again and it will quickly
+scan progress and will continue compile where it left off (was interrupted).
+If a make clean is done (per menu prompt) then a full compile will restart from beginning again.
+
 ## Logging
 A log file called ***cv3_log.txt*** will be created to record system
 information and the date/time and details for each operation.  
