@@ -1,5 +1,5 @@
 #!/bin/bash
-PROG_VER='ver 2.6'
+PROG_VER='ver 2.7'
 
 # Script to assist with installing OpenCV3
 # If problems are encountered exit to command to try to resolve
@@ -398,8 +398,10 @@ function do_cv3_cmake ()
    echo " Configuring done and Generating done"
    echo " These Will Take a While to Finish"
    echo " So Be Patient ....."
-   echo "---------------------------------------------------"
-   read -p "Start cmake Now (y/n)? " choice
+   echo " ---------------------------------------------------"
+   echo " y) Run cmake - Required unless previously successful"
+   echo " n) Run make  - If continuing a previous compile"
+   read -p " Start cmake Now (y/n)? " choice
    case "$choice" in
      n|N ) do_cv3_make
            ;;
@@ -432,6 +434,7 @@ function do_cv3_cmake ()
         -D ENABLE_NEON=OFF ..
    fi
    echo "----------------------- End of cmake Messages -------------------------"
+   echo ""
    DATE=$(date)
    END=$(date +%s)
    DIFF=$((END - START))
@@ -441,7 +444,7 @@ function do_cv3_cmake ()
    echo " 1- Review cmake messages above for Errors"
    echo " 2- Check that Python 2 and Python 3 sections"
    echo "    Have directory path entries"
-   echo " 3- Check cvconfig.h points to a build folder"
+   echo " 3- Check if errors reported."
    echo " 4- Last Messages should say"
    echo "-- Configuring done"
    echo "-- Generating done"
@@ -449,14 +452,13 @@ function do_cv3_cmake ()
    echo "---------------------------------------------"
    read -p "Was cmake Successful (y/n)? " choice
    case "$choice" in
-     n|N ) echo "------------ STEP 3-1 INSTRUCTIONS ---------------"
-           echo "If cmake Failed. Investigate Problem and Try again"
-           echo "You Can Run make clean to Clear Existing cmake"
-           echo "and force a full compile from scratch"
-           echo "Otherwise Compile Will Continue Where It Left Off"
-           echo "Once you Resolve make Error Issues."
-           echo "--------------------------------------------------"
-           read -p "(optional) Run make clean (y/n)? " choice
+     n|N ) echo "------------------ STEP 3-1 INSTRUCTIONS ---------------------"
+           echo ""
+           echo "y) Run make clean to Force re compile from scratch"
+           echo "n) New or Continue Previous Compile where It Left Off"
+           echo ""
+           echo "--------------------------------------------------------------"
+           read -p "(optional) Run make clean Now (y/n)? " choice
            case "$choice" in
              y|Y ) echo "Running sudo make clean"
                    sudo make clean
