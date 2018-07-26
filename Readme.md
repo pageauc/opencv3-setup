@@ -96,7 +96,7 @@ You can recover most disk space after the build/install by running the DELETE me
 If there is not enough room on the system SD you can point the ***INSTALL_DIR*** to
 USB Stick or disk drive media. ***IMPORTANT:*** The stick or disk media must 
 ***NOT be formatted as FAT*** since it does not support symbolic links
-that are needed to compile opencv. ***Use a unix or NTFS format to avoid a failed make compile.***
+that are needed to compile opencv. Use a unix or NTFS format to avoid a failed make compile.
 For details on How to mount USB media see 
 [***How To Mount External USB Storage***](https://github.com/pageauc/opencv3-setup#how-to-mount-external-usb-storage)
 
