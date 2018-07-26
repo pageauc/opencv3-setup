@@ -49,7 +49,7 @@ You can mount Non fat USB stick or hard disk see
     ./cv3-install-menu.sh
 
 Start at Step 1 and follow instructions. You will be prompted to optionally reboot.
-for details see [How to Run Menu Picks](https://github.com/pageauc/opencv3-setup#how-to-run-menu-picks)
+for details see [***How to Run Menu Picks***](https://github.com/pageauc/opencv3-setup#how-to-run-menu-picks)
 
 ## Operation
 The ***cv3-install.menu.sh*** script and menu picks will
