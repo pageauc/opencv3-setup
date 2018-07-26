@@ -102,9 +102,8 @@ Use a unix ext4 or NTFS format to avoid a failed make compile.
 For details see 
 [***How To Mount External USB Storage***](https://github.com/pageauc/opencv3-setup#how-to-mount-external-usb-storage)
 
-ctrl-x y to save changes and exit. Run ***cv3-install.menu.sh***
-and the script will create the ***/home/pi/mnt/tmp_cv3*** folder
-on the mounted USB drive. 
+ctrl-x y to save changes and exit. Run ***cv3-install.menu.sh***.
+The script will create the temporary working folder at the designated location. 
  
 ## RAM Memory
 If RPI has 1GB of RAM memory make will use 2 cores -j2, otherwise 1 core -j1
