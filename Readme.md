@@ -163,7 +163,9 @@ see https://www.htpcguides.com/properly-mount-usb-storage-raspberry-pi/
 
 Sample commands to mount and use an external ntfs USB hard drive.
 Plug ntfs formatted disk into a RPI USB slot.  From SSH or terminal session
-use sample commands below. (Note) modify to suit your conditions
+use sample commands below. (Note) modify to suit your conditions.  
+If you reboot you will need to redo sudo mount command unless you add
+an entry to the /etc/fstab file (not covered here).
 
     cd ~
     sudo apt-get update
@@ -176,14 +178,16 @@ use sample commands below. (Note) modify to suit your conditions
     cd ~/opencv-setup
     nano cv3-install-menu.sh
     
-in nano edit the variable per below.  ctrl-x y to save and exit.
+In nano edit the variable per below. 
 
     INSTALL_DIR='/media/usb_1/tmp_cv3'
+    
+ctrl-x y to save changes and exit.   
 
-## Testing Build
-To Test build run for python or python3. See Example below
+## How to Test Build
+To Test build for python or python3. See Example below
 
-    python3
+    python
 
 At the >>> python prompt enter the following
 
