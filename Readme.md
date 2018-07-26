@@ -40,7 +40,8 @@ must be done manually using nano.
 * Working Internet connected to RPI WIFI or RJ45 network cable
 * Recommended min 16GB SD card with at least 6 GB Free.
 If Free disk space is low or You have a smaller system SD card.
-You can mount Non fat USB memory or hard disk and change the
+You can mount Non fat USB stick or hard disk see
+[How to Change Location of Temporary Working Folder](https://github.com/pageauc/opencv3-setup#how-to=change-location-of-temporary-working-folder) 
 INSTALL_DIR variable in the ***cv3-install.menu.conf*** file to point to the new path.
 NOTE: After compile most disk space can be recovered using menubox.sh DELETE menu pick
 
@@ -80,14 +81,14 @@ Edit ***cv3-install-menu.conf*** file using nano per the following commands.
     cd ~/opencv3-setup
     nano cv3-install-menu.conf
   
-### Changing OpenCV Version
+### How to Change OpenCV Version
 Edit variable OPENCV_VER='3.4.2' and change to a valid version per information at  
 https://github.com/opencv/opencv/releases The version number will be verified at launch
-against repo at https://github.com/Itseez/opencv/archive/
-See  https://github.com/opencv/opencv/releases
+against repo at https://github.com/Itseez/opencv/archive/    
+See  https://github.com/opencv/opencv/releases    
 and https://github.com/opencv/opencv_contrib/releases for valid zip versions    
 
-### Changing Location of Temporary Working Folder
+### How to Change Location of Temporary Working Folder
 ***cv3-menu-install.sh*** will create a working folder per
 ***INSTALL_DIR*** variable. Default is ***/home/pi/tmp_cv3***. 
 This folder will store downloaded opencv source and build files.
@@ -102,7 +103,8 @@ If there is not enough room on the system SD you can point the ***INSTALL_DIR***
 USB Stick or disk drive media. ***IMPORTANT:*** The stick or disk media must 
 ***NOT be formatted as FAT*** since it does not support symbolic links
 that are needed to compile opencv. ***Use a unix or NTFS format to avoid a failed make compile.***
-For details on How to mount USB media see ***How To Mount External USB Storage** section (below)
+For details on How to mount USB media see 
+[***How To Mount External USB Storage***](https://github.com/pageauc/opencv3-setup#how-to-mount-external-usb-storage)
 
 ctrl-x y to save change and exit. Run ***cv3-install.menu.sh***
 and the script will create the ***/home/pi/mnt/tmp_cv3*** folder
@@ -114,8 +116,8 @@ will be used. Both will have Swap Memory temporarily set to 1024 MB during
 the make compile process step. At the end of the compile the original Swap
 config will be returned.
 
-## Menuing
-From the main menu select ***1 UPDATE* menu pick.  Follow Instructions that
+## How to Run Menu Picks
+From the main menu select ***1 UPDATE* menu pick. Follow Instructions that
 will guide you through the menu steps.  If there are errors you can
 exit to the terminal to review output messages.  Problems will most likely
 be related to Disk Space or Memory problems.    
