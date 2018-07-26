@@ -41,13 +41,7 @@ must be done manually using nano.
 * Recommended min 16GB SD card with at least 6 GB Free.
 If Free disk space is low or You have a smaller system SD card.
 You can mount Non fat USB stick or hard disk see
-[How to Change Location of Temporary Working Folder](https://github.com/pageauc/opencv3-setup#how-to=change-location-of-temporary-working-folder) 
-INSTALL_DIR variable in the ***cv3-install.menu.conf*** file to point to the new path.
-NOTE: After compile most disk space can be recovered using menubox.sh DELETE menu pick
-
-To Check free disk space run
-
-    df -h
+[***How to Change Location of Temporary Working Folder***](https://github.com/pageauc/opencv3-setup#how-to-change-location-of-temporary-working-folder) 
 
 ## How To Run Menu
 
