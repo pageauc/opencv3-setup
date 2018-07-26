@@ -75,14 +75,14 @@ Edit ***cv3-install-menu.conf*** file using nano per the following commands.
     cd ~/opencv3-setup
     nano cv3-install-menu.conf
   
-### How to Change OpenCV Version
+#### How to Change OpenCV Version
 Edit variable OPENCV_VER='3.4.2' and change to a valid version per information at  
 https://github.com/opencv/opencv/releases The version number will be verified at launch
 against repo at https://github.com/Itseez/opencv/archive/    
 See  https://github.com/opencv/opencv/releases    
 and https://github.com/opencv/opencv_contrib/releases for valid zip versions    
 
-### How to Change Location of Temporary Working Folder
+#### How to Change Location of Temporary Working Folder
 ***cv3-menu-install.sh*** will create a working folder per
 ***INSTALL_DIR*** variable. Default is ***/home/pi/tmp_cv3***. 
 This folder will store downloaded opencv source and build files.
@@ -94,13 +94,14 @@ To check free disk space run
 
 You can recover most disk space after the build/install by running the DELETE menu pick. 
 If there is not enough room on the system SD you can point the ***INSTALL_DIR*** to
-USB Stick or disk drive media. ***IMPORTANT:*** The stick or disk media must 
-***NOT be formatted as FAT*** since it does not support symbolic links
-that are needed to compile opencv. Use a unix or NTFS format to avoid a failed make compile.
-For details on How to mount USB media see 
+USB Stick or disk drive media.  
+***IMPORTANT:*** The USB memory stick or disk media must ***NOT be formatted as FAT***
+since it does not support symbolic links that are needed to compile opencv.
+Use a unix ext4 or NTFS format to avoid a failed make compile.   
+For details see 
 [***How To Mount External USB Storage***](https://github.com/pageauc/opencv3-setup#how-to-mount-external-usb-storage)
 
-ctrl-x y to save change and exit. Run ***cv3-install.menu.sh***
+ctrl-x y to save changes and exit. Run ***cv3-install.menu.sh***
 and the script will create the ***/home/pi/mnt/tmp_cv3*** folder
 on the mounted USB drive. 
  
