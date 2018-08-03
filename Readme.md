@@ -76,7 +76,7 @@ This will allow you to review the code before installing.
     ./cv3-install-menu.sh
 
 ## How to Change Configuration
-Edit ***cv3-install-menu.conf*** file using nano per the following commands.
+Run the ***SETTINGS*** menu pick or Edit ***cv3-install-menu.conf*** file using nano per the following commands.
 
     cd ~/opencv3-setup
     nano cv3-install-menu.conf
