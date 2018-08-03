@@ -1,5 +1,5 @@
 #!/bin/bash
-PROG_VER='ver 2.7'
+PROG_VER='ver 2.8'
 
 # Script to assist with installing OpenCV3
 # If problems are encountered exit to command to try to resolve
@@ -745,9 +745,10 @@ function do_main_menu ()
   "3 COMPILE $OPENCV_VER" "Run cmake and make $COMPILE_CORES (be patient)" \
   "4 INSTALL $OPENCV_VER" "Run make install (Copy Files to production)" \
   "5 DELETE" "$INSTALL_DIR Source Folder and Files" \
-  "6 UPGRADE" "$0 $PROG_VER Files from GitHub" \
-  "7 LOG" "View Log File cv3-log.txt" \
-  "8 ABOUT" "Information about this program" \
+  "6 SETTINGS" "nano Edit cv3-install-menu.conf file" \
+  "7 UPGRADE" "$0 $PROG_VER Files from GitHub" \
+  "8 LOG" "View Log File cv3-log.txt" \
+  "9 ABOUT" "Information about this program" \
   "q QUIT" "Exit This Menu Program"  3>&1 1>&2 2>&3)
 
   RET=$?
@@ -765,11 +766,13 @@ function do_main_menu ()
             do_main_menu ;;
       5\ *) do_cv3_cleanup
             do_main_menu ;;
-      6\ *) do_upgrade
+      6\ *) nano cv3-install-menu.conf
             do_main_menu ;;
-      7\ *) do_log
+      7\ *) do_upgrade
             do_main_menu ;;
-      8\ *) do_about
+      8\ *) do_log
+            do_main_menu ;;
+      9\ *) do_about
             do_main_menu ;;
       q\ *) echo ""
             echo "$0 $PROG_VER    written by Claude Pageau"

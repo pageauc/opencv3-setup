@@ -47,6 +47,7 @@ The [***cv3-install-menu.sh***](https://github.com/pageauc/opencv3-setup/blob/ma
 * Optional run ***make clean*** to clear build directory to force full recompile.
 * ***DELETE*** menu pick to optionally recover disk space by deleting the ***tmp_cv3*** folder containing
 opencv source, build files and folders.
+* ***SETTINGS*** menu pick to nano edit the [***cv3--install-menu.conf***](https://github.com/pageauc/opencv3-setup/blob/master/cv3-install-menu.conf) file
 
 ## Prerequisites
 * Basic knowledge of unix terminal commands.
@@ -102,7 +103,7 @@ If there is not enough room on the system SD you can point the ***INSTALL_DIR***
 USB Stick or disk drive media.  
 ***IMPORTANT:*** The USB memory stick or disk media must ***NOT be formatted as FAT***
 since it does not support symbolic links that are needed to compile opencv.
-Use a unix ext4 or NTFS format to avoid a failed make compile.   
+Use a unix format like ext4 or microsoft NTFS format to avoid a failed make compile.   
 For details see 
 [***How To Mount External USB Storage***](https://github.com/pageauc/opencv3-setup#how-to-mount-external-usb-storage)
 
