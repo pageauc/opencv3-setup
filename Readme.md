@@ -80,14 +80,14 @@ Edit ***cv3-install-menu.conf*** file using nano per the following commands.
     cd ~/opencv3-setup
     nano cv3-install-menu.conf
   
-#### How to Change OpenCV Version
+### How to Change OpenCV Version
 Edit variable OPENCV_VER='3.4.2' and change to a valid version per information at  
 https://github.com/opencv/opencv/releases The version number will be verified at launch
 against repo at https://github.com/Itseez/opencv/archive/    
 See  https://github.com/opencv/opencv/releases    
 and https://github.com/opencv/opencv_contrib/releases for valid zip versions    
 
-#### How to Change Location of Temporary Working Folder
+### How to Change Location of Temporary Working Folder
 ***cv3-menu-install.sh*** will create a working folder per
 ***INSTALL_DIR*** variable. Default is ***/home/pi/tmp_cv3***. 
 This folder will store downloaded opencv source and build files.
