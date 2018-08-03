@@ -4,7 +4,7 @@
 ![cv3-install-menu](https://github.com/pageauc/opencv3-setup/blob/master/menu.png)
 
 ## Quick Install
-For system requirements See [Prerequisites](https://github.com/pageauc/opencv3-setup#prerequisites)   
+For system requirements See [***Prerequisites***](https://github.com/pageauc/opencv3-setup#prerequisites)   
   
 ***Step1*** - Use mouse to highlight command below, Then right click copy on highlighted command     
 ***Step2*** - On a logged in RPI SSH terminal session right click paste then Enter to Run
