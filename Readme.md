@@ -4,6 +4,8 @@
 ![cv3-install-menu](https://github.com/pageauc/opencv3-setup/blob/master/menu.png)
 
 ## Quick Install
+See [Prerequisites]{https://github.com/pageauc/opencv3-setup#prerequisites} for system requirments.   
+  
 Step1 - Use mouse to highlight command below, Then right click copy on highlighted command     
 Step2 - On a logged in RPI SSH terminal session right click paste then Enter to Run ***setup.sh*** script
 
@@ -11,24 +13,39 @@ Step2 - On a logged in RPI SSH terminal session right click paste then Enter to 
 
 The curl comand will run the GitHub [setup.sh](https://github.com/pageauc/opencv3-setup/blob/master/setup.sh)
 script that will install files and configure into the ***~/opencv3-setup*** folder.
+If you want to review code before running setup.sh 
+see [Manual Install](https://github.com/pageauc/opencv3-setup#manual-install)
 
-***To Run***
+## How To Run Menu
 
     cd ~/opencv3-setup
     ./cv3-install-menu.sh
 
-## Manual Install
-From a logged in RPI SSH session or console terminal perform the following.
-This will allow you to review the code before installing.
+Start at Step 1 and follow instructions. You will be prompted to optionally reboot.
+for details see [***How to Run Menu Picks***](https://github.com/pageauc/opencv3-setup#how-to-run-menu-picks)   
+To [change cv3_tmp folder path or opencv version see ](https://github.com/pageauc/opencv3-setup#how-to-change-configuration)
 
-    cd ~
-    wget -o setup.sh https://raw.github.com/pageauc/opencv3-setup/master/setup.sh
-    more setup.sh
-    chmod +x setup.sh
-    ./setup.sh
-    rm setup.sh
-    cd ~/opencv3-setup
-    ./cv3-install-menu.sh
+## Operation
+After update/upgrade and optional reboot is complete, Select **DEP** menu pick. If there are not problems
+you will be prompted with a simple y/n to continue without having to return to the main menu. If there are
+issues that need to be resolved you can continue by selecting the appropriate main menu pick.
+
+The ***cv3-install.menu.sh*** script will
+
+* Online validate that ***OPENCV_VER*** variable setting is correct
+* Check if ***INSTALL_DIR*** variable exists and points to a Non Fat File System.
+* Creates ***cv3-log.txt*** file If It Does Not Exist. Records system information, date/times of steps including execution time.
+* ***UPDATE*** menu pick to update/upgrade Raspbian. Prompts for optional reboot.
+* ***DEP*** menu pick to Install build dependencies, Download opencv3 source zip files and unzip
+* Auto Detect RPI3 and set NEON compile directive for cmake to enhance cv3 performance. Off for non RPI 3's
+* ***COMPILE*** menu pick will Run ***cmake*** to check and configure build
+* Temporarily Increase Swap memory to 1024 MB During make. Returned to original state after make.
+* Auto Detect Total RAM memory and set compile cores. -j2 for 1 GB, -j1 for the Rest
+* Run ***make*** to Compile opencv3 source code
+* ***INSTALL*** Menu pick will Run ***make install*** to install new opencv python ***.so*** files to production.
+* Optional run ***make clean*** to clear build directory to force full recompile.
+* ***DELETE*** menu pick to optionally recover disk space by deleting the ***tmp_cv3*** folder containing
+opencv source, build files and folders.
 
 ## Prerequisites
 * Basic knowledge of unix terminal commands.
@@ -43,32 +60,18 @@ If Free disk space is low or You have a smaller system SD card.
 You can mount Non fat USB stick or hard disk see
 [***How to Change Location of Temporary Working Folder***](https://github.com/pageauc/opencv3-setup#how-to-change-location-of-temporary-working-folder) 
 
-## How To Run Menu
+## Manual Install
+From a logged in RPI SSH session or console terminal perform the following.
+This will allow you to review the code before installing.
 
+    cd ~
+    wget -o setup.sh https://raw.github.com/pageauc/opencv3-setup/master/setup.sh
+    more setup.sh
+    chmod +x setup.sh
+    ./setup.sh
+    rm setup.sh
     cd ~/opencv3-setup
     ./cv3-install-menu.sh
-
-Start at Step 1 and follow instructions. You will be prompted to optionally reboot.
-for details see [***How to Run Menu Picks***](https://github.com/pageauc/opencv3-setup#how-to-run-menu-picks)
-
-## Operation
-The ***cv3-install.menu.sh*** script and menu picks will
-
-* Online validate that OPENCV_VER variable setting is correct
-* Check if INSTALL_DIR variable exists and points to a Non Fat File System.
-* Create cv3-log.txt file If It Does Not Exist. Records system information, date/times of steps including execution time.
-* Update/upgrade Raspbian for Raspberry Pi. prompts for optional reboot.
-* Install build dependencies
-* Download opencv3 source zip files and unzip
-* Auto Detect RPI3 and set NEON compile directive for cmake to enhance cv3 performance. Off for non RPI 3's
-* Run ***cmake*** to check and configure build
-* Temporarily Increase Swap memory to 1024 MB During make. Returned to original state after make.
-* Auto Detect Total RAM memory and set compile cores. -j2 for 1 GB, -j1 for the Rest
-* Run ***make*** to Compile opencv3 source code
-* Run ***make install*** to install new opencv python so files to production.
-* Optional run ***make clean*** to clear build directory to force full recompile.
-* DELETE menu pick to optionally recover disk space by deleting the ***tmp_cv3*** folder containing
-opencv source and build files and folders.
 
 ## How to Change Configuration
 Edit ***cv3-install-menu.conf*** file using nano per the following commands.
