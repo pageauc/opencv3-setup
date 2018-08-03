@@ -4,7 +4,7 @@
 ![cv3-install-menu](https://github.com/pageauc/opencv3-setup/blob/master/menu.png)
 
 ## Quick Install
-See [Prerequisites](https://github.com/pageauc/opencv3-setup#prerequisites) for system requirments.   
+For system requirements See [Prerequisites](https://github.com/pageauc/opencv3-setup#prerequisites)   
   
 ***Step1*** - Use mouse to highlight command below, Then right click copy on highlighted command     
 ***Step2*** - On a logged in RPI SSH terminal session right click paste then Enter to Run
@@ -14,24 +14,24 @@ See [Prerequisites](https://github.com/pageauc/opencv3-setup#prerequisites) for 
 
 The curl comand will run the GitHub [***setup.sh***](https://github.com/pageauc/opencv3-setup/blob/master/setup.sh)
 script that will install files and configure into the ***~/opencv3-setup*** folder.
-If you want to review code before running see [Manual Install](https://github.com/pageauc/opencv3-setup#manual-install)
+If you want to review code before running see [***Manual Install***](https://github.com/pageauc/opencv3-setup#manual-install)
 
 ## How To Run Menu
 
     cd ~/opencv3-setup
     ./cv3-install-menu.sh
 
-Start at Step 1 and follow instructions. You will be prompted to optionally reboot.
-for details see [***How to Run Menu Picks***](https://github.com/pageauc/opencv3-setup#how-to-run-menu-picks)   
+Start at Step ***1 UPDATE*** menu pick and follow instructions. You will be prompted to optionally reboot.
+For details see [***How to Run Menu Picks***](https://github.com/pageauc/opencv3-setup#how-to-run-menu-picks)   
 To change cv3_tmp folder location or opencv version see
-[How to Change Configuration](https://github.com/pageauc/opencv3-setup#how-to-change-configuration)
+[***How to Change Configuration***](https://github.com/pageauc/opencv3-setup#how-to-change-configuration)
 
 ## Operation
 After update/upgrade and optional reboot is complete, Select **DEP** menu pick. If there are no problems,
 you will be prompted with a simple y/n to continue without having to return to the main menu. If there are
 issues that need to be resolved you can continue by selecting the appropriate main menu pick.
 
-The ***cv3-install.menu.sh*** script will
+The [***cv3-install-menu.sh***](https://github.com/pageauc/opencv3-setup/blob/master/cv3-install-menu.sh) script will
 
 * Online validate that ***OPENCV_VER*** variable setting is correct
 * Check if ***INSTALL_DIR*** variable exists and points to a Non Fat File System.
