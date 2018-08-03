@@ -7,14 +7,14 @@
 See [Prerequisites]{https://github.com/pageauc/opencv3-setup#prerequisites} for system requirments.   
   
 ***Step1*** - Use mouse to highlight command below, Then right click copy on highlighted command     
-***Step2*** - On a logged in RPI SSH terminal session right click paste then Enter to Run ***setup.sh*** script
+***Step2*** - On a logged in RPI SSH terminal session right click paste then Enter to Run
+[***setup.sh***](https://github.com/pageauc/opencv3-setup/blob/master/setup.sh) script
 
     curl -L https://raw.github.com/pageauc/opencv3-setup/master/setup.sh | bash 
 
-The curl comand will run the GitHub [setup.sh](https://github.com/pageauc/opencv3-setup/blob/master/setup.sh)
+The curl comand will run the GitHub [***setup.sh***](https://github.com/pageauc/opencv3-setup/blob/master/setup.sh)
 script that will install files and configure into the ***~/opencv3-setup*** folder.
-If you want to review code before running [setup.sh](https://github.com/pageauc/opencv3-setup/blob/master/setup.sh)   
-see [Manual Install](https://github.com/pageauc/opencv3-setup#manual-install)
+If you want to review code before running see [Manual Install](https://github.com/pageauc/opencv3-setup#manual-install)
 
 ## How To Run Menu
 
