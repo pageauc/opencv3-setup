@@ -21,7 +21,7 @@ If you want to review code before running see [***Manual Install***](https://git
     cd ~/opencv3-setup
     ./cv3-install-menu.sh
 
-Start at Step ***1 UPDATE*** menu pick and follow instructions. You will be prompted to optionally reboot.
+Start at Step ***1 UPDATE*** menu pick and follow instructions. You will be prompted to optionally reboot.    
 For details see [***How to Run Menu Picks***](https://github.com/pageauc/opencv3-setup#how-to-run-menu-picks)   
 To change cv3_tmp folder location or opencv version see
 [***How to Change Configuration***](https://github.com/pageauc/opencv3-setup#how-to-change-configuration)
