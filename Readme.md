@@ -80,7 +80,9 @@ Run the ***SETTINGS*** menu pick or Edit ***cv3-install-menu.conf*** file using 
 
     cd ~/opencv3-setup
     nano cv3-install-menu.conf
-  
+ 
+Press ctrl-x y to save changes and exit nano
+ 
 ### How to Change OpenCV Version
 Edit variable OPENCV_VER='3.4.2' and change to a valid version per information at  
 https://github.com/opencv/opencv/releases The version number will be verified at launch
