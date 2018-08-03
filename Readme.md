@@ -6,12 +6,12 @@
 ## Quick Install
 See [Prerequisites]{https://github.com/pageauc/opencv3-setup#prerequisites} for system requirments.   
   
-Step1 - Use mouse to highlight command below, Then right click copy on highlighted command     
-Step2 - On a logged in RPI SSH terminal session right click paste then Enter to Run ***setup.sh*** script
+***Step1*** - Use mouse to highlight command below, Then right click copy on highlighted command     
+***Step2*** - On a logged in RPI SSH terminal session right click paste then Enter to Run ***setup.sh*** script
 
     curl -L https://raw.github.com/pageauc/opencv3-setup/master/setup.sh | bash 
 
-The curl comand will run the GitHub [setup.sh](https://github.com/pageauc/opencv3-setup/blob/master/setup.sh)
+The curl comand will run the GitHub [***setup.sh***](https://github.com/pageauc/opencv3-setup/blob/master/setup.sh)
 script that will install files and configure into the ***~/opencv3-setup*** folder.
 If you want to review code before running setup.sh 
 see [Manual Install](https://github.com/pageauc/opencv3-setup#manual-install)
@@ -23,7 +23,8 @@ see [Manual Install](https://github.com/pageauc/opencv3-setup#manual-install)
 
 Start at Step 1 and follow instructions. You will be prompted to optionally reboot.
 for details see [***How to Run Menu Picks***](https://github.com/pageauc/opencv3-setup#how-to-run-menu-picks)   
-To [change cv3_tmp folder path or opencv version see ](https://github.com/pageauc/opencv3-setup#how-to-change-configuration)
+To change cv3_tmp folder location or opencv version see
+[How to Change Configuration](https://github.com/pageauc/opencv3-setup#how-to-change-configuration)
 
 ## Operation
 After update/upgrade and optional reboot is complete, Select **DEP** menu pick. If there are not problems
