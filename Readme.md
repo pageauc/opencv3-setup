@@ -27,7 +27,7 @@ To change cv3_tmp folder location or opencv version see
 [How to Change Configuration](https://github.com/pageauc/opencv3-setup#how-to-change-configuration)
 
 ## Operation
-After update/upgrade and optional reboot is complete, Select **DEP** menu pick. If there are not problems
+After update/upgrade and optional reboot is complete, Select **DEP** menu pick. If there are no problems,
 you will be prompted with a simple y/n to continue without having to return to the main menu. If there are
 issues that need to be resolved you can continue by selecting the appropriate main menu pick.
 
