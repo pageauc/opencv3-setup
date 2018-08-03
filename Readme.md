@@ -47,7 +47,7 @@ The [***cv3-install-menu.sh***](https://github.com/pageauc/opencv3-setup/blob/ma
 * Optional run ***make clean*** to clear build directory to force full recompile.
 * ***DELETE*** menu pick to optionally recover disk space by deleting the ***tmp_cv3*** folder containing
 opencv source, build files and folders.
-* ***SETTINGS*** menu pick to nano edit the [***cv3--install-menu.conf***](https://github.com/pageauc/opencv3-setup/blob/master/cv3-install-menu.conf) file
+* ***SETTINGS*** menu pick to nano edit the [***cv3-install-menu.conf***](https://github.com/pageauc/opencv3-setup/blob/master/cv3-install-menu.conf) file
 
 ## Prerequisites
 * Basic knowledge of unix terminal commands.
