@@ -1,5 +1,5 @@
 #!/bin/bash
-PROG_VER='ver 2.8'
+PROG_VER='ver 2.9'
 
 # Script to assist with installing OpenCV3
 # If problems are encountered exit to command to try to resolve
@@ -75,6 +75,21 @@ function do_Initialize ()
       echo "------ End CPU Info -------" >> $LOG_FILE
       echo "" >> $LOG_FILE
    fi
+
+    FREE=`df -k --output=avail "$PWD" | tail -n1`  # df -k not df -h
+    if [[ $FREE -lt 1572864 ]]; then               # 1.5 GB
+        echo "----------------- ERROR ------------------------"
+        echo "$FREE KB free disk space is less than 1.5 GB"
+        echo "Not enough space for a 1 GB swap file plus extra"
+        echo "------------------------------------------------"
+        df -h
+        echo ""
+        echo "Please Investigate Problem and Try Again."
+        exit 1
+    else
+        echo "OK - $FREE KB disk space Found." >> $LOG_FILE
+    fi
+
 }
 
 #------------------------------------------------------------------------------
@@ -288,14 +303,17 @@ function do_cv3_dep_install ()
    sudo apt-get install -y libgtkglext1-dev
    sudo apt-get install -y v4l-utils
    sudo apt-get install -y gphoto2
+   sudo apt-get install python-pip
+   sudo apt-get install python3-pip
    DATE=$(date)
    END=$(date +%s)
    DIFF=$((END - START))
    echo "-- apt-get-install End: $DATE" | tee -a $LOG_FILE
    echo "-- apt-get-install Took: $(($DIFF / 60)) min $(($DIFF % 60)) sec" | tee -a $LOG_FILE
-   echo "Perform sudo apt-get autoremove"
+   echo "Perform sudo apt-get autoremove and clean"
    echo ""
    sudo apt-get -y autoremove
+   sudo apt-get clean
    if [ ! -d $INSTALL_DIR ] ; then
        echo "Create dir $INSTALL_DIR"
        mkdir $INSTALL_DIR
@@ -315,11 +333,6 @@ function do_cv3_dep_install ()
    cd $INSTALL_DIR
    echo ""
    echo "Install pip"
-   rm get-pip.py
-   wget https://bootstrap.pypa.io/get-pip.py
-   sudo python get-pip.py
-   echo ""
-   echo "Install numpy"
    sudo pip install numpy
    echo ""
    echo "$DATE Done Install of Build Essentials and Dependencies ..." | tee -a $LOG_FILE
@@ -702,6 +715,122 @@ function do_log ()
 }
 
 #------------------------------------------------------------------------------
+function do_auto ()
+{
+    clear
+    echo "NOTE: Unattended Build will Not Log Activity."
+    echo "You may see Failed or Not Found messages during"
+    echo "during cmake and make. This is usually OK and Not Fatal"
+    echo "Be Patient ..."
+    read -p "Run Unattended Build Now? (y/n)? " choice
+    case "$choice" in
+       y|Y ) echo "Running Unattended Build"
+             echo ""
+             ;;
+         * ) do_main_menu
+             ;;
+    esac
+    sudo apt-get -y update
+    sudo apt-get -y upgrade
+    sudo apt-get install -y build-essential
+    sudo apt-get install -y git
+    sudo apt-get install -y cmake
+    sudo apt-get install -y pkg-config
+    sudo apt-get install -y libjpeg-dev
+    sudo apt-get install -y libtiff5-dev
+    sudo apt-get install -y libjasper-dev
+    sudo apt-get install -y libpng12-dev
+    sudo apt-get install -y libgtk2.0-dev
+    sudo apt-get install -y libgstreamer0.10-0-dbg
+    sudo apt-get install -y libgstreamer0.10-0
+    sudo apt-get install -y libgstreamer0.10-dev
+    sudo apt-get install -y libv4l-0
+    sudo apt-get install -y libavcodec-dev
+    sudo apt-get install -y libavformat-dev
+    sudo apt-get install -y libswscale-dev
+    sudo apt-get install -y libv4l-dev
+    sudo apt-get install -y libxvidcore-dev
+    sudo apt-get install -y libx264-dev
+    sudo apt-get install -y libqtgui4
+    sudo apt-get install -y libatlas-base-dev
+    sudo apt-get install -y python2.7-dev
+    sudo apt-get install -y python3-dev
+    sudo apt-get install -y gfortran
+    sudo apt-get install -y python-numpy
+    sudo apt-get install -y python-scipy
+    sudo apt-get install -y python-matplotlib
+    sudo apt-get install -y default-jdk ant
+    sudo apt-get install -y libgtkglext1-dev
+    sudo apt-get install -y v4l-utils
+    sudo apt-get install -y gphoto2
+    sudo apt-get install -y python-pip
+    sudo apt-get install -y python3-pip
+    sudo pip install numpy
+    sudo pip3 install numpy
+    sudo apt-get -y autoremove
+    sudo apt-get clean
+    if [ ! -d $INSTALL_DIR ] ; then
+        mkdir $INSTALL_DIR
+        if [ $? -ne 0 ] ; then
+            echo "----------------- ERROR -------------------"
+            echo "Could Not Create Dir at $INSTALL_DIR"
+            echo "Check permissions"
+            echo "If on a mounted Device make sure"
+            echo "1- Device is mounted and is NOT FAT32"
+            echo "2- Device Must be writeable by Pi user."
+            echo "   Check ownership and permissions"
+            echo ""
+            echo "Exit to Terminal to Investigate"
+            exit 1
+        fi
+    fi
+    cd $INSTALL_DIR
+    if [ ! -d "$BUILD_DIR" ] ; then
+        mkdir $BUILD_DIR
+    fi
+    cd $BUILD_DIR
+    cat /proc/device-tree/model | grep -aq "Raspberry Pi 3"
+    if [ $? -eq 0 ]; then
+        # This optimizes for Raspberry Pi 3 Models
+        cmake -D CMAKE_BUILD_TYPE=RELEASE \
+        -D CMAKE_INSTALL_PREFIX=/usr/local \
+        -D INSTALL_C_EXAMPLES=OFF \
+        -D INSTALL_PYTHON_EXAMPLES=ON \
+        -D OPENCV_EXTRA_MODULES_PATH=$INSTALL_DIR/opencv_contrib-$OPENCV_VER/modules \
+        -D BUILD_EXAMPLES=ON \
+        -D ENABLE_NEON=ON ..
+    else
+        cmake -D CMAKE_BUILD_TYPE=RELEASE \
+        -D CMAKE_INSTALL_PREFIX=/usr/local \
+        -D INSTALL_C_EXAMPLES=OFF \
+        -D INSTALL_PYTHON_EXAMPLES=ON \
+        -D OPENCV_EXTRA_MODULES_PATH=$INSTALL_DIR/opencv_contrib-$OPENCV_VER/modules \
+        -D BUILD_EXAMPLES=ON \
+        -D ENABLE_NEON=OFF ..
+    fi
+    if [ "$TOTAL_SWAP" -lt "1024" ] ; then
+        if [ ! -f "/etc/dphys-swapfile.bak" ] ; then
+            sudo cp /etc/dphys-swapfile /etc/dphys-swapfile.bak
+            sudo cp $PROG_DIR/dphys-swapfile.1024 /etc/dphys-swapfile
+            sudo /etc/init.d/dphys-swapfile stop
+            sudo /etc/init.d/dphys-swapfile start
+        fi
+    fi
+    make $COMPILE_CORES
+    if [ -f "/etc/dphys-swapfile.bak" ] ; then
+        sudo cp /etc/dphys-swapfile.bak /etc/dphys-swapfile
+        sudo rm /etc/dphys-swapfile.bak
+        sudo /etc/init.d/dphys-swapfile stop
+        sudo /etc/init.d/dphys-swapfile start
+        TOTAL_SWAP=$(free -m | grep Swap | tr -s " " | cut -f 2 -d " ")
+    fi
+    echo "Compile Complete.  Check for Errors"
+    echo "If Compile was successful run 4 INSTALL menu pick"
+    cd $PROG_DIR
+    exit
+}
+
+#------------------------------------------------------------------------------
 function do_about()
 {
   whiptail --title "About" --msgbox "\
@@ -710,18 +839,22 @@ GitHub https://github.com/pageauc/opencv3-setup
 
 This is a menu driven install script to download and
 compile opencv3 from source code. Default is opencv 3.3.0
-To change OPENCV_VER variable use nano to edit this script.
+To change OPENCV_VER variable nano edit the
+$PROG_CONF file.
 The OPENCV_VER variable will be verified at
 https://github.com/Itseez/opencv/archive/
 when this menu script is run.
 
 Prerequisites
 1 - RPI 2 or 3 Connected to Working Internet Connection
-2 - Recent Jessie or Stretch Raspbian Release
+2 - Recent Jessie or Stretch Raspbian Release.
+    Earlier versions like wheezy not tested but may work.
     Recommended min 16GB SD card with at least 6 GB Free.
     If Free disk space is Low or You have a Small system SD.
-    You can mount USB memory or hard disk and change the
-    INSTALL_DIR variable in this script to point to the new path.
+    You can mount a NON FAT format eg ext4 or NTFS
+    USB memory stick or hard disk and change the
+    INSTALL_DIR variable in $PROG_CONF file
+    to point to the new path.
 
 Instructions
 You will be asked to reboot during some installation steps.
@@ -739,7 +872,7 @@ https://github.com/Tes3awy/OpenCV-3.2.0-Compiling-on-Raspberry-Pi
 #------------------------------------------------------------------------------
 function do_main_menu ()
 {
-  SELECTION=$(whiptail --title "opencv $OPENCV_VER Compile Assist" --menu "Arrow/Enter Selects or Tab Key" 20 70 10 --cancel-button Quit --ok-button Select \
+  SELECTION=$(whiptail --title "opencv $OPENCV_VER Compile Assist" --menu "Arrow/Enter Selects or Tab Key" 0 0 0 --cancel-button Quit --ok-button Select \
   "1 UPDATE" "Run Raspbian Update and Upgrade" \
   "2 DEP" "Install Build Dependencies and Download Source" \
   "3 COMPILE $OPENCV_VER" "Run cmake and make $COMPILE_CORES (be patient)" \
@@ -749,6 +882,7 @@ function do_main_menu ()
   "7 UPGRADE" "$0 $PROG_VER Files from GitHub" \
   "8 LOG" "View Log File cv3-log.txt" \
   "9 ABOUT" "Information about this program" \
+  "A AUTO" "Unattended Install (Do You Feel Lucky)" \
   "q QUIT" "Exit This Menu Program"  3>&1 1>&2 2>&3)
 
   RET=$?
@@ -774,6 +908,7 @@ function do_main_menu ()
             do_main_menu ;;
       9\ *) do_about
             do_main_menu ;;
+      A\ *) do_auto ;;
       q\ *) echo ""
             echo "$0 $PROG_VER    written by Claude Pageau"
             echo "Bye ..."
