@@ -1,5 +1,5 @@
 #!/bin/bash
-PROG_VER='ver 2.9'
+PROG_VER='ver 3.0'
 
 # Script to assist with installing OpenCV3
 # If problems are encountered exit to command to try to resolve
@@ -9,36 +9,63 @@ PROG_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" # folder location o
 PROG_NAME=$(basename -- "$0" .sh)   # Extract Program Name minus .sh extension
 PROG_CONF="$PROG_DIR/$PROG_NAME.conf"  # Setup program conf file name
 
-if [ -f $PROG_CONF ] ; then
-   source $PROG_CONF
-else
-   echo "ERROR: $PROG_CONF File Not Found."
-   echo "       Could Not Import $PROG_NAME variables"
-   echo "       Please Investigate or Download file from GitHub Repo"
-   echo "       https://github.com/pageauc/opencv3-setup"
-   exit 1
-fi
+#------------------------------------------------------------------------------
+function read_config_file ()
+{
+    if [ -f $PROG_CONF ] ; then
+        source $PROG_CONF
+    else
+        whiptail --title "$PROG_CONF File NOT Found" --msgbox " \
+     File $PROG_CONF
+     Variable Configuration File NOT Found.
+     Could Not Import $PROG_NAME variables
 
-WORKING_DIR=$( dirname $INSTALL_DIR )
-echo "Checking File System type for $WORKING_DIR"
-if [ -d $WORKING_DIR ]; then
-    df -PTh $WORKING_DIR | awk '{print $2}' | grep fat
-    if [ $? -eq 0 ]; then
-        echo "ERROR: $WORKING_DIR is a FAT File System."
-        echo "       IMPORTANT: FAT Does Not Support symlinks"
-        echo "       that are Required to Compile opencv2"
-        echo "       Edit $PROG_CONF File and"
-        echo "       Change WORKING_DIR variable to Point to a Non FAT File System."
-        echo "       NOTE: Leave /tmp_cv3 Entry since Dir will be Created."
-        exit 1
+     A replacement file will be downloaded from GitHub
+     at https://github.com/pageauc/opencv3-setup
+    \
+    " 0 0 0
+        echo "Downloading replacement cv3-install-menu.conf file"
+        wget -O cv3-install-menu.conf https://raw.github.com/pageauc/opencv3-setup/master/cv3-install-menu.conf
+        echo "Restarting cv3-install-menu.sh"
+        ./cv3-install-menu.sh
     fi
-else
-    echo "ERROR: $WORKING_DIR Directory NOT Found"
-    echo "       Check $PROG_CONF File and Edit"
-    echo "       INSTALL_DIR variable to Point to a Valid directory"
-    echo "       NOTE: Leave /tmp_cv3 Entry since Dir will be Created."
-    exit 1
-fi
+}
+
+#------------------------------------------------------------------------------
+function check_working_dir ()
+{
+    WORKING_DIR=$( dirname $INSTALL_DIR )
+    echo "Checking File System type for $WORKING_DIR"
+    if [ -d $WORKING_DIR ]; then
+        df -PTh $WORKING_DIR | awk '{print $2}' | grep fat
+        if [ $? -eq 0 ]; then
+            whiptail --title "WARNING FAT System Not Supported" --msgbox " \
+ $WORKING_DIR is a FAT File System.
+ IMPORTANT: FAT Does Not Support symlinks
+ that are Required to Compile opencv2
+ Run SETTINGS Menu Pick to Edit $PROG_CONF File and
+ Change WORKING_DIR variable to Point to a Non FAT File System.
+ NOTE: Leave /tmp_cv3 Entry since Dir will be Created.
+ \
+ " 0 0 0
+            do_main_menu
+        fi
+    else
+        whiptail --title "$WORKING_DIR Working Dir NOT Found" --msgbox " \
+
+ $WORKING_DIR Working Directory NOT Found.
+
+ Run SETTINGS Menu Pick
+ Edit INSTALL_DIR variable to Point to a Valid directory
+ for downloading the opencv working files.
+
+ NOTE: Leave /tmp_cv3 Entry at end of INSTALL_DIR variable
+       since it will be Created if it Does Not Exist.
+ \
+ " 0 0 0
+        do_main_menu
+    fi
+}
 
 #------------------------------------------------------------------------------
 function do_Initialize ()
@@ -51,6 +78,13 @@ function do_Initialize ()
    # Get Total Swap Memory
    TOTAL_SWAP=$(free -m | grep Swap | tr -s " " | cut -f 2 -d " ")
    DATE=$(date)
+   # Set the number of cores for Compiling
+   # 1G mem gets 2 cores 512 mem gets 1 core, Both get 1024 MB Swap
+   if [ "$TOTAL_MEM" -gt "512" ] ; then
+      COMPILE_CORES="-j2"
+   else
+      COMPILE_CORES="-j1"
+   fi
 
    # Create Log File if it Does Not Exist
    if [ ! -f $LOG_FILE ] ; then
@@ -61,13 +95,6 @@ function do_Initialize ()
       uname -a >> $LOG_FILE
       cat /proc/device-tree/model >> $LOG_FILE
       echo "" >> $LOG_FILE
-      # Set the number of cores for Compiling
-      # 1G mem gets 2 cores 512 mem gets 1 core, Both get 1024 MB Swap
-      if [ "$TOTAL_MEM" -gt "512" ] ; then
-         COMPILE_CORES="-j2"
-      else
-         COMPILE_CORES="-j1"
-      fi
       echo "$TOTAL_MEM MB Total RAM mem  Compile Cores Set to $COMPILE_CORES" >> $LOG_FILE
       echo "" >> $LOG_FILE
       echo " ----- Start CPU Info -----" >> $LOG_FILE
@@ -75,65 +102,68 @@ function do_Initialize ()
       echo "------ End CPU Info -------" >> $LOG_FILE
       echo "" >> $LOG_FILE
    fi
+}
 
+#------------------------------------------------------------------------------
+function check_min_free_space ()
+{
+    # Check Free disk space is above minimum
     FREE=`df -k --output=avail "$PWD" | tail -n1`  # df -k not df -h
     if [[ $FREE -lt 1572864 ]]; then               # 1.5 GB
-        echo "----------------- ERROR ------------------------"
-        echo "$FREE KB free disk space is less than 1.5 GB"
-        echo "Not enough space for a 1 GB swap file plus extra"
-        echo "------------------------------------------------"
-        df -h
-        echo ""
-        echo "Please Investigate Problem and Try Again."
-        exit 1
-    else
-        echo "OK - $FREE KB disk space Found." >> $LOG_FILE
-    fi
+        WARNING_MSG="
+ $FREE KB free disk space is less than 1.5 GB
+ Not enough space for a 1 GB swap file plus extra
 
+ Please Investigate Problem and Try Again.
+ "
+        do_anykey
+    else
+        echo "OK - $FREE KB free disk space Found." >> $LOG_FILE
+    fi
 }
 
 #------------------------------------------------------------------------------
 function do_check_cv3_ver ()
 {
-   opencv_zip="https://github.com/Itseez/opencv/archive/$OPENCV_VER.zip"
-   echo "Checking opencv version $OPENCV_VER  Wait ..."
-   # Check if there is a url at the destination link
-   wget -S --spider $opencv_zip 2>&1 | grep -q 'HTTP/1.1 200 OK'
-   if [ $? -eq 0 ]; then
-       echo "Variable OPENCV_VER=$OPENCV_VER Is a Valid opencv Version"
-       sleep 4
-   else
-       echo "----------------- ERROR ------------------------"
-       echo "File Not Found at $opencv_zip"
-       echo "1 Check Internet Connection."
-       echo "2 Check variable OPENCV_VER=$OPENCV_VER"
-       echo "  Using url verify opencv zip release is valid"
-       echo "  at https://github.com/opencv/opencv/releases"
-       echo ""
-       echo "Run command below to Edit this script file"
-       echo ""
-       echo "    nano $0"
-       echo ""
-       echo "Edit variable OPENCV_VER=$OPENCV_VER"
-       echo "Change to a valid opencv release number eg 3.4.1"
-       echo "------------------------------------------------"
-       echo "Exit to Terminal Bye ..."
-       exit 1
+    opencv_zip="https://github.com/Itseez/opencv/archive/$OPENCV_VER.zip"
+    echo "Checking opencv version $OPENCV_VER  Wait ..."
+    # Check if there is a url at the destination link
+    wget -S --spider $opencv_zip 2>&1 | grep -q 'HTTP/1.1 200 OK'
+    if [ $? -eq 0 ]; then
+        echo "Variable OPENCV_VER=$OPENCV_VER Is a Valid opencv Version"
+        sleep 4
+    else
+        whiptail --title "opencv version $OPENCV_VER Check Problem" --msgbox " \
+ Could NOT verify opencv $OPENCV_VER version
+ at $opencv_zip
+
+ 1 Check Internet Connection.
+ 2 Check variable OPENCV_VER=$OPENCV_VER
+   Using url https://github.com/opencv/opencv/releases
+   Verify opencv zip release is valid.
+
+ If Required, Run SETTINGS Menu pick
+ and Edit variable OPENCV_VER=$OPENCV_VER to a
+ valid opencv release version
+\
+" 0 0 0
+        do_main_menu
    fi
 }
 
 #------------------------------------------------------------------------------
 function do_anykey ()
 {
-   echo ""
-   read -p "Return to Main Menu? (y/n)? " choice
-   case "$choice" in
-     n|N ) echo "Exit to Terminal Bye ..."
-           exit 1
-           ;;
-       * ) do_main_menu
-           ;;
-   esac
+    if (whiptail --title "WARNING" \
+    --yes-button "Back" --no-button "Exit" --yesno " \
+$WARNING_MSG
+\
+" 0 0) \
+    then
+      do_main_menu
+    else
+      exit
+    fi
 }
 
 #------------------------------------------------------------------------------
@@ -143,6 +173,7 @@ function do_swap_check ()
         echo "Total Mem is $TOTAL_MEM MB so $TOTAL_SWAP MB Swap is OK" | tee -a $LOG_FILE
     else
         if [ ! -f "/etc/dphys-swapfile.bak" ] ; then
+            check_min_free_space
             echo "Temporarily Increase Swap Space to 1024 MB" | tee -a $LOG_FILE
             sudo cp /etc/dphys-swapfile /etc/dphys-swapfile.bak
             sudo cp $PROG_DIR/dphys-swapfile.1024 /etc/dphys-swapfile
@@ -157,6 +188,7 @@ function do_swap_check ()
     fi
 }
 
+#------------------------------------------------------------------------------
 function do_swap_back ()
 {
     if [ -f "/etc/dphys-swapfile.bak" ] ; then
@@ -224,14 +256,17 @@ function do_cv3_dep ()
 {
   clear
   if [ -d "$INSTALL_DIR/opencv-$OPENCV_VER" ] ; then
-    if (whiptail --title "WARNING" \
-    --yes-button "Back" --no-button "Repeat"  --yesno "\
-Found Dir $INSTALL_DIR/opencv-$OPENCV_VER
-If Previous Install was Successful,
-Do You Really Want to Repeat Step 2 and
-Install Dependencies and CV3 Source Files Again?
-\
-" 0 0) \
+    if (whiptail --title "Folder Already Exists" \
+    --yes-button "Back" --no-button "Repeat"  --yesno " \
+ WARNING
+ $INSTALL_DIR/opencv-$OPENCV_VER
+ Folder Already Exists.
+
+ If a Previous Install was Successful,
+ Do You Really Want to Repeat Install of
+ opencv Dependencies and Source Files Again?
+ \
+ " 0 0) \
     then
       do_main_menu
     else
@@ -245,6 +280,7 @@ Install Dependencies and CV3 Source Files Again?
 #------------------------------------------------------------------------------
 function do_cv3_dep_install ()
 {
+   check_min_free_space
    # Install opencv3 build dependencies
    echo "STEP 2 Install opencv $OPENCV_VER Build Dependencies"
    echo ""
@@ -318,16 +354,17 @@ function do_cv3_dep_install ()
        echo "Create dir $INSTALL_DIR"
        mkdir $INSTALL_DIR
        if [ $? -ne 0 ] ; then
-          echo "----------------- ERROR -------------------"
-          echo "Could Not Create Dir at $INSTALL_DIR"
-          echo "Check permissions"
-          echo "If on a mounted Device make sure"
-          echo "1- Device is mounted and is NOT FAT32"
-          echo "2- Device Must be writeable by Pi user."
-          echo "   Check ownership and permissions"
-          echo ""
-          echo "Exit to Terminal to Investigate"
-          exit 1
+          WARNING_MSG="
+ Could Not Create Dir at $INSTALL_DIR
+ Check permissions
+ If on a mounted Device make sure
+ 1- Device is mounted and is NOT FAT32
+ 2- Device Must be writeable by Pi user.
+    Check ownership and permissions
+
+ Exit to Terminal to Investigate
+ "
+          do_anykey
        fi
    fi
    cd $INSTALL_DIR
@@ -369,7 +406,7 @@ function do_cv3_dep_install ()
    echo ""
    read -p "Proceed to STEP 3 COMPILE (y/n)? " choice
    case "$choice" in
-     y|Y ) do_cv3_make
+     y|Y ) do_cv3_cmake
            ;;
       * ) do_main_menu
           ;;
@@ -377,50 +414,90 @@ function do_cv3_dep_install ()
 }
 
 #------------------------------------------------------------------------------
+function do_cv3_compile_menu ()
+{
+  cd $INSTALL_DIR
+  clear
+  if [ ! -d "$BUILD_DIR" ] ; then
+    echo "Create build directory $BUILD_DIR"
+    mkdir $BUILD_DIR
+  fi
+  cd $BUILD_DIR
+  SELECTION=$(whiptail --title "OpenCV $OPENCV_VER COMPILE Menu " --menu "Arrow/Enter Selects or Tab Key" 0 0 0 --cancel-button Quit --ok-button Select \
+  "1 CMAKE" "Required unless a previous cmake was successful" \
+  "2 MAKE" "Run/Continue make compile if a previous cmake was successful" \
+  "3 CLEAN" "Run a make clean to Force compile from Start (Lose Previous Progress)" \
+  "q BACK" "Back to Main Menu"  3>&1 1>&2 2>&3)
+
+  RET=$?
+  if [ $RET -eq 1 ]; then
+    exit 0
+  elif [ $RET -eq 0 ]; then
+    case "$SELECTION" in
+      1\ *) do_cv3_cmake
+            ;;
+      2\ *) do_cv3_make
+            ;;
+      3\ *) do_make_clean
+            ;;
+      q\ *) cd $PROG_DIR
+            do_main_menu
+            ;;
+         *) whiptail --msgbox "Programmer error: unrecognised option" 20 60 1 ;;
+    esac || whiptail --msgbox "There was an error running selection $SELECTION" 20 60 1
+  fi
+}
+
+#------------------------------------------------------------------------------
 function do_cv3_cmake ()
 {
    if [ ! -d $INSTALL_DIR ] ; then
        clear
-       echo "---------- STEP 3-1 ERROR --------------"
-       echo " $INSTALL_DIR Director Not Found."
-       echo " You Need to Run STEP 2 DEP Menu Pick"
-       echo " in Order to Install Dependencies"
-       echo " and Download Opencv3 Source Files"
-       echo "--------------------------------------"
-       read -p "Proceed to STEP 2 DEP (y/n)? " choice
-       case "$choice" in
-         y|Y ) do_cv3_dep
-               ;;
-          * ) do_main_menu
-              ;;
-       esac
+       if (whiptail --title "$INSTALL_DIR Director Not Found" \
+ --yes-button "Back" --no-button "Run DEP"  --yesno "\
+
+ $INSTALL_DIR Director Not Found.
+
+ You Need to Run STEP 2 DEP Menu Pick
+ in Order to Install Dependencies
+ and Download Opencv3 Source Files.
+
+ \
+ " 0 0) \
+        then
+          do_main_menu
+        else
+          do_cv3_dep
+        fi
    fi
-   cd $INSTALL_DIR
-   clear
-   DATE=$(date)
-   echo "$DATE STEP 3-1 Run cmake Prior to Compiling opencv $OPENCV_VER with make -j1" | tee -a $LOG_FILE
-   echo ""
-   if [ ! -d "$BUILD_DIR" ] ; then
-     echo "Create build directory $BUILD_DIR"
-     mkdir $BUILD_DIR
+
+   if (whiptail --title "cmake INSTRUCTIONS" \
+ --yes-button "Back" --no-button "Run cmake"  --yesno "\
+
+ cmake will scan opencv dependencies, source directory tree
+ and customize for the Raspberry Pi environment.  This must be done
+ before a make compile can be performed.
+
+ You will see Failed, not found, no package, Etc messages during cmake.
+ This is normal and not fatal. Fatal errors will normally
+ stop cmake before completion.
+
+ If cmake is OK Last Messages should say
+ -- Configuring done
+ -- Generating done
+ -- Build files have been written to: ...
+
+ Note: These will take a while to complete so be patient ...
+
+ \
+ " 0 0) \
+   then
+      do_cv3_compile_menu
+   else
+      clear
+      DATE=$(date)
+      echo "$DATE STEP 3-1 Run cmake Prior to Compiling opencv $OPENCV_VER with make -j1" | tee -a $LOG_FILE
    fi
-   cd $BUILD_DIR
-   echo "------------- STEP 3 INSTRUCTIONS -----------------"
-   echo " cmake Will Take a Few Minutes ...."
-   echo " At End of cmake You Will See a Messages"
-   echo " Configuring done and Generating done"
-   echo " These Will Take a While to Finish"
-   echo " So Be Patient ....."
-   echo " ---------------------------------------------------"
-   echo " y) Run cmake - Required unless previously successful"
-   echo " n) Run make  - If continuing a previous compile"
-   read -p " Start cmake Now (y/n)? " choice
-   case "$choice" in
-     n|N ) do_cv3_make
-           ;;
-       * ) echo "$DATE STEP 3-1 Run cmake for opencv $OPENCV_VER" | tee -a $LOG_FILE
-           ;;
-   esac
    START=$(date +%s)
    cat /proc/device-tree/model
    echo ""
@@ -453,7 +530,8 @@ function do_cv3_cmake ()
    DIFF=$((END - START))
    echo "-- cmake End: $DATE" | tee -a $LOG_FILE
    echo "-- cmake Took: $(($DIFF / 60)) min $(($DIFF % 60)) sec" | tee -a $LOG_FILE
-   echo "---------- STEP 3-1 INSTRUCTIONS ------------"
+   echo "---------- cmake INSTRUCTIONS ------------"
+   echo " NOTE: Most Not Found or Failed Messages are Normal"
    echo " 1- Review cmake messages above for Errors"
    echo " 2- Check that Python 2 and Python 3 sections"
    echo "    Have directory path entries"
@@ -461,93 +539,99 @@ function do_cv3_cmake ()
    echo " 4- Last Messages should say"
    echo "-- Configuring done"
    echo "-- Generating done"
-   echo "-- build files have been written to: ..."
+   echo "-- Build files have been written to: ..."
    echo "---------------------------------------------"
    read -p "Was cmake Successful (y/n)? " choice
    case "$choice" in
-     n|N ) echo "------------------ STEP 3-1 INSTRUCTIONS ---------------------"
-           echo ""
-           echo "y) Run make clean to Force re compile from scratch"
-           echo "n) New or Continue Previous Compile where It Left Off"
-           echo ""
-           echo "--------------------------------------------------------------"
-           read -p "(optional) Run make clean Now (y/n)? " choice
-           case "$choice" in
-             y|Y ) echo "Running sudo make clean"
-                   sudo make clean
-                   echo "Done make clean"
-                   echo "Ready to Try Full cmake Once Problems Resolved."
-                   do_anykey
-                   ;;
-               * ) echo "Use Existing make build Files"
-                   echo "Exit to Terminal to Review Errors"
-                   exit 1
-                   ;;
-           esac
-         ;;
+     n|N ) echo "Exit to Terminal to Resolve Problems"
+           exit 1
+           ;;
      * ) do_cv3_make
          ;;
    esac
 }
 
 #------------------------------------------------------------------------------
+function do_make_clean ()
+{
+   if (whiptail --title "make clean INSTRUCTIONS" \
+ --yes-button "Back" --no-button "Clean"  --yesno " \
+
+ make clean will clear the current compile status
+ and force a full compile from the beginning.
+ This may be necessary if there were issues
+ with a previous make compile.
+
+ \
+ " 0 0 0 ) \
+   then
+       do_cv3_compile_menu
+   else
+       echo "Running make clean"
+       echo "------------------"
+       sudo make clean
+       echo "Completed make clean"
+       echo "Next compile will start from beginning"
+       read -p "Press Return to Continue" choice
+       do_cv3_compile_menu
+   fi
+}
+
+#------------------------------------------------------------------------------
 function do_cv3_make ()
 {
-   if [ ! -d "$BUILD_DIR" ] ; then
-      echo "----------- STEP 3-2 WARN -----------"
-      echo "Could Not Find Build Folder $BUILD_DIR"
-      echo "It will be Created Automatically."
-      echo "During Step 3-2 cmake."
-      echo "--------------------------------------"
-      read -p "STEP 3-2 Press Enter to Run cmake " choice
-      do_cv3_cmake
+   if (whiptail --title "make INSTRUCTIONS" \
+ --yes-button "Back" --no-button "Run make"  --yesno " \
+
+ A full make compile of openCV $OPENCV_VER will take many hours ...
+ A single core RPI with 512 MB RAM can take approx 27 hours
+ A quad core RPI with 1 GB of RAM can take 3 - 6 hours
+ Note: Starting dphys-swapfile service may take a while ....
+
+ RAM=$TOTAL_MEM MB  Run make $COMPILE_CORES
+
+ Once Compile is started, Percentage complete will be displayed.
+ Go for a nice Long Walk, Binge watch Game of Thrones or Something Else .....
+
+ \
+ " 0 0 0 ) \
+   then
+       do_cv3_compile_menu
+   else
+       do_swap_check
+       TOTAL_SWAP=$(free -m | grep Swap | tr -s " " | cut -f 2 -d " ")
+       DATE=$(date)
+       echo "$DATE STEP 3-2 Start Compile of opencv $OPENCV_VER" | tee -a $LOG_FILE
    fi
-   echo "--------------- STEP 3-2 INSTRUCTIONS --------------------"
-   echo "Full Compile of openCV $OPENCV_VER will take many hours ..."
-   echo "A single core RPI with 512 MB RAM can take approx 27 hours"
-   echo "A quad core RPI with 1 GB of RAM can take 3 - 6 hours"
-   echo "RAM=$TOTAL_MEM MB  Run make $COMPILE_CORES"
-   echo ""
-   echo "Once Compile is started, Go for a nice Long Walk"
-   echo "or Binge watch Game of Thrones or Something Else....."
-   echo "-----------------------------------------------------------"
-   read -p "Start Compile Now? (y/n)? " choice
+   START=$(date +%s)
+   echo "-- make $COMPILE_CORES  RAM=$TOTAL_MEM  SWAP=$TOTAL_SWAP" | tee -a $LOG_FILE
+   echo "-- make Start: $DATE" | tee -a $LOG_FILE
+   make $COMPILE_CORES
+   echo "--------------- End of make $COMPILE_CORES Messages ----------------"
+   DATE=$(date)
+   END=$(date +%s)
+   DIFF=$((END - START))
+   do_swap_back
+   TOTAL_SWAP=$(free -m | grep Swap | tr -s " " | cut -f 2 -d " ")
+   echo "-- make $COMPILE_CORES  RAM=$TOTAL_MEM  SWAP=$TOTAL_SWAP" | tee -a $LOG_FILE
+   echo "-- make End: $DATE" | tee -a $LOG_FILE
+   echo "-- make Took:  $(($DIFF / 60)) min $(($DIFF % 60)) sec" | tee -a $LOG_FILE
+   echo "----------- STEP 3-2 INSTRUCTIONS --------------"
+   echo "1- 1f Compile make $COMPILE_CORES is 100 percent"
+   echo "   Proceed to STEP 4 make install"
+   echo "2- If Less than 100 percent Complete"
+   echo "   Record Errors and Investigate Problem."
+   echo "------------------------------------------------"
+   read -p "Was make Compile Successful? (y/n)? " choice
    case "$choice" in
-     y|Y ) do_swap_check
-           TOTAL_SWAP=$(free -m | grep Swap | tr -s " " | cut -f 2 -d " ")
-           DATE=$(date)
-           echo "$DATE STEP 3-2 Start Compile of opencv $OPENCV_VER" | tee -a $LOG_FILE
-           START=$(date +%s)
-           echo "-- make $COMPILE_CORES  RAM=$TOTAL_MEM  SWAP=$TOTAL_SWAP" | tee -a $LOG_FILE
-           echo "-- make Start: $DATE" | tee -a $LOG_FILE
-           make $COMPILE_CORES
-           echo "--------------- End of make $COMPILE_CORES Messages ----------------"
-           DATE=$(date)
-           END=$(date +%s)
-           DIFF=$((END - START))
-           do_swap_back
-           TOTAL_SWAP=$(free -m | grep Swap | tr -s " " | cut -f 2 -d " ")
-           echo "-- make $COMPILE_CORES  RAM=$TOTAL_MEM  SWAP=$TOTAL_SWAP" | tee -a $LOG_FILE
-           echo "-- make End: $DATE" | tee -a $LOG_FILE
-           echo "-- make Took:  $(($DIFF / 60)) min $(($DIFF % 60)) sec" | tee -a $LOG_FILE
-           echo "----------- STEP 3-2 INSTRUCTIONS --------------"
-           echo "1- 1f Compile make $COMPILE_CORES is 100 percent"
-           echo "   Proceed to STEP 4 make install"
-           echo "2- If Less than 100 percent Complete"
-           echo "   Record Errors and Investigate Problem."
-           echo "------------------------------------------------"
-           read -p "Was make Compile Successful? (y/n)? " choice
-           case "$choice" in
-             y|Y ) do_cv3_install
-                   ;;
-               * ) echo "When Errors Resolve Retry 3 COMPILE Menu Pick"
-                   echo "Note make will Continue where it Left Off"
-                   echo "Exit to Terminal to Review Errors Bye ..."
-                   exit 1
-                   ;;
-           esac
+     y|Y ) do_cv3_install
            ;;
-       * ) do_main_menu
+       * ) WARNING_MSG="
+ When Errors Resolved, Retry Step 3 COMPILE Menu Pick
+ Note make will Continue where it Left Off
+ Exit to Terminal to Review Errors
+ "
+           do_anykey
            ;;
    esac
 }
@@ -555,23 +639,20 @@ function do_cv3_make ()
 #------------------------------------------------------------------------------
 function do_cv3_install ()
 {
-    clear
-    DATE=$(date)
-    echo "$DATE STEP 4 - Perform OpenCV $OPENCV_VER make install"
-    echo "--------------- STEP 4 INSTRUCTIONS ----------------------------"
-    echo "This Step will copy the compiled code to the system folders"
-    echo "WARNING - Do NOT run this unless you have successfully completed"
-    echo "          STEP 3 COMPILE"
-    echo "----------------------------------------------------------------"
-    read -p "Run make install Now? (y/n)? " choice
-    case "$choice" in
-       y|Y ) echo "Running make install  Wait ...."
-             echo ""
-             ;;
-         * ) do_main_menu
-             ;;
-    esac
     if [ -d "$INSTALL_DIR/opencv-$OPENCV_VER/build" ] ; then
+       clear
+       if (whiptail --title "make install INSTRUCTIONS" \
+ --yes-button "Back" --no-button "Run make install"  --yesno " \
+
+ This Step will copy the compiled code to the Required System Folders
+
+ WARNING - Do NOT run this unless you have successfully completed
+           STEP 3 COMPILE
+ \
+ " 0 0 0 ) \
+       then
+           do_main_menu
+       fi
        cd $INSTALL_DIR/opencv-$OPENCV_VER/build
        DATE=$(date)
        echo "$DATE STEP 4 Start make install of opencv $OPENCV_VER" | tee -a $LOG_FILE
@@ -584,29 +665,28 @@ function do_cv3_install ()
        DIFF=$((END - START))
        echo "-- make install End: $DATE" | tee -a $LOG_FILE
        echo "-- make install Took:  $(($DIFF / 60)) min $(($DIFF % 60)) sec" | tee -a $LOG_FILE
-       echo "--------------- STEP 4 INSTRUCTIONS -------------"
-       echo "You Need to Reboot to Complete Install of OpenCV $open_ver"
-       echo "-------------------------------------------------"
-       read -p "Reboot Now? (y/n)? " choice
-       case "$choice" in
-          y|Y ) echo "Rebooting Now to Enable Changes"
-                sudo reboot
-                ;;
-            * ) do_main_menu
-                ;;
-       esac
+       if (whiptail --title "Reboot Required" \
+ --yes-button "Back" --no-button "Reboot"  --yesno " \
+
+ You Need to Reboot to Complete Install
+ of python OpenCV $open_ver
+
+ \
+ " 0 0 0 ) \
+       then
+           do_main_menu
+       else
+           sudo reboot
+       fi
     else
-       echo "------------------ STEP 4 ERROR ---------------------"
-       echo " Directory Not Found $INSTALL_DIR/opencv-$OPENCV_VER/build"
-       echo " You Need to Go Back to Step 2 to Install Source Files"
-       echo "-----------------------------------------------------"
-       read -p "Proceed to STEP 2 DEP (y/n)? " choice
-       case "$choice" in
-         y|Y ) do_cv3_dep
-               ;;
-          * ) do_main_menu
-              ;;
-       esac
+       whiptail --title "WARNING Dir Not Found $INSTALL_DIR/opencv-$OPENCV_VER/build" --msgbox " \
+
+ WARNING: Directory Not Found $INSTALL_DIR/opencv-$OPENCV_VER/build
+ You Need to Run Step 2 or 3 to Install Source Files or Compile.
+
+ \
+ " 0 0 0
+       do_main_menu
     fi
 }
 
@@ -615,14 +695,15 @@ function do_cv3_cleanup ()
 {
     clear
     if [ ! -d $INSTALL_DIR ] ; then
-        echo "----------- STEP 5 ERROR -------------------"
-        echo " Could Not File $INSTALL_DIR"
-        echo " You Need to Run MENU PICK 2 DEP "
-        echo " If You Have Not Previously Done This"
-        echo "--------------------------------------------"
-        do_anykey
+        whiptail --title "WARNING" --msgbox " \
+ $INSTALL_DIR Directory NOT Found
+ You May Need to Run MENU PICK 2 DEP
+ If You Have Not Previously Done This.
+\
+" 0 0 0
+        do_main_menu
     fi
-    echo "5 - Delete OpenCV $OPENCV_VER Source Folders and zip files (optional)"
+    echo "Step 5 - Delete OpenCV $OPENCV_VER Source Folders and zip files (optional)"
     echo ""
     echo "Current System Disk Status"
     df -h
@@ -650,9 +731,9 @@ function do_cv3_cleanup ()
              echo "AFTER - Disk Space Status"
              df -h
              echo "Done Removing $INSTALL_DIR Source Folders and zip files .."
-             do_anykey
+             read -p "Press Enter Key To Continue" choice
              ;;
-       n|N ) echo "Back To Main Menu"
+       n|N ) do_main_menu
              ;;
          * ) echo "invalid Selection"
              ;;
@@ -660,7 +741,7 @@ function do_cv3_cleanup ()
     echo ""
     echo "Current System Disk Status"
     df -h
-    do_anykey
+    read -p "Press Enter Key to Continue" choice
 }
 
 #------------------------------------------------------------------------------
@@ -673,10 +754,12 @@ function do_upgrade()
     curlcmd=('/usr/bin/curl -L curl -L https://raw.github.com/pageauc/opencv3-setup/master/setup.sh | bash')
     eval $curlcmd
     echo "Done $PROG_NAME Upgrade/Refresh"
-    echo "Restart Menu to Implement Changes Bye ..."
+    echo "Restart Menu to Implement Changes"
     echo ""
     echo "    ./cv3-install-menu.sh"
-    exit 1
+    echo "Restarting cv3-install-menu.sh"
+    read -p "Press Enter to Continue" choice
+    ./cv3-install-menu.sh
   fi
 }
 
@@ -718,18 +801,31 @@ function do_log ()
 function do_auto ()
 {
     clear
-    echo "NOTE: Unattended Build will Not Log Activity."
-    echo "You may see Failed or Not Found messages during"
-    echo "during cmake and make. This is usually OK and Not Fatal"
-    echo "Be Patient ..."
-    read -p "Run Unattended Build Now? (y/n)? " choice
-    case "$choice" in
-       y|Y ) echo "Running Unattended Build"
-             echo ""
-             ;;
-         * ) do_main_menu
-             ;;
-    esac
+    if (whiptail --title "AUTO Install INSTRUCTIONS" \
+    --yes-button "Back" --no-button "Run Auto"  --yesno " \
+ This Auto Install will perform a complete opencv
+ unattended build including
+
+ 1 Raspbian update/upgrade with No Reboot
+ 2 Install Dependencies and opencv source files
+ 3 Perform opencv cmake
+ 4 Perform opencv make compile
+ 5 Perform python opencv make install (if make successful)
+
+ NOTE: You will Need to Run DELETE menu pick Manually.
+       Also, This Unattended Build will Not Log Activity.
+       During cmake and make you will see Failed, not found,
+       no package Etc messages. This is normal and Not Fatal.
+       Fatal errors will stop compile.
+
+ Be Patient ...
+ \
+ " 0 0) \
+    then
+      do_main_menu
+    else
+      check_min_free_space
+    fi
     sudo apt-get -y update
     sudo apt-get -y upgrade
     sudo apt-get install -y build-essential
@@ -769,21 +865,6 @@ function do_auto ()
     sudo pip3 install numpy
     sudo apt-get -y autoremove
     sudo apt-get clean
-    if [ ! -d $INSTALL_DIR ] ; then
-        mkdir $INSTALL_DIR
-        if [ $? -ne 0 ] ; then
-            echo "----------------- ERROR -------------------"
-            echo "Could Not Create Dir at $INSTALL_DIR"
-            echo "Check permissions"
-            echo "If on a mounted Device make sure"
-            echo "1- Device is mounted and is NOT FAT32"
-            echo "2- Device Must be writeable by Pi user."
-            echo "   Check ownership and permissions"
-            echo ""
-            echo "Exit to Terminal to Investigate"
-            exit 1
-        fi
-    fi
     cd $INSTALL_DIR
     if [ ! -d "$BUILD_DIR" ] ; then
         mkdir $BUILD_DIR
@@ -810,6 +891,7 @@ function do_auto ()
     fi
     if [ "$TOTAL_SWAP" -lt "1024" ] ; then
         if [ ! -f "/etc/dphys-swapfile.bak" ] ; then
+            check_min_free_space
             sudo cp /etc/dphys-swapfile /etc/dphys-swapfile.bak
             sudo cp $PROG_DIR/dphys-swapfile.1024 /etc/dphys-swapfile
             sudo /etc/init.d/dphys-swapfile stop
@@ -824,16 +906,36 @@ function do_auto ()
         sudo /etc/init.d/dphys-swapfile start
         TOTAL_SWAP=$(free -m | grep Swap | tr -s " " | cut -f 2 -d " ")
     fi
-    echo "Compile Complete.  Check for Errors"
-    echo "If Compile was successful run 4 INSTALL menu pick"
     cd $PROG_DIR
-    exit
+    echo "Compile Complete.  Check Above for Errors"
+    echo "If Compile Failed Select n to Exit to Terminal"
+    echo "To Review Error Messages."
+    echo ""
+    read -p "Was Compile Successful y/n? " choice
+    case "$choice" in
+       y|Y ) sudo make install
+             sudo ldconfig
+             echo "Auto Install is Complete"
+             echo "Unless Errors were Reported"
+             echo "Test python opencv version per commands"
+             echo ""
+             echo "python"
+             echo ">>> import cv2"
+             echo ">>> cv2.__version__"
+             echo ""
+             echo "Verify version then Press ctrl-d to exit"
+             exit
+             ;;
+         * ) echo "Exit to Terminal Due to Errors"
+             exit 1
+             ;;
+    esac
 }
 
 #------------------------------------------------------------------------------
 function do_about()
 {
-  whiptail --title "About" --msgbox "\
+  whiptail --title "About" --msgbox " \
 $0 $PROG_VER written by Claude Pageau
 GitHub https://github.com/pageauc/opencv3-setup
 
@@ -894,13 +996,16 @@ function do_main_menu ()
             do_main_menu ;;
       2\ *) do_cv3_dep
             do_main_menu ;;
-      3\ *) do_cv3_cmake
+      3\ *) do_cv3_compile_menu
             do_main_menu ;;
       4\ *) do_cv3_install
             do_main_menu ;;
       5\ *) do_cv3_cleanup
             do_main_menu ;;
       6\ *) nano cv3-install-menu.conf
+            read_config_file
+            do_check_cv3_ver
+            check_working_dir
             do_main_menu ;;
       7\ *) do_upgrade
             do_main_menu ;;
@@ -921,7 +1026,9 @@ function do_main_menu ()
 clear
 echo "$0 $PROG_VER    written by Claude Pageau"
 echo ""
+read_config_file
 do_check_cv3_ver
+check_working_dir
 do_Initialize
 do_main_menu
 
