@@ -1,5 +1,5 @@
 #!/bin/bash
-PROG_VER='ver 3.0'
+PROG_VER='ver 3.1'
 
 # Script to assist with installing OpenCV3
 # If problems are encountered exit to command to try to resolve
@@ -8,6 +8,7 @@ PROG_VER='ver 3.0'
 PROG_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" # folder location of this script
 PROG_NAME=$(basename -- "$0" .sh)   # Extract Program Name minus .sh extension
 PROG_CONF="$PROG_DIR/$PROG_NAME.conf"  # Setup program conf file name
+CUR_OPENCV_VER=$(echo 'import cv2 ; ver = cv2.__version__ ; print(ver)' | python)
 
 #------------------------------------------------------------------------------
 function read_config_file ()
@@ -126,12 +127,25 @@ function check_min_free_space ()
 function do_check_cv3_ver ()
 {
     opencv_zip="https://github.com/Itseez/opencv/archive/$OPENCV_VER.zip"
-    echo "Checking opencv version $OPENCV_VER  Wait ..."
+    echo "Internet Check OpenCV version $OPENCV_VER  Wait ..."
+    echo ""
     # Check if there is a url at the destination link
     wget -S --spider $opencv_zip 2>&1 | grep -q 'HTTP/1.1 200 OK'
     if [ $? -eq 0 ]; then
-        echo "Variable OPENCV_VER=$OPENCV_VER Is a Valid opencv Version"
-        sleep 4
+        echo "STATUS"
+        echo "Current Installed python OpenCV version is $CUR_OPENCV_VER"
+        echo "Variable OPENCV_VER=$OPENCV_VER Is a Valid OpenCV Version"
+        echo ""
+        if [ "$CUR_OPENCV_VER" == "$OPENCV_VER" ] ; then
+            echo "WARNING"
+            echo "Looks Like You Have the Latest python OpenCV Version $CUR_OPENCV_VER"
+        else
+            echo "UPGRADE"
+            echo "python OpenCV Version From $CUR_OPENCV_VER"
+            echo "                       To  $OPENCV_VER"
+        fi
+        echo ""
+        read -p "Press Enter to Continue to Menu" choice
     else
         whiptail --title "opencv version $OPENCV_VER Check Problem" --msgbox " \
  Could NOT verify opencv $OPENCV_VER version
@@ -145,6 +159,8 @@ function do_check_cv3_ver ()
  If Required, Run SETTINGS Menu pick
  and Edit variable OPENCV_VER=$OPENCV_VER to a
  valid opencv release version
+
+ NOTE: The current installed python OpenCV version is $CUR_OPENCV_VER
 \
 " 0 0 0
         do_main_menu
@@ -423,7 +439,7 @@ function do_cv3_compile_menu ()
     mkdir $BUILD_DIR
   fi
   cd $BUILD_DIR
-  SELECTION=$(whiptail --title "OpenCV $OPENCV_VER COMPILE Menu " --menu "Arrow/Enter Selects or Tab Key" 0 0 0 --cancel-button Quit --ok-button Select \
+  SELECTION=$(whiptail --title "COMPILE OpenCV Menu from $CUR_OPENCV_VER to $OPENCV_VER" --menu "Arrow/Enter Selects or Tab Key" 0 0 0 --cancel-button Quit --ok-button Select \
   "1 CMAKE" "Required unless a previous cmake was successful" \
   "2 MAKE" "Run/Continue make compile if a previous cmake was successful" \
   "3 CLEAN" "Run a make clean to Force compile from Start (Lose Previous Progress)" \
@@ -917,6 +933,8 @@ function do_auto ()
              sudo ldconfig
              echo "Auto Install is Complete"
              echo "Unless Errors were Reported"
+             echo 'import cv2 ; ver = cv2.__version__ ; print("Current opencv version is %s" % ver) ' | python
+             echo "Reboot to update opencv"
              echo "Test python opencv version per commands"
              echo ""
              echo "python"
@@ -974,7 +992,7 @@ https://github.com/Tes3awy/OpenCV-3.2.0-Compiling-on-Raspberry-Pi
 #------------------------------------------------------------------------------
 function do_main_menu ()
 {
-  SELECTION=$(whiptail --title "Main Menu opencv $OPENCV_VER Compile Assist" --menu "Arrow/Enter Selects or Tab Key" 0 0 0 --cancel-button Quit --ok-button Select \
+  SELECTION=$(whiptail --title "OpenCV Compile Assist from $CUR_OPENCV_VER to $OPENCV_VER" --menu "Arrow/Enter Selects or Tab Key" 0 0 0 --cancel-button Quit --ok-button Select \
   "1 UPDATE" "Run Raspbian Update and Upgrade" \
   "2 DEP" "Install Build Dependencies and Download Source" \
   "3 COMPILE $OPENCV_VER" "Run cmake and make $COMPILE_CORES (be patient)" \
