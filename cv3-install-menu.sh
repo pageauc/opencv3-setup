@@ -937,7 +937,7 @@ function do_about()
 {
   whiptail --title "About" --msgbox " \
 $0 $PROG_VER written by Claude Pageau
-GitHub https://github.com/pageauc/opencv3-setup
+See GitHub https://github.com/pageauc/opencv3-setup
 
 This is a menu driven install script to download and
 compile opencv3 from source code. Default is opencv 3.3.0
@@ -974,16 +974,16 @@ https://github.com/Tes3awy/OpenCV-3.2.0-Compiling-on-Raspberry-Pi
 #------------------------------------------------------------------------------
 function do_main_menu ()
 {
-  SELECTION=$(whiptail --title "opencv $OPENCV_VER Compile Assist" --menu "Arrow/Enter Selects or Tab Key" 0 0 0 --cancel-button Quit --ok-button Select \
+  SELECTION=$(whiptail --title "Main Menu opencv $OPENCV_VER Compile Assist" --menu "Arrow/Enter Selects or Tab Key" 0 0 0 --cancel-button Quit --ok-button Select \
   "1 UPDATE" "Run Raspbian Update and Upgrade" \
   "2 DEP" "Install Build Dependencies and Download Source" \
   "3 COMPILE $OPENCV_VER" "Run cmake and make $COMPILE_CORES (be patient)" \
   "4 INSTALL $OPENCV_VER" "Run make install (Copy Files to production)" \
   "5 DELETE" "$INSTALL_DIR Source Folder and Files" \
-  "6 SETTINGS" "nano Edit cv3-install-menu.conf file" \
-  "7 UPGRADE" "$0 $PROG_VER Files from GitHub" \
+  "6 SETTINGS" "nano Edit cv3-install-menu.conf File" \
+  "7 UPGRADE" "Program Files From GitHub" \
   "8 LOG" "View Log File cv3-log.txt" \
-  "9 ABOUT" "Information about this program" \
+  "9 ABOUT" "Information About This Program" \
   "A AUTO" "Unattended Install (Do You Feel Lucky)" \
   "q QUIT" "Exit This Menu Program"  3>&1 1>&2 2>&3)
 
