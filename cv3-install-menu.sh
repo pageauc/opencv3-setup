@@ -355,8 +355,9 @@ function do_cv3_dep_install ()
    sudo apt-get install -y libgtkglext1-dev
    sudo apt-get install -y v4l-utils
    sudo apt-get install -y gphoto2
-   sudo apt-get install python-pip
-   sudo apt-get install python3-pip
+   sudo apt-get install -y python-pip
+   sudo apt-get install -y python3-pip
+   sudo apt-get install -y ntfs-3g
    DATE=$(date)
    END=$(date +%s)
    DIFF=$((END - START))
@@ -877,6 +878,7 @@ function do_auto ()
     sudo apt-get install -y gphoto2
     sudo apt-get install -y python-pip
     sudo apt-get install -y python3-pip
+    sudo apt-get install -y ntfs-3g
     sudo pip install numpy
     sudo pip3 install numpy
     sudo apt-get -y autoremove
