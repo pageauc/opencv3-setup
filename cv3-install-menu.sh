@@ -1,5 +1,5 @@
 #!/bin/bash
-PROG_VER='ver 3.1'
+PROG_VER='ver 3.2'
 
 # Script to assist with installing OpenCV3
 # If problems are encountered exit to command to try to resolve
@@ -398,6 +398,7 @@ function do_cv3_dep_install ()
    echo "-- opencv.zip Start: $DATE" | tee -a $LOG_FILE
    wget -O opencv.zip https://github.com/Itseez/opencv/archive/$OPENCV_VER.zip
    unzip -o opencv.zip
+   rm opencv.zip
    DATE=$(date)
    END=$(date +%s)
    DIFF=$((END - START))
@@ -411,6 +412,7 @@ function do_cv3_dep_install ()
    echo "-- opencv.zip Start: $DATE" | tee -a $LOG_FILE
    wget -O opencv_contrib.zip https://github.com/Itseez/opencv_contrib/archive/$OPENCV_VER.zip
    unzip -o opencv_contrib.zip
+   rm opencv_contrib.zip
    DATE=$(date)
    END=$(date +%s)
    DIFF=$((END - START))
@@ -468,6 +470,11 @@ function do_cv3_compile_menu ()
 #------------------------------------------------------------------------------
 function do_cv3_cmake ()
 {
+   if [ ! -d "$BUILD_DIR" ] ; then
+      echo "Create build directory $BUILD_DIR"
+      mkdir $BUILD_DIR
+   fi
+   cd $BUILD_DIR
    if [ ! -d $INSTALL_DIR ] ; then
        clear
        if (whiptail --title "$INSTALL_DIR Director Not Found" \
@@ -994,6 +1001,7 @@ https://github.com/Tes3awy/OpenCV-3.2.0-Compiling-on-Raspberry-Pi
 #------------------------------------------------------------------------------
 function do_main_menu ()
 {
+  cd $PROG_DIR
   SELECTION=$(whiptail --title "OpenCV Compile Assist from $CUR_OPENCV_VER to $OPENCV_VER" --menu "Arrow/Enter Selects or Tab Key" 0 0 0 --cancel-button Quit --ok-button Select \
   "1 UPDATE" "Run Raspbian Update and Upgrade" \
   "2 DEP" "Install Build Dependencies and Download Source" \
