@@ -193,16 +193,33 @@ ctrl-x y to save changes and exit.
 
 ## How to Test Build
 To Test build for python or python3. See Example below
+Start the required python interpreter by running the appropriate
+command for python 2 or 3 below.
 
-    python
+    python2
 
-At the >>> python prompt enter the following
+or
+
+    python3    
+    
+At the >>> python prompt enter the following commands
 
     import cv2
     cv2.__version__
 
 You should see output indicating the opencv version installed.
 Press ctrl-d to exit python interpreter
+Also check python3 opencv version using python3 interpreter.
+
+If after a successful compile and install you see an older version of opencv
+you may have to uninstall a previous apt-get version per the following
+
+    sudo apt-get purge python-opencv
+    
+Check the opencv version again to see if the version is updated.  Otherwise
+you can return the previous opencv per
+
+    sudo apt-get install python-opencv    
 
 See my other github repo at https://github.com/pageauc    
 for various opencv motion and opencv camera projects.

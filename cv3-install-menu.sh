@@ -332,14 +332,14 @@ function do_cv3_dep_install ()
    sudo apt-get install -y libtiff5-dev
    sudo apt-get install -y libjasper-dev
    sudo apt-get install -y libpng12-dev
+   sudo apt-get install -y libavcodec-dev 
+   sudo apt-get install -y libavformat-dev
+   sudo apt-get install -y libswscale-dev 
    sudo apt-get install -y libgtk2.0-dev
    sudo apt-get install -y libgstreamer0.10-0-dbg
    sudo apt-get install -y libgstreamer0.10-0
    sudo apt-get install -y libgstreamer0.10-dev
    sudo apt-get install -y libv4l-0
-   sudo apt-get install -y libavcodec-dev
-   sudo apt-get install -y libavformat-dev
-   sudo apt-get install -y libswscale-dev
    sudo apt-get install -y libv4l-dev
    sudo apt-get install -y libxvidcore-dev
    sudo apt-get install -y libx264-dev
@@ -860,14 +860,14 @@ function do_auto ()
     sudo apt-get install -y libtiff5-dev
     sudo apt-get install -y libjasper-dev
     sudo apt-get install -y libpng12-dev
+    sudo apt-get install -y libavcodec-dev 
+    sudo apt-get install -y libavformat-dev
+    sudo apt-get install -y libswscale-dev 
     sudo apt-get install -y libgtk2.0-dev
     sudo apt-get install -y libgstreamer0.10-0-dbg
     sudo apt-get install -y libgstreamer0.10-0
     sudo apt-get install -y libgstreamer0.10-dev
     sudo apt-get install -y libv4l-0
-    sudo apt-get install -y libavcodec-dev
-    sudo apt-get install -y libavformat-dev
-    sudo apt-get install -y libswscale-dev
     sudo apt-get install -y libv4l-dev
     sudo apt-get install -y libxvidcore-dev
     sudo apt-get install -y libx264-dev
