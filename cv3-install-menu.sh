@@ -942,15 +942,20 @@ function do_auto ()
              sudo ldconfig
              echo "Auto Install is Complete"
              echo "Unless Errors were Reported"
-             echo 'import cv2 ; ver = cv2.__version__ ; print("Current opencv version is %s" % ver) ' | python
+             echo 'import cv2 ; ver = cv2.__version__ ; print("python2 current opencv version is %s" % ver) ' | python2
+             echo 'import cv2 ; ver = cv2.__version__ ; print("python3 current opencv version is %s" % ver) ' | python3
              echo "Reboot to update opencv"
-             echo "Test python opencv version per commands"
+             echo "Test python opencv version per commands using"
+             echo "the appropriate python interpreter"
              echo ""
-             echo "python"
+             echo "python2 or python3"
+             echo "at the python interpreter prompt enter the following commands"
+             echo ""
              echo ">>> import cv2"
              echo ">>> cv2.__version__"
              echo ""
              echo "Verify version then Press ctrl-d to exit"
+             echo "See Readme.md How to Test Build section for more details"
              exit
              ;;
          * ) echo "Exit to Terminal Due to Errors"
