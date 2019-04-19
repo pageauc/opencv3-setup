@@ -1,5 +1,5 @@
 #!/bin/bash
-PROG_VER='ver 3.2'
+PROG_VER='ver 3.3'
 
 # Script to assist with installing OpenCV3
 # If problems are encountered exit to command to try to resolve
@@ -891,6 +891,12 @@ function do_auto ()
     sudo apt-get -y autoremove
     sudo apt-get clean
     cd $INSTALL_DIR
+    wget -O opencv.zip https://github.com/Itseez/opencv/archive/$OPENCV_VER.zip
+    unzip -o opencv.zip
+    rm opencv.zip
+    wget -O opencv_contrib.zip https://github.com/Itseez/opencv_contrib/archive/$OPENCV_VER.zip
+    unzip -o opencv_contrib.zip
+    rm opencv_contrib.zip    
     if [ ! -d "$BUILD_DIR" ] ; then
         mkdir $BUILD_DIR
     fi
