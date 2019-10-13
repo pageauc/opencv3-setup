@@ -329,12 +329,12 @@ function do_cv3_dep_install ()
    sudo apt-get install -y cmake
    sudo apt-get install -y pkg-config
    sudo apt-get install -y libjpeg-dev
-   sudo apt-get install -y libtiff5-dev
+   sudo apt-get install -y libtiff-dev
    sudo apt-get install -y libjasper-dev
-   sudo apt-get install -y libpng12-dev
-   sudo apt-get install -y libavcodec-dev 
+   sudo apt-get install -y libpng-dev
+   sudo apt-get install -y libavcodec-dev
    sudo apt-get install -y libavformat-dev
-   sudo apt-get install -y libswscale-dev 
+   sudo apt-get install -y libswscale-dev
    sudo apt-get install -y libgtk2.0-dev
    sudo apt-get install -y libgstreamer0.10-0-dbg
    sudo apt-get install -y libgstreamer0.10-0
@@ -342,8 +342,10 @@ function do_cv3_dep_install ()
    sudo apt-get install -y libv4l-0
    sudo apt-get install -y libv4l-dev
    sudo apt-get install -y libxvidcore-dev
+   sudo apt-get install -y libgtk-3-dev
    sudo apt-get install -y libx264-dev
    sudo apt-get install -y libqtgui4
+   sudo apt-get install -y libcanberra-gtk*
    sudo apt-get install -y libatlas-base-dev
    sudo apt-get install -y python2.7-dev
    sudo apt-get install -y python3-dev
@@ -534,18 +536,20 @@ function do_cv3_cmake ()
         -D CMAKE_INSTALL_PREFIX=/usr/local \
         -D INSTALL_C_EXAMPLES=OFF \
         -D INSTALL_PYTHON_EXAMPLES=ON \
+        -D WITH_TBB=ON \
+        -D WITH_V4L=ON \
         -D OPENCV_EXTRA_MODULES_PATH=$INSTALL_DIR/opencv_contrib-$OPENCV_VER/modules \
-        -D BUILD_EXAMPLES=ON \
-        -D ENABLE_NEON=ON ..
+        -D BUILD_EXAMPLES=ON ..
    else
        echo "-- cmake Compile for Raspberry Pi 2 ENABLE NEON=OFF" | tee -a $LOG_FILE
        cmake -D CMAKE_BUILD_TYPE=RELEASE \
         -D CMAKE_INSTALL_PREFIX=/usr/local \
         -D INSTALL_C_EXAMPLES=OFF \
         -D INSTALL_PYTHON_EXAMPLES=ON \
+        -D WITH_TBB=ON \
+        -D WITH_V4L=ON \        
         -D OPENCV_EXTRA_MODULES_PATH=$INSTALL_DIR/opencv_contrib-$OPENCV_VER/modules \
-        -D BUILD_EXAMPLES=ON \
-        -D ENABLE_NEON=OFF ..
+        -D BUILD_EXAMPLES=ON ..
    fi
    echo "----------------------- End of cmake Messages -------------------------"
    echo ""
@@ -850,6 +854,7 @@ function do_auto ()
     else
       check_min_free_space
     fi
+    read_config_file 
     sudo apt-get -y update
     sudo apt-get -y upgrade
     sudo apt-get install -y build-essential
@@ -860,9 +865,9 @@ function do_auto ()
     sudo apt-get install -y libtiff5-dev
     sudo apt-get install -y libjasper-dev
     sudo apt-get install -y libpng12-dev
-    sudo apt-get install -y libavcodec-dev 
+    sudo apt-get install -y libavcodec-dev
     sudo apt-get install -y libavformat-dev
-    sudo apt-get install -y libswscale-dev 
+    sudo apt-get install -y libswscale-dev
     sudo apt-get install -y libgtk2.0-dev
     sudo apt-get install -y libgstreamer0.10-0-dbg
     sudo apt-get install -y libgstreamer0.10-0
@@ -896,7 +901,8 @@ function do_auto ()
     rm opencv.zip
     wget -O opencv_contrib.zip https://github.com/Itseez/opencv_contrib/archive/$OPENCV_VER.zip
     unzip -o opencv_contrib.zip
-    rm opencv_contrib.zip    
+    rm opencv_contrib.zip
+    cd $INSTALL_DIR
     if [ ! -d "$BUILD_DIR" ] ; then
         mkdir $BUILD_DIR
     fi
