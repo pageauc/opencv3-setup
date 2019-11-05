@@ -1,5 +1,5 @@
 #!/bin/bash
-PROG_VER='ver 3.4'
+PROG_VER='ver 3.6'
 
 # Script to assist with installing OpenCV3
 # If problems are encountered exit to command to try to resolve
@@ -549,20 +549,20 @@ function do_cv3_cmake ()
             -D CMAKE_INSTALL_PREFIX=/usr/local \
             -D OPENCV_EXTRA_MODULES_PATH=$INSTALL_DIR/opencv_contrib-$OPENCV_VER/modules \
             -D INSTALL_C_EXAMPLES=OFF \
-            -D INSTALL_PYTHON_EXAMPLES=ON \
+            -D INSTALL_PYTHON_EXAMPLES=OFF \
             -D WITH_TBB=ON \
             -D WITH_V4L=ON \
-            -D BUILD_EXAMPLES=ON ..
+            -D BUILD_EXAMPLES=OFF ..
        else
            echo "-- cmake Compile for Raspberry Pi 2 ENABLE NEON=OFF" | tee -a $LOG_FILE
            cmake -D CMAKE_BUILD_TYPE=RELEASE \
             -D CMAKE_INSTALL_PREFIX=/usr/local \
             -D OPENCV_EXTRA_MODULES_PATH=$INSTALL_DIR/opencv_contrib-$OPENCV_VER/modules \
             -D INSTALL_C_EXAMPLES=OFF \
-            -D INSTALL_PYTHON_EXAMPLES=ON \
+            -D INSTALL_PYTHON_EXAMPLES=OFF \
             -D WITH_TBB=ON \
             -D WITH_V4L=ON \
-            -D BUILD_EXAMPLES=ON ..
+            -D BUILD_EXAMPLES=OFF ..
        fi
    fi
    echo "----------------------- End of cmake Messages -------------------------"
@@ -876,9 +876,9 @@ function do_auto ()
     sudo apt-get install -y cmake
     sudo apt-get install -y pkg-config
     sudo apt-get install -y libjpeg-dev
-    sudo apt-get install -y libtiff5-dev
+    sudo apt-get install -y libtiff-dev
     sudo apt-get install -y libjasper-dev
-    sudo apt-get install -y libpng12-dev
+    sudo apt-get install -y libpng-dev
     sudo apt-get install -y libavcodec-dev
     sudo apt-get install -y libavformat-dev
     sudo apt-get install -y libswscale-dev
@@ -889,8 +889,10 @@ function do_auto ()
     sudo apt-get install -y libv4l-0
     sudo apt-get install -y libv4l-dev
     sudo apt-get install -y libxvidcore-dev
+    sudo apt-get install -y libgtk-3-dev
     sudo apt-get install -y libx264-dev
     sudo apt-get install -y libqtgui4
+    sudo apt-get install -y libcanberra-gtk*
     sudo apt-get install -y libatlas-base-dev
     sudo apt-get install -y python2.7-dev
     sudo apt-get install -y python3-dev
@@ -921,33 +923,42 @@ function do_auto ()
         mkdir $BUILD_DIR
     fi
     cd $BUILD_DIR
-    cat /proc/device-tree/model | grep -aq "Raspberry Pi 3"
+    cat /proc/device-tree/model | grep -aq "Raspberry Pi 4"
     if [ $? -eq 0 ]; then
-        # This optimizes for Raspberry Pi 3 Models
-        cmake -D CMAKE_BUILD_TYPE=RELEASE \
+       echo "-- cmake Compile for Raspberry Pi 4 ENABLE NEON=ON" | tee -a $LOG_FILE
+       cmake -D CMAKE_BUILD_TYPE=RELEASE \
         -D CMAKE_INSTALL_PREFIX=/usr/local \
-        -D INSTALL_C_EXAMPLES=OFF \
-        -D INSTALL_PYTHON_EXAMPLES=ON \
         -D OPENCV_EXTRA_MODULES_PATH=$INSTALL_DIR/opencv_contrib-$OPENCV_VER/modules \
-        -D BUILD_EXAMPLES=ON \
-        -D ENABLE_NEON=ON ..
+        -D ENABLE_NEON=ON \
+        -D ENABLE_VFPV3=ON \
+        -D BUILD_TESTS=OFF \
+        -D OPENCV_ENABLE_NONFREE=ON \
+        -D INSTALL_PYTHON_EXAMPLES=OFF \
+        -D BUILD_EXAMPLES=OFF ..
     else
-        cmake -D CMAKE_BUILD_TYPE=RELEASE \
-        -D CMAKE_INSTALL_PREFIX=/usr/local \
-        -D INSTALL_C_EXAMPLES=OFF \
-        -D INSTALL_PYTHON_EXAMPLES=ON \
-        -D OPENCV_EXTRA_MODULES_PATH=$INSTALL_DIR/opencv_contrib-$OPENCV_VER/modules \
-        -D BUILD_EXAMPLES=ON \
-        -D ENABLE_NEON=OFF ..
-    fi
-    if [ "$TOTAL_SWAP" -lt "1024" ] ; then
-        if [ ! -f "/etc/dphys-swapfile.bak" ] ; then
-            check_min_free_space
-            sudo cp /etc/dphys-swapfile /etc/dphys-swapfile.bak
-            sudo cp $PROG_DIR/dphys-swapfile.1024 /etc/dphys-swapfile
-            sudo /etc/init.d/dphys-swapfile stop
-            sudo /etc/init.d/dphys-swapfile start
-        fi
+       cat /proc/device-tree/model | grep -aq "Raspberry Pi 3"
+       if [ $? -eq 0 ]; then
+           # This optimizes for Raspberry Pi 3 Models
+           echo "-- cmake Compile for Raspberry Pi 3 ENABLE NEON=ON" | tee -a $LOG_FILE
+           cmake -D CMAKE_BUILD_TYPE=RELEASE \
+            -D CMAKE_INSTALL_PREFIX=/usr/local \
+            -D OPENCV_EXTRA_MODULES_PATH=$INSTALL_DIR/opencv_contrib-$OPENCV_VER/modules \
+            -D INSTALL_C_EXAMPLES=OFF \
+            -D INSTALL_PYTHON_EXAMPLES=OFF \
+            -D WITH_TBB=ON \
+            -D WITH_V4L=ON \
+            -D BUILD_EXAMPLES=OFF ..
+       else
+           echo "-- cmake Compile for Raspberry Pi 2 ENABLE NEON=OFF" | tee -a $LOG_FILE
+           cmake -D CMAKE_BUILD_TYPE=RELEASE \
+            -D CMAKE_INSTALL_PREFIX=/usr/local \
+            -D OPENCV_EXTRA_MODULES_PATH=$INSTALL_DIR/opencv_contrib-$OPENCV_VER/modules \
+            -D INSTALL_C_EXAMPLES=OFF \
+            -D INSTALL_PYTHON_EXAMPLES=OFF \
+            -D WITH_TBB=ON \
+            -D WITH_V4L=ON \
+            -D BUILD_EXAMPLES=OFF ..
+       fi
     fi
     make $COMPILE_CORES
     if [ -f "/etc/dphys-swapfile.bak" ] ; then
