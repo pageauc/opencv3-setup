@@ -1,5 +1,5 @@
 #!/bin/bash
-PROG_VER='ver 3.6'
+PROG_VER='ver 3.7'
 
 # Script to assist with installing OpenCV3
 # If problems are encountered exit to command to try to resolve
@@ -547,21 +547,18 @@ function do_cv3_cmake ()
            echo "-- cmake Compile for Raspberry Pi 3 ENABLE NEON=ON" | tee -a $LOG_FILE
            cmake -D CMAKE_BUILD_TYPE=RELEASE \
             -D CMAKE_INSTALL_PREFIX=/usr/local \
-            -D OPENCV_EXTRA_MODULES_PATH=$INSTALL_DIR/opencv_contrib-$OPENCV_VER/modules \
             -D INSTALL_C_EXAMPLES=OFF \
             -D INSTALL_PYTHON_EXAMPLES=OFF \
-            -D WITH_TBB=ON \
-            -D WITH_V4L=ON \
-            -D BUILD_EXAMPLES=OFF ..
+            -D OPENCV_EXTRA_MODULES_PATH=$INSTALL_DIR/opencv_contrib-$OPENCV_VER/modules \
+            -D BUILD_EXAMPLES=OFF \
+            -D ENABLE_NEON=ON ..
        else
            echo "-- cmake Compile for Raspberry Pi 2 ENABLE NEON=OFF" | tee -a $LOG_FILE
            cmake -D CMAKE_BUILD_TYPE=RELEASE \
             -D CMAKE_INSTALL_PREFIX=/usr/local \
-            -D OPENCV_EXTRA_MODULES_PATH=$INSTALL_DIR/opencv_contrib-$OPENCV_VER/modules \
-            -D INSTALL_C_EXAMPLES=OFF \
+            -D INSTALL_C_EXAMPLES=OFF \            
             -D INSTALL_PYTHON_EXAMPLES=OFF \
-            -D WITH_TBB=ON \
-            -D WITH_V4L=ON \
+            -D OPENCV_EXTRA_MODULES_PATH=$INSTALL_DIR/opencv_contrib-$OPENCV_VER/modules \
             -D BUILD_EXAMPLES=OFF ..
        fi
    fi
@@ -942,22 +939,20 @@ function do_auto ()
            echo "-- cmake Compile for Raspberry Pi 3 ENABLE NEON=ON" | tee -a $LOG_FILE
            cmake -D CMAKE_BUILD_TYPE=RELEASE \
             -D CMAKE_INSTALL_PREFIX=/usr/local \
-            -D OPENCV_EXTRA_MODULES_PATH=$INSTALL_DIR/opencv_contrib-$OPENCV_VER/modules \
             -D INSTALL_C_EXAMPLES=OFF \
             -D INSTALL_PYTHON_EXAMPLES=OFF \
-            -D WITH_TBB=ON \
-            -D WITH_V4L=ON \
-            -D BUILD_EXAMPLES=OFF ..
+            -D OPENCV_EXTRA_MODULES_PATH=$INSTALL_DIR/opencv_contrib-$OPENCV_VER/modules \
+            -D BUILD_EXAMPLES=OFF \
+            -D ENABLE_NEON=ON ..
        else
            echo "-- cmake Compile for Raspberry Pi 2 ENABLE NEON=OFF" | tee -a $LOG_FILE
            cmake -D CMAKE_BUILD_TYPE=RELEASE \
             -D CMAKE_INSTALL_PREFIX=/usr/local \
-            -D OPENCV_EXTRA_MODULES_PATH=$INSTALL_DIR/opencv_contrib-$OPENCV_VER/modules \
             -D INSTALL_C_EXAMPLES=OFF \
             -D INSTALL_PYTHON_EXAMPLES=OFF \
-            -D WITH_TBB=ON \
-            -D WITH_V4L=ON \
-            -D BUILD_EXAMPLES=OFF ..
+            -D OPENCV_EXTRA_MODULES_PATH=$INSTALL_DIR/opencv_contrib-$OPENCV_VER/modules \
+            -D BUILD_EXAMPLES=OFF \
+            -D ENABLE_NEON=OFF ..
        fi
     fi
     make $COMPILE_CORES
