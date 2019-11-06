@@ -1,5 +1,5 @@
 #!/bin/bash
-PROG_VER='ver 3.7'
+PROG_VER='ver 3.8'
 
 # Script to assist with installing OpenCV3
 # If problems are encountered exit to command to try to resolve
