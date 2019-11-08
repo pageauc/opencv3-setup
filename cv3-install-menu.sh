@@ -1,5 +1,5 @@
 #!/bin/bash
-PROG_VER='ver 3.8'
+PROG_VER='ver 3.81'
 
 # Script to assist with installing OpenCV3
 # If problems are encountered exit to command to try to resolve
@@ -1072,7 +1072,8 @@ function do_main_menu ()
             check_working_dir
             do_main_menu ;;
       7\ *) do_upgrade
-            do_main_menu ;;
+            echo "Upgrade Complete. Restart $0"
+            exit 0 ;;
       8\ *) do_log
             do_main_menu ;;
       9\ *) do_about
