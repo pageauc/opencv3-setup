@@ -1,5 +1,5 @@
 #!/bin/bash
-PROG_VER='ver 3.81'
+PROG_VER='ver 3.82'
 
 # Script to assist with installing OpenCV3
 # If problems are encountered exit to command to try to resolve
@@ -371,7 +371,7 @@ function do_cv3_dep_install ()
    sudo apt-get clean
    if [ ! -d $INSTALL_DIR ] ; then
        echo "Create dir $INSTALL_DIR"
-       mkdir $INSTALL_DIR
+       mkdir -p $INSTALL_DIR
        if [ $? -ne 0 ] ; then
           WARNING_MSG="
  Could Not Create Dir at $INSTALL_DIR
@@ -441,7 +441,7 @@ function do_cv3_compile_menu ()
   clear
   if [ ! -d "$BUILD_DIR" ] ; then
     echo "Create build directory $BUILD_DIR"
-    mkdir $BUILD_DIR
+    mkdir -p $BUILD_DIR
   fi
   cd $BUILD_DIR
   SELECTION=$(whiptail --title "COMPILE OpenCV Menu from $CUR_OPENCV_VER to $OPENCV_VER" --menu "Arrow/Enter Selects or Tab Key" 0 0 0 --cancel-button Quit --ok-button Select \
@@ -474,7 +474,7 @@ function do_cv3_cmake ()
 {
    if [ ! -d "$BUILD_DIR" ] ; then
       echo "Create build directory $BUILD_DIR"
-      mkdir $BUILD_DIR
+      mkdir -p $BUILD_DIR
    fi
    cd $BUILD_DIR
    if [ ! -d $INSTALL_DIR ] ; then
@@ -908,6 +908,7 @@ function do_auto ()
     sudo pip3 install numpy
     sudo apt-get -y autoremove
     sudo apt-get clean
+    mkdir -p $INSTALL_DIR
     cd $INSTALL_DIR
     wget -O opencv.zip https://github.com/Itseez/opencv/archive/$OPENCV_VER.zip
     unzip -o opencv.zip
@@ -915,9 +916,8 @@ function do_auto ()
     wget -O opencv_contrib.zip https://github.com/Itseez/opencv_contrib/archive/$OPENCV_VER.zip
     unzip -o opencv_contrib.zip
     rm opencv_contrib.zip
-    cd $INSTALL_DIR
     if [ ! -d "$BUILD_DIR" ] ; then
-        mkdir $BUILD_DIR
+        mkdir -p $BUILD_DIR
     fi
     cd $BUILD_DIR
     cat /proc/device-tree/model | grep -aq "Raspberry Pi 4"
