@@ -345,6 +345,7 @@ function do_cv3_dep_install ()
    sudo apt-get install -y libgtk-3-dev
    sudo apt-get install -y libx264-dev
    sudo apt-get install -y libqtgui4
+   sudo apt-get install -y libqt4-test   
    sudo apt-get install -y libcanberra-gtk*
    sudo apt-get install -y libatlas-base-dev
    sudo apt-get install -y python2.7-dev
@@ -889,6 +890,7 @@ function do_auto ()
     sudo apt-get install -y libgtk-3-dev
     sudo apt-get install -y libx264-dev
     sudo apt-get install -y libqtgui4
+    sudo apt-get install -y libqt4-test
     sudo apt-get install -y libcanberra-gtk*
     sudo apt-get install -y libatlas-base-dev
     sudo apt-get install -y python2.7-dev
